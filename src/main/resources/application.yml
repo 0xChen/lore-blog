@@ -3,6 +3,14 @@ spring:
     active: dev
   application:
     name: blog
+
+########## security ##########
+  security:
+    user:
+      name: user
+      password: user
+
+########## actuator ##########
 management:
   endpoints:
     enabled-by-default: true
