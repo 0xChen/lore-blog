@@ -1,0 +1,56 @@
+### production environment ###
+
+############ server ############
+server:
+  tomcat.uri-encoding: UTF-8
+  port: 8080
+  servlet.session.timeout: 30m
+
+############## log #############
+logging:
+  path: /var/log/spring/
+  file:
+    max-history: 30
+  level:
+    root: error
+    com.developer: debug
+
+########## datasource ##########
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      url: jdbc:mysql://127.0.0.1:6612/blog
+      connection-properties: useUnicode=true;characterEncoding=utf-8;autoReconnect=true;zeroDateTimeBehavior=convertToNull;
+      username: root
+      password: root
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      pool-prepared-statements: false
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 30000
+      validation-query: select 'syc'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      filters: stat,wall,slf4j
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 2000
+          merge-sql: true
+        wall:
+          config:
+            multi-statement-allow: true
+            delete-where-none-check: true
+            update-where-none-check: true
+          log-violation: false
+          throw-exception: true
+      async-init: true
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/monitor/*
+        login-username: druid
+        login-password: druid

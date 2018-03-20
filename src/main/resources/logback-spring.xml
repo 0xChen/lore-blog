@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <!-- 简化配置直接引入spring基础设置 -->
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+</configuration>
