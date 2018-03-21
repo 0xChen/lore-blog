@@ -26,4 +26,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### code ###
 src/main/resources/jdbc.properties
