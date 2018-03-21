@@ -17,6 +17,7 @@ target/
 .settings
 target/
 log/
+out/
 
 ### NetBeans ###
 nbproject/private/
