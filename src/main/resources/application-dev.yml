@@ -23,8 +23,8 @@ spring:
       # Druid会自动根据url识别驱动类名，如果连接的数据库非常见数据库，才需配置属性 driver-class-name
       url: jdbc:mysql://127.0.0.1:3306/blog_dev
       connection-properties: useSSL=true;useUnicode=true;characterEncoding=utf-8;autoReconnect=true;zeroDateTimeBehavior=convertToNull;
-      username: root
-      password: root
+      username: ${jdbc.dev.username}
+      password: ${jdbc.dev.password}
       # 配置初始化大小、最小、最大
       initial-size: 10
       min-idle: 10

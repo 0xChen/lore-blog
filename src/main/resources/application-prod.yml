@@ -22,8 +22,8 @@ spring:
     druid:
       url: jdbc:mysql://127.0.0.1:6612/blog
       connection-properties: useUnicode=true;characterEncoding=utf-8;autoReconnect=true;zeroDateTimeBehavior=convertToNull;
-      username: root
-      password: root
+      username: ${jdbc.prod.username}
+      password: ${jdbc.prod.password}
       initial-size: 5
       min-idle: 5
       max-active: 20
