@@ -7,6 +7,6 @@ import org.springframework.context.annotation.PropertySource;
  * 用于引入各类自定义的配置文件
  */
 @Configuration
-@PropertySource("classpath:jdbc.properties")
+@PropertySource({"classpath:jdbc.yml"})
 public class PropertySourcesConfig {
 }
