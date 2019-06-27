@@ -1,5 +1,9 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**
+!**/src/test/**
 
 ### STS ###
 .apt_generated
@@ -8,24 +12,27 @@ target/
 .project
 .settings
 .springBeans
+.sts4-cache
 
 ### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
-.settings
-target/
 log/
 out/
+target/
 
 ### NetBeans ###
-nbproject/private/
-build/
-nbbuild/
-dist/
-nbdist/
-.nb-gradle/
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
 
-### code ###
-src/main/resources/jdbc.properties
+### VS Code ###
+.vscode/
+
+### customize ###
+jdbcSecretKey
+jwtSecretKey

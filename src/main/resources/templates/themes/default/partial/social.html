@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
+<head>
+</head>
+<body>
+<div class="social-list" th:fragment="social">
+    <a th:if="${#blog.getBlogOption('social_weibo')}" class="social weibo" target="blank"
+       th:href="@{|http://weibo.com/${#blog.getBlogOption('social_weibo')}|}">微博</a>
+
+    <a th:if="${#blog.getBlogOption('social_github')}" class="social github" target="blank"
+       th:href="@{|http://github.com/${#blog.getBlogOption('social_github')}|}">Github</a>
+
+    <a th:if="${#blog.getBlogOption('social_twitter')}" class="social twitter" target="blank"
+       th:href="@{|http://twitter.com/${#blog.getBlogOption('social_twitter')}|}">Twitter</a>
+</div>
+</body>
+</html>

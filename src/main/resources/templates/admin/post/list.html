@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" th:with="title='文章管理',active='posts'">
+<!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
+<head>
+    <th:block th:replace="admin/header::header(${title})"></th:block>
+</head>
+<body class="fixed-left">
+<div id="wrapper">
+    <!-- sidebar -->
+    <th:block th:replace="admin/sidebar::sidebar(${active},'')"></th:block>
+    <!-- content -->
+    <div class="content-page">
+        <div class="content">
+            <div class="container">
+                <!-- app -->
+                <div id="app" class="row" v-cloak>
+                    <loading :active.sync="isLoading" :can-cancel="true"></loading>
+                    <div class="col-lg-12">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">文章管理</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="row p-b-10 m-l-10">
+                                            <form class="form-inline" role="form">
+                                                <div class="form-group">
+                                                    <input v-model="search.title" type="text" class="form-control" placeholder="文章名称">
+                                                </div>
+
+                                                <select v-model="search.categoryId" class="form-control">
+                                                    <option value>所属分类</option>
+                                                    <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
+                                                </select>
+
+                                                <select v-model="search.status" class="form-control">
+                                                    <option value="" selected>发布状态</option>
+                                                    <option value="1">已发布</option>
+                                                    <option value="0">草稿</option>
+                                                </select>
+                                                <button type="button" class="btn btn-success waves-effect waves-light m-l-10"
+                                                        @click="load()">查询
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th width="35%">文章标题</th>
+                                                    <th width="15%">发布时间</th>
+                                                    <th>浏览量</th>
+                                                    <th width="8%">发布状态</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="post in postPage.records">
+                                                    <td>
+                                                        <a :href="'/admin/post/' + post.id">{{ post.title }}</a>
+                                                    </td>
+                                                    <td>{{ post.pubdate | formatDate }}</td>
+                                                    <td>{{ post.readCount }}</td>
+                                                    <td>
+                                                        <span v-show="post.status == '3'" class="label label-success">已发布</span>
+                                                        <span v-show="post.status == '2'" class="label label-default">草稿</span>
+                                                        <span v-show="post.status == '1'" class="label label-default">自动草稿</span>
+                                                    </td>
+                                                    <td>
+                                                        <a :href="'/admin/post/' + post.id"
+                                                           class="btn btn-primary btn-sm waves-effect waves-light m-b-5">
+                                                            <i class="fa fa-edit"></i> <span>编辑</span>
+                                                        </a>
+                                                        <a @click="deletePost(post.id)" href="javascript:void(0)"
+                                                           class="btn btn-danger btn-sm waves-effect waves-light m-b-5">
+                                                            <i class="fa fa-trash-o"></i> <span>删除</span>
+                                                        </a>
+                                                        <a v-show="post.status == '1'"
+                                                           class="btn btn-warning btn-sm waves-effect waves-light m-b-5"
+                                                           :href="post.id"
+                                                           target="_blank">
+                                                            <i class="fa fa-rocket"></i> <span>预览</span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <ul class="pagination m-b-5 pull-right">
+                                            <li v-if="postPage.hasPrev">
+                                                <a @click="load(postPage.prevPage)" aria-label="Previous">
+                                                    <i class="fa fa-angle-left"></i>&nbsp;上一页
+                                                </a>
+                                            </li>
+
+                                            <li class="page-item" v-for="num in postPage.pages"
+                                                :class="{ active: postPage.current == num }">
+                                                <a @click="load(num)">
+                                                    {{ num }}</i>
+                                                </a>
+                                            </li>
+                                            <li v-if="postPage.hasNext">
+                                                <a type="button" class="page-link" @click="load(postPage.nextPage)">
+                                                    下一页&nbsp;<i class="fa fa-angle-right"></i>
+                                                </a>
+                                            </li>
+                                            <li><span>共 {{postPage.pages}} 页</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="admin/footer :: footer"></div>
+<script >
+    var blog = new $.Blog();
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            postPage: {},
+            isLoading: true,
+            search: {
+                title:'',
+                status: '',
+                type: constant.POST_TYPE_POST,
+                categoryId: '',
+                page: 1,
+                size: 10
+            },
+            categories:[]
+        },
+        beforeCreate: function () {
+            vueLoding = this.$loading.show();
+        },
+        mounted: function () {
+            this.loadOnce();
+            this.load();
+        },
+        methods: {
+            loadOnce: function(){
+                var $vm = this;
+                $vm.search.type = blog.getUrlParam("type");
+                blog.get({
+                    url: '/admin/api/categories',
+                    success: function (result) {
+                        $vm.categories = result.data
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert('服务器发生错误，数据加载失败');
+                    }
+                });
+            },
+            load: function (page) {
+                var $vm = this;
+                $vm.search.page = page;
+
+                blog.get({
+                    url: '/admin/api/posts',
+                    data: $vm.search,
+                    success: function (result) {
+                        $vm.postPage = result.data
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert('服务器内部错误，数据加载失败');
+                    }
+                });
+            },
+            deletePost: function (id) {
+                var $vm = this;
+                blog.alertConfirm({
+                    title: '确定删除该文章吗?',
+                    then: function () {
+                        blog.delete({
+                            url: '/admin/api/post/' + id,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    blog.alertOk('文章删除成功');
+                                    $vm.load();
+                                } else {
+                                    blog.alertError(result.message || '文章删除失败');
+                                }
+                            },
+                            error: function (error) {
+                                console.log(error.response.data);
+                                alert("服务器内部错误，文章删除失败");
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
+    });
+</script>
+
+</body>
+</html>

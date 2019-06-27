@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" th:with="title='页面管理',active='pages'">
+<!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
+<head>
+    <th:block th:replace="admin/header::header(${title})"></th:block>
+</head>
+<body class="fixed-left">
+<div id="wrapper">
+    <!-- sidebar -->
+    <th:block th:replace="admin/sidebar::sidebar(${active},'')"></th:block>
+    <!-- content -->
+    <div class="content-page">
+        <div class="content">
+            <div class="container">
+                <!-- app -->
+                <div id="app" class="row" v-cloak>
+                    <loading :active.sync="isLoading" :can-cancel="true"></loading>
+                    <div class="col-lg-12">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title" th:text="${title}"></h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="row p-b-10">
+                                            <div class="col-md-10">
+                                                <form class="form-inline" role="form">
+                                                    <div class="form-group">
+                                                        <input v-model="search.title" type="text" class="form-control" placeholder="页面标题">
+                                                    </div>
+
+                                                    <select v-model="search.status" class="form-control">
+                                                        <option value="" selected>发布状态</option>
+                                                        <option value="1">已发布</option>
+                                                        <option value="0">草稿</option>
+                                                    </select>
+                                                    <button type="button" class="btn btn-success waves-effect waves-light m-l-10"
+                                                            @click="load()">查询
+                                                    </button>
+                                                </form>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <a href="/admin/page" class="btn btn-primary pull-right waves-effect waves-light">添加新页面</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th width="35%">页面标题</th>
+                                                    <th width="15%">发布时间</th>
+                                                    <th>浏览量</th>
+                                                    <th width="8%">发布状态</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="page in pagePage.records">
+                                                    <td>
+                                                        <a :href="'/admin/page/' + page.id">{{ page.title }}</a>
+                                                    </td>
+                                                    <td>{{ page.pubdate | formatDate }}</td>
+                                                    <td>{{ page.readCount }}</td>
+                                                    <td>
+                                                        <span v-show="page.status == '3'" class="label label-success">已发布</span>
+                                                        <span v-show="page.status == '2'" class="label label-default">草稿</span>
+                                                        <span v-show="page.status == '1'" class="label label-default">自动草稿</span>
+                                                    </td>
+                                                    <td>
+                                                        <a :href="'/admin/page/' + page.id"
+                                                           class="btn btn-primary btn-sm waves-effect waves-light m-b-5">
+                                                            <i class="fa fa-edit"></i> <span>编辑</span>
+                                                        </a>
+                                                        <a @click="deletePage(page.id)" href="javascript:void(0)"
+                                                           class="btn btn-danger btn-sm waves-effect waves-light m-b-5">
+                                                            <i class="fa fa-trash-o"></i> <span>删除</span>
+                                                        </a>
+                                                        <a v-show="page.status == '1'"
+                                                           class="btn btn-warning btn-sm waves-effect waves-light m-b-5"
+                                                           :href="page.id"
+                                                           target="_blank">
+                                                            <i class="fa fa-rocket"></i> <span>预览</span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <ul class="pagination m-b-5 pull-right">
+                                            <li v-if="pagePage.hasPrev">
+                                                <a @click="load(pagePage.prevPage)" aria-label="Previous">
+                                                    <i class="fa fa-angle-left"></i>&nbsp;上一页
+                                                </a>
+                                            </li>
+
+                                            <li class="page-item" v-for="num in pagePage.pages"
+                                                :class="{ active: pagePage.current == num }">
+                                                <a @click="load(num)">
+                                                    {{ num }}</i>
+                                                </a>
+                                            </li>
+                                            <li v-if="pagePage.hasNext">
+                                                <a type="button" class="page-link" @click="load(pagePage.nextPage)">
+                                                    下一页&nbsp;<i class="fa fa-angle-right"></i>
+                                                </a>
+                                            </li>
+                                            <li><span>共 {{pagePage.pages}} 页</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="admin/footer :: footer"></div>
+<script >
+    var blog = new $.Blog();
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            pagePage: {},
+            isLoading: true,
+            search: {
+                title:'',
+                status: '',
+                type: constant.POST_TYPE_PAGE,
+                page: 1,
+                size: 10
+            }
+        },
+        beforeCreate: function () {
+            vueLoding = this.$loading.show();
+        },
+        mounted: function () {
+            this.load();
+        },
+        methods: {
+            load: function (page) {
+                var $vm = this;
+                $vm.search.page = page;
+
+                blog.get({
+                    url: '/admin/api/pages',
+                    data: $vm.search,
+                    success: function (result) {
+                        $vm.pagePage = result.data
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert('服务器内部错误，数据加载失败');
+                    }
+                });
+            },
+            deletePage: function (id) {
+                var $vm = this;
+                blog.alertConfirm({
+                    title: '确定删除该页面吗?',
+                    then: function () {
+                        blog.delete({
+                            url: '/admin/api/page/' + id,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    blog.alertOk('删除成功');
+                                    $vm.load();
+                                } else {
+                                    blog.alertError(result.message || '删除失败');
+                                }
+                            },
+                            error: function (error) {
+                                console.log(error.response.data);
+                                alert("服务器内部错误，删除失败");
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
+    });
+</script>
+
+</body>
+</html>

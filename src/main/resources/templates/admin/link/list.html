@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" th:with="title='链接管理',active='links'">
+<!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
+<head>
+    <th:block th:replace="admin/header::header(${title})"></th:block>
+</head>
+<body class="fixed-left">
+<div id="wrapper">
+    <!-- sidebar -->
+    <th:block th:replace="admin/sidebar::sidebar(${active},'')"></th:block>
+    <!-- content -->
+    <div class="content-page">
+        <div class="content">
+            <div class="container">
+                <!-- app -->
+                <div id="app" class="row" v-cloak>
+                    <loading :active.sync="isLoading" :can-cancel="true"></loading>
+                    <div class="col-lg-12">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">友链管理</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="row p-b-10 m-l-10">
+                                            <form class="form-inline" role="form">
+                                                <div class="form-group">
+                                                    <input v-model="search.name" type="text" class="form-control" placeholder="站名">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input v-model="search.url" type="text" class="form-control" placeholder="网址">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input v-model="search.description" type="text" class="form-control" placeholder="描述">
+                                                </div>
+
+                                                <button type="button" class="btn btn-success waves-effect waves-light m-l-10"
+                                                        @click="load()">查询
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th>名称</th>
+                                                    <th>网址</th>
+                                                    <th>排序</th>
+                                                    <th>描述</th>
+                                                    <th>是否可见</th>
+                                                    <th>创建时间</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="link in linkPage.records">
+                                                    <td>
+                                                        <a :href="'/admin/link/' + link.id">{{ link.name }}</a>
+                                                    </td>
+                                                    <td>{{ link.url }}</td>
+                                                    <td>{{ link.sort }}</td>
+                                                    <td>{{ link.description }}</td>
+                                                    <td>{{ link.visible }}</td>
+                                                    <td>{{ link.createTime | formatDate }}</td>
+                                                    <td>
+                                                        <a :href="'/admin/link/' + link.id"
+                                                           class="btn btn-primary btn-sm waves-effect waves-light m-b-5">
+                                                            <i class="fa fa-edit"></i> <span>编辑</span>
+                                                        </a>
+                                                        <a @click="deleteLinks(link.id)" href="javascript:void(0)"
+                                                           class="btn btn-danger btn-sm waves-effect waves-light m-b-5">
+                                                            <i class="fa fa-trash-o"></i> <span>删除</span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <a class="btn btn-primary" href="/admin/link/">新增</a>
+                                        <ul class="pagination m-b-5 pull-right">
+                                            <li v-if="linkPage.hasPrev">
+                                                <a @click="load(linkPage.prevPage)" aria-label="Previous">
+                                                    <i class="fa fa-angle-left"></i>&nbsp;上一页
+                                                </a>
+                                            </li>
+
+                                            <li class="page-item" v-for="num in linkPage.pages"
+                                                :class="{ active: linkPage.current == num }">
+                                                <a @click="load(num)">
+                                                    {{ num }}</i>
+                                                </a>
+                                            </li>
+                                            <li v-if="linkPage.hasNext">
+                                                <a type="button" class="page-link" @click="load(linkPage.nextPage)">
+                                                    下一页&nbsp;<i class="fa fa-angle-right"></i>
+                                                </a>
+                                            </li>
+                                            <li><span>共 {{linkPage.pages}} 页</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="admin/footer :: footer"></div>
+<script >
+    var blog = new $.Blog();
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            linkPage: {},
+            isLoading: true,
+            search: {
+                name:'',
+                url: '',
+                description: '',
+                page: 1,
+                size: 10
+            },
+            links:[]
+        },
+        beforeCreate: function () {
+            vueLoding = this.$loading.show();
+        },
+        mounted: function () {
+            this.load();
+        },
+        methods: {
+            load: function (page) {
+                var $vm = this;
+                $vm.search.page = page;
+
+                blog.get({
+                    url: '/admin/api/links',
+                    data: $vm.search,
+                    success: function (result) {
+                        $vm.linkPage = result.data
+                    },
+                    error: function (error) {
+                        console.log(error.response.data);
+                        alert('服务器内部错误，数据加载失败');
+                    }
+                });
+            },
+            deleteLinks: function (id) {
+                var $vm = this;
+                blog.alertConfirm({
+                    title: '确定删除该链接吗?',
+                    then: function () {
+                        blog.delete({
+                            url: '/admin/api/links/' + id,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    blog.alertOk('删除成功');
+                                    $vm.load();
+                                } else {
+                                    blog.alertError(result.message || '删除失败');
+                                }
+                            },
+                            error: function (error) {
+                                console.log(error.response.data);
+                                alert("服务器内部错误，删除失败");
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
+    });
+</script>
+
+</body>
+</html>

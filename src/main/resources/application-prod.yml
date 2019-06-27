@@ -1,56 +1,71 @@
 ### production environment ###
 
+my-app:
+  file-location: /var/lore-blog/file
+
 ############ server ############
 server:
   tomcat.uri-encoding: UTF-8
+  basedir: /var/lore-blog/tomcat
   port: 8080
-  servlet.session.timeout: 30m
-
-############## log #############
-logging:
-  path: /var/log/spring/
-  file:
-    max-history: 30
-  level:
-    root: error
-    com.developer: debug
 
 ########## datasource ##########
-spring:
-  datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
-    druid:
-      url: jdbc:mysql://127.0.0.1:6612/blog
-      connection-properties: useUnicode=true;characterEncoding=utf-8;autoReconnect=true;zeroDateTimeBehavior=convertToNull;
-      username: ${jdbc.prod.username}
-      password: ${jdbc.prod.password}
-      initial-size: 5
-      min-idle: 5
-      max-active: 20
-      max-wait: 60000
-      pool-prepared-statements: false
-      time-between-eviction-runs-millis: 60000
-      min-evictable-idle-time-millis: 30000
-      validation-query: select 'syc'
-      test-while-idle: true
-      test-on-borrow: false
-      test-on-return: false
-      filters: stat,wall,slf4j
-      filter:
-        stat:
-          log-slow-sql: true
-          slow-sql-millis: 2000
-          merge-sql: true
-        wall:
-          config:
-            multi-statement-allow: true
-            delete-where-none-check: true
-            update-where-none-check: true
-          log-violation: false
-          throw-exception: true
-      async-init: true
-      stat-view-servlet:
+spring.datasource:
+  type: com.alibaba.druid.pool.DruidDataSource
+  druid:
+    url: jdbc:mysql://127.0.0.1:3306/lore-blog
+    connection-properties: useSSL=true;useUnicode=true;characterEncoding=utf-8;zeroDateTimeBehavior=convertToNull;serverTimezone=GMT+8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${jdbc.dev.username}
+    password: ${jdbc.dev.password}
+    initial-size: 5
+    min-idle: 5
+    max-active: 20
+    max-wait: 60000
+    pool-prepared-statements: false
+    time-between-eviction-runs-millis: 60000
+    min-evictable-idle-time-millis: 30000
+    validation-query: select now()
+    test-while-idle: true
+    test-on-borrow: false
+    test-on-return: false
+    filters: stat,slf4j,wall
+    filter:
+      stat:
+        log-slow-sql: true
+        slow-sql-millis: 2000
+        merge-sql: true
+      wall:
+        config:
+          multi-statement-allow: true
+          delete-where-none-check: true
+          update-where-none-check: true
+        log-violation: true
+        throw-exception: true
+    async-init: true
+    stat-view-servlet:
+      enabled: true
+      url-pattern: /druid/monitor/*
+
+######### mybatis-plus #########
+mybatis-plus:
+  typeAliasesPackage: com.developerchen.core.domain.entity, com.developerchen.*.module.*.domain.entity
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    jdbc-type-for-null: 'null'
+  global-config:
+    banner: false
+    db-config:
+      id-type: id_worker
+      column-underline: true
+      field-strategy: not_null
+
+########## resources ##########
+spring.resources:
+  chain:
+    strategy:
+      content:
         enabled: true
-        url-pattern: /druid/monitor/*
-        login-username: druid
-        login-password: druid
+        paths: /resources/**

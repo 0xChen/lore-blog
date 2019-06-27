@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>constant</title>
+    <th:block th:fragment="constant">
+    <script th:inline="javascript">
+        /**
+         *  应用的常量
+         *  @type {Object}
+         */
+        const constant = [[${#const.CONST_MAP}]] || null;
+
+        /**
+         * 登陆用户ID
+         * @type {String}
+         */
+        const loginUserId = [[${#request.getAttribute("userId")}]] || null;
+    </script>
+    </th:block>
+</head>
+<body>
+
+</body>
+</html>

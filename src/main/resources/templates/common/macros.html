@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<ol class="page-navigator" th:fragment="pageNav(page, prevText, nextText, prefix)">
+    <th:block th:if="${page.hasPrev}">
+        <li class="prev">
+            <a th:href="@{|?page=${page.prevPage}|}" th:text="${prevText}"></a>
+        </li>
+    </th:block>
+
+    <th:block th:each="num :${ page.navPageNums}">
+        <li th:class="${page.current==num}?'current' : _">
+            <a th:href="@{|?page=${num}|}" th:text="${num}"></a>
+        </li>
+    </th:block>
+
+    <th:block th:if="${page.hasNext}">
+        <li class="next"><a th:href="@{|?page=${page.nextPage}|}" th:text="${nextText}"></a></li>
+    </th:block>
+</ol>
+</body>
+</html>
