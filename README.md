@@ -23,8 +23,7 @@
 ![文章正文](https://i.loli.net/2019/06/06/5cf8b02e3e66822364.png)
 
 ## 说明
-系统还不是很完善, 还有很多我个人不满意的地方在逐步完善中, 暂时
-关闭 Issues 功能. 作者联系方式Email: sunyuchen1990@gmail.com
+系统还不是很完善, 还有很多我个人不满意的地方在逐步完善中, 暂时关闭 Issues 功能. 作者联系方式Email: sunyuchen1990@gmail.com
 
 ## 致谢
 
