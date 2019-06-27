@@ -1,7 +1,0 @@
-### development environment ###
-jdbc.dev.username: root
-jdbc.dev.password: root
-
-#### production environment ###
-jdbc.prod.username: root
-jdbc.prod.password: ****
