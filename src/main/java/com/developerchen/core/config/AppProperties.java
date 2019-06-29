@@ -16,6 +16,11 @@ public class AppProperties {
     private String fileLocation;
 
     /**
+     * Path pattern used for static resources.
+     */
+    private String staticPathPattern;
+
+    /**
      * hostName
      */
     private String hostname;
@@ -27,6 +32,14 @@ public class AppProperties {
 
     public void setFileLocation(String fileLocation) {
         this.fileLocation = fileLocation;
+    }
+
+    public String getStaticPathPattern() {
+        return staticPathPattern;
+    }
+
+    public void setStaticPathPattern(String staticPathPattern) {
+        this.staticPathPattern = staticPathPattern;
     }
 
     public String getHostname() {

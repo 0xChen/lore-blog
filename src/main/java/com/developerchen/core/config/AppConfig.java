@@ -30,10 +30,12 @@ public class AppConfig {
     public static final String HOME_PATH = new ApplicationHome().getDir().getPath();
 
     public static String fileLocation;
+    public static String staticPathPattern;
     public static String hostname;
 
     public AppConfig(AppProperties appProperties) {
         AppConfig.fileLocation = appProperties.getFileLocation();
+        AppConfig.staticPathPattern = appProperties.getStaticPathPattern();
         AppConfig.hostname = appProperties.getHostname();
     }
 

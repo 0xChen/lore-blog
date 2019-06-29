@@ -1,17 +1,17 @@
 package com.developerchen.core.security;
 
+import com.developerchen.core.config.AppConfig;
 import com.developerchen.core.constant.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserCache;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.cache.NullUserCache;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -38,8 +38,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private AntPathRequestMatcher staticRequestPattern =
+            new AntPathRequestMatcher(AppConfig.staticPathPattern);
+
+
     /**
      * The default key under which the JwtToken be stored in the http header.
      */
@@ -59,6 +61,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
+        if (staticRequestPattern.matches(request)) {
+            // 静态资源
+            chain.doFilter(request, response);
+            return;
+        }
+
         String header = request.getHeader(TOKEN_HEADER);
         String cookieToken = null;
 
@@ -93,7 +101,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String username = JwtTokenUtil.getUsernameFromToken(token);
         UserDetails userDetails = userCache.getUserFromCache(username);
         if (userDetails == null) {
-            System.out.println("我查询了 " + request.getRequestURL());
             // 如果想真正的stateless, 则直接将token转换成UserDetails
             userDetails = this.userDetailsServiceImpl.loadUserByUsername(username);
         }

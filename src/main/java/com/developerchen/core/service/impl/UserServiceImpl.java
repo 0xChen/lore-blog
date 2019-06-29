@@ -49,7 +49,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
      */
     @Override
     public User getUserByUsername(String username) {
-        System.out.println("我执行了");
         return baseMapper.selectOne(new QueryWrapper<User>().eq("username", username));
     }
 

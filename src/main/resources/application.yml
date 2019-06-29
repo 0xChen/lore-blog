@@ -4,10 +4,14 @@ spring:
   application:
     name: lore-blog
   mvc:
-    static-path-pattern: /resources/**
+    static-path-pattern: ${my-app.static-path-pattern}
   resources:
     static-locations: ["classpath:/META-INF/resources/", "classpath:/resources/",
                        "classpath:/static/"]
+
+######### 应用自定义配置 #########
+my-app:
+  static-path-pattern: /resources/**
 
 ########## actuator ##########
 management:

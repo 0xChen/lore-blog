@@ -6,6 +6,7 @@ import com.developerchen.core.security.JwtAuthenticationSuccessHandler;
 import com.developerchen.core.security.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,6 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsServiceImpl;
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -64,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasAuthority(Const.ROLE_ADMIN)
                 .antMatchers("/druid/**").hasAuthority(Const.ROLE_ADMIN)
                 // 静态资源
-                .antMatchers("/resources/**").permitAll()
+                .antMatchers(AppConfig.staticPathPattern).permitAll()
                 .anyRequest().permitAll()
                 .and()
             .headers()
