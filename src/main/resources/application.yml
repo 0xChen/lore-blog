@@ -37,4 +37,4 @@ spring.servlet.multipart:
 spring.task:
   scheduling:
     pool:
-      size: 3
+      size: 6
