@@ -3,7 +3,6 @@ package com.developerchen.blog.module.post.common;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.developerchen.blog.module.post.service.IPostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +25,6 @@ public class PostReadCountTask {
     @Autowired(required = false)
     private DataSource dataSource;
 
-    @Async
     @Scheduled(initialDelay = 1000, fixedRate = 60000)
     public void updatePostReadCount() {
         // 未更新到数据中的post的新增加的阅读次数
