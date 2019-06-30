@@ -6,6 +6,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,6 +23,8 @@ import java.util.Map;
         encoding = "UTF-8",
         factory = EncryptPropertySourceFactory.class)
 @EnableConfigurationProperties(AppProperties.class)
+@EnableAsync
+@EnableScheduling
 public class AppConfig {
     public static final Map<String, String> OPTIONS = new LinkedHashMap<>(32);
 
