@@ -126,8 +126,15 @@ $.Blog.prototype.alertBox = function (options) {
     }).catch(swal.noop);
 };
 
+function getCookieValue(name) {
+    var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+    if (arr = document.cookie.match(reg)) {
+        return decodeURIComponent(arr[2]);
+    }
+    return "";
+}
+
 window.axios.defaults.headers.common = {
-    'Authorization': "",
     'X-Requested-With': 'XMLHttpRequest'
 };
 
