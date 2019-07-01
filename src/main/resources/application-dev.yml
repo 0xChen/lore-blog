@@ -101,3 +101,13 @@ spring.resources:
 spring.thymeleaf:
   # development环境下关闭缓存
   cache: false
+
+########## JMX ##########
+spring:
+  jmx:
+    enabled: true
+    default-domain: ${my-app.hostname}
+  application:
+    admin:
+      enabled: true
+
