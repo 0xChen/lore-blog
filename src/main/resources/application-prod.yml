@@ -1,7 +1,10 @@
 ### production environment ###
 
+######### 应用自定义配置 #########
 my-app:
   file-location: /var/lore-blog/file
+  hostname: developerchen.com
+
 
 ############ server ############
 server:
