@@ -27,6 +27,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
@@ -60,6 +61,10 @@ public class EncryptPropertySourceFactory implements PropertySourceFactory {
 
         // 获取用于解密的密钥
         File secretKeyFile = ResourceUtils.getFile(secretKeyPath);
+        if (!secretKeyFile.exists()) {
+            throw new FileNotFoundException(secretKeyPath);
+        }
+
         StringBuilder secretKey = new StringBuilder();
         for (String line : Files.readAllLines(secretKeyFile.toPath())) {
             secretKey.append(line);
