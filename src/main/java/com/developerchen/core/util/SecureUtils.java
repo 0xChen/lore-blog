@@ -45,11 +45,12 @@ public final class SecureUtils {
      */
     public static Cipher getCipherInstant(String transformation) {
         Cipher cipher;
-        if (CIPHER_CACHE.containsKey(transformation)) {
-            cipher = CIPHER_CACHE.get(transformation);
+        if (SecureUtils.CIPHER_CACHE.containsKey(transformation)) {
+            cipher = SecureUtils.CIPHER_CACHE.get(transformation);
         } else {
             try {
                 cipher = Cipher.getInstance(transformation);
+                SecureUtils.CIPHER_CACHE.put(transformation, cipher);
             } catch (Exception e) {
                 throw new CryptoException(e);
             }
