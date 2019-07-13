@@ -22,6 +22,10 @@ spring.datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${jdbc.dev.username}
     password: ${jdbc.dev.password}
+    # 获取连接失败后重试次数
+    connection-error-retry-attempts: 5
+    # 超过重试次数仍然失败则终止, 省得无休止的在后台抛异常, 生产环境最好别设置
+    break-after-acquire-failure: true
     # 配置初始化大小、最小、最大
     initial-size: 5
     min-idle: 5
