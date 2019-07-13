@@ -1,11 +1,11 @@
 package com.developerchen.core.config;
 
-import com.developerchen.core.extension.EncryptPropertySourceFactory;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -19,12 +19,9 @@ import java.util.Map;
  */
 
 @Configuration
-@PropertySource(value = {"classpath:jdbc.properties"},
-        encoding = "UTF-8",
-        factory = EncryptPropertySourceFactory.class)
-@EnableConfigurationProperties(AppProperties.class)
 @EnableAsync
 @EnableScheduling
+@EnableConfigurationProperties(AppProperties.class)
 public class AppConfig {
     public static final Map<String, String> OPTIONS = new LinkedHashMap<>(32);
 
@@ -33,6 +30,8 @@ public class AppConfig {
      */
     public static final String HOME_PATH = new ApplicationHome().getDir().getPath();
 
+    @Autowired
+    public static Environment env;
     public static String fileLocation;
     public static String staticPathPattern;
     public static String hostname;
