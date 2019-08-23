@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" th:with="title='侧边栏预览',active='home'">
+<!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
 <head>
     <th:block th:replace="admin/header::headerFragment(${title})"></th:block>
 </head>
@@ -9,7 +10,7 @@
         <div class="topbar-left">
             <div class="text-center p-t-10" style="margin: 0 auto;">
                 <div class="admin-title">
-                    <span style="font-size: 28px; color: #2f353f; line-height: 50px;">Lore-Blog</span>
+                    <span style="font-size: 28px; color: #3caa62; line-height: 50px;">Lore-Blog</span>
                 </div>
             </div>
         </div>
@@ -23,9 +24,12 @@
                 </div>
 
                 <ul class="nav navbar-nav navbar-right pull-right">
-                    <li class="dropdown">
-                        <a href="index.html" class="dropdown-toggle profile" data-toggle="dropdown"
-                           aria-expanded="true"><img src="/resources/admin/images/unicorn.png" alt="user-img" class="img-circle"> </a>
+                    <li class="dropdown" th:with="user = ${#blog.user()}">
+                        <a href="javascript:void(0)" class="dropdown-toggle profile" data-toggle="dropdown"
+                           aria-expanded="true">
+                            <span th:text="${user.username}" style="font-size: 20px; color: #337AB7;"></span>
+                        </a>
+                        <span>aaa</span>
                         <ul class="dropdown-menu">
                             <li><a th:href="${#blog.blogUrl()}" href="" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i> 查看网站</a></li>
                             <li><a href="/admin/profile"><i class="fa fa-sun-o"></i> 个人设置</a></li>
