@@ -21,9 +21,22 @@
 ![首页](https://i.loli.net/2019/06/06/5cf8a296a430286044.png)
 ### 文章正文
 ![文章正文](https://i.loli.net/2019/06/06/5cf8b02e3e66822364.png)
+### 安装页面
+![安装页面](https://i.loli.net/2019/08/21/QwEJbxjM1RpOnlZ.jpg)
+### 防止重复安装
+![防止重复安装](https://i.loli.net/2019/08/21/IdMlxYv8w73fceu.jpg)
+### 文章编辑页面
+![文章编辑页面](https://i.loli.net/2019/08/23/EzncHbGxgTY6ADM.png)
+### 编辑关于页面
+![关于页面](https://i.loli.net/2019/08/23/F5qvuphyJYdeEsP.png)
 
 ## 说明
 系统还不是很完善, 还有很多我个人不满意的地方在逐步完善中, 暂时关闭 Issues 功能. 作者联系方式Email: sunyuchen1990@gmail.com
+
+## 安装说明
+运行docker-compose.yml前先将"mysql-chown.sh"文件放入"/opt/lore-blog/init.sh/"路径下,
+否则mysql的docker容器因为权限问题无法启动. 或者在运行docker-compose.yml前手动创建目录"/opt/lore-blog/mysql/log",
+并执行命令chown -R 999:999 /opt/lore-blog/mysql/log
 
 ## 致谢
 
