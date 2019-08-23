@@ -18,7 +18,7 @@
 ## 部分页面预览
 
 ### 首页
-![首页](https://i.loli.net/2019/06/06/5cf8a296a430286044.png)
+![首页](https://i.loli.net/2019/08/23/jKF1MyEzf6kle4Q.png)
 ### 文章正文
 ![文章正文](https://i.loli.net/2019/06/06/5cf8b02e3e66822364.png)
 ### 安装页面
