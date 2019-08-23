@@ -4,7 +4,11 @@ package com.developerchen.core.domain.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -14,6 +18,7 @@ import java.util.Date;
  *
  * @author syc
  */
+@Validated
 @TableName("sys_user")
 public class User extends BaseEntity {
 
@@ -22,12 +27,37 @@ public class User extends BaseEntity {
     /**
      * 昵称
      */
+    @Length(max = 25, message = "昵称长度不能超过25个字符")
     private String nickname;
+    /**
+     * 登陆用户名
+     */
+    @NotNull(message = "登陆用户名不能为空")
+    @Length(min = 3, max = 25, message = "登陆用户名长度必须在3-25个字符之间")
     private String username;
+    /**
+     * 登陆密码
+     */
+    @NotNull(message = "登陆用户名不能为空")
+    @Length(max = 255, message = "密码长度不能超过255个字符")
     private String password;
+    /**
+     * 电子邮箱
+     */
+    @Email(message = "电子邮箱格式不正确")
     private String email;
+    /**
+     * 状态
+     */
     private String status;
+    /**
+     * 角色
+     */
     private String role;
+    /**
+     * 描述
+     */
+    @Length(max = 255, message = "描述长度不能超过255个字符")
     private String description;
     /**
      * 最近一次登陆时间

@@ -3,6 +3,9 @@ package com.developerchen.core.domain.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -16,19 +19,29 @@ public class Menu extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 菜单名称
+     */
+    @NotNull(message = "菜单名称不能为空")
+    @Length(max = 50, message = "菜单名称长度不能超过50个字符")
     private String name;
     /**
      * 父级菜单ID
      */
     private Long parentId;
+    /**
+     * 菜单状态'
+     */
     private String status;
     /**
      * 图标
      */
+    @Length(max = 255, message = "图标地址长度不能超过255个字符")
     private String icon;
     /**
      * 连接地址
      */
+    @Length(max = 255, message = "地址长度不能超过255个字符")
     private String url;
     /**
      * 排序
