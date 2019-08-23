@@ -37,3 +37,4 @@ target/
 lock/
 jdbcSecretKey
 jwtSecretKey
+change-passwd.sql
