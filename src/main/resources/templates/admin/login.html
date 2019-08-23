@@ -111,7 +111,6 @@
     function checkForm() {
         blog.post({
             url: '/admin/login',
-            ty
             data: $("#loginForm").serialize(),
             success: function (result) {
                 if (result) {
