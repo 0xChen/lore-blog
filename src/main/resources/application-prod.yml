@@ -2,25 +2,38 @@
 
 ######### 应用自定义配置 #########
 my-app:
-  file-location: /var/lore-blog/file
+  file-location: ./file/
   hostname: developerchen.com
-
+  jwt-expire-time: 604800000
+  jdbc-secret-key-path: file:.\jdbcSecretKey
 
 ############ server ############
 server:
-  tomcat.uri-encoding: UTF-8
-  basedir: /var/lore-blog/tomcat
+  tomcat:
+    basedir: ./tomcat/
+    uri-encoding: UTF-8
+    remote-ip-header: X-FORWARDED-FOR
   port: 8080
 
 ########## datasource ##########
 spring.datasource:
-  type: com.alibaba.druid.pool.DruidDataSource
+  # 这个值会被 DatabaseInitializer.java 修改
+  initialization-mode: always
+  schema-username: root
+  schema-password: root
+  sql-script-encoding: UTF-8
+  schema:
+    - classpath:db/schema-mysql.sql
+    # 指定文件创建的位置, DatabaseInitializer.java会创建文件及内容
+    - file:./change-passwd.sql
+  data: classpath:db/data-mysql.sql
+  type: com.zaxxer.hikari.HikariDataSource
+  url: $jdbc:mysql://db:3306/sys?serverTimezone=GMT%2B8
   druid:
-    url: jdbc:mysql://127.0.0.1:3306/lore-blog
-    connection-properties: useSSL=true;useUnicode=true;characterEncoding=utf-8;zeroDateTimeBehavior=convertToNull;serverTimezone=GMT+8
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${jdbc.dev.username}
-    password: ${jdbc.dev.password}
+    url: jdbc:mysql://db:3306/lore_blog
+    connection-properties: useSSL=true;useUnicode=true;characterEncoding=UTF-8;zeroDateTimeBehavior=convertToNull;serverTimezone=GMT+8
+    username: root
+    password: rUbdTVegr1nueOx4/WIgxw==
     initial-size: 5
     min-idle: 5
     max-active: 20
@@ -62,8 +75,10 @@ mybatis-plus:
     banner: false
     db-config:
       id-type: id_worker
-      column-underline: true
-      field-strategy: not_null
+      table-underline: true
+      insert-strategy: not_null
+      update-strategy: not_null
+      select-strategy: not_null
 
 ########## resources ##########
 spring.resources:

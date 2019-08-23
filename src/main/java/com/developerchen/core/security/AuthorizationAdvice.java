@@ -69,7 +69,7 @@ public class AuthorizationAdvice implements ResponseBodyAdvice<Object> {
 
         HttpServletRequest httpRequest = ((ServletServerHttpRequest) request).getServletRequest();
         HttpServletResponse httpResponse = ((ServletServerHttpResponse) response).getServletResponse();
-        Long userId = (Long) httpRequest.getAttribute("userId");
+        Long userId = (Long) httpRequest.getAttribute(Const.REQUEST_USER_ID);
         User user = userService.getUserById(userId);
         String token = JwtTokenUtil.generateToken(user);
 
@@ -77,7 +77,7 @@ public class AuthorizationAdvice implements ResponseBodyAdvice<Object> {
         contextPath = contextPath.length() > 0 ? contextPath : "/";
 
         Cookie cookie = new Cookie(Const.COOKIE_ACCESS_TOKEN, token);
-        cookie.setMaxAge((int) (JwtTokenUtil.EXPIRATION_TIME / 1000));
+        cookie.setMaxAge((int) (JwtTokenUtil.EXPIRE_TIME / 1000));
         cookie.setPath(contextPath);
         cookie.setSecure(httpRequest.isSecure());
         cookie.setHttpOnly(true);

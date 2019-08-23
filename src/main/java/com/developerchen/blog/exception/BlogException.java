@@ -1,5 +1,10 @@
 package com.developerchen.blog.exception;
 
+/**
+ * Blog 自定义异常
+ *
+ * @author syc
+ */
 public class BlogException extends RuntimeException {
     private Integer code;
 

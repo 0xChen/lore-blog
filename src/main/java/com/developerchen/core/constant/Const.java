@@ -32,6 +32,7 @@ public final class Const {
      * 域名
      */
     public static String HOSTNAME;
+    public static String OPTION_HOSTNAME = "hostname";
 
     /**
      * 是/否

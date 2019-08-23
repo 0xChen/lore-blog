@@ -1,10 +1,7 @@
-/**
- * Created by biezhi on 2017/2/23.
- */
-!function ($) {
+(function ($) {
 
     "use strict";
-    var tale = new $.tale();
+    var blog = new $.Blog();
     var FormWizard = function () {
     };
     //creates form with validation
@@ -27,64 +24,98 @@
                 current: '当前位置'
             },
             onStepChanging: function (event, currentIndex, newIndex) {
-                tale.showLoading();
+                blog.showLoading();
                 $form_container.validate().settings.ignore = ":disabled,:hidden";
-                if(currentIndex === 1 && newIndex === 0){
+                if (currentIndex > newIndex) {
+                    // 上一步
                     return true;
                 }
                 var isValid = $form_container.valid();
-                if(!isValid){
-                    tale.hideLoading();
+                if (!isValid) {
+                    blog.hideLoading();
                 }
-                if (isValid && currentIndex === 0) {
+                if (isValid) {
                     isValid = false;
-                    var params = $form_container.serialize();
-                    tale.showLoading();
+                    blog.showLoading();
+                    let postUrl;
+                    let postData;
+                    if (currentIndex === 0) {
+                        postUrl = constant.INSTALL_URI + "/option";
+                        postData = {
+                            "blog_title": $("#blog_title").val(),
+                            "hostname": $("#hostname").val(),
+                            "blog_description": $("#blog_description").val()
+                        };
+                    } else if (currentIndex === 1) {
+                        postUrl = constant.INSTALL_URI + "/user";
+                        postData = {
+                            "nickname": $("#nickname").val(),
+                            "username": $("#username").val(),
+                            "password": $("#password").val(),
+                            "email": $("#email").val()
+                        };
+                    } else {
+                        return isValid;
+                    }
                     $.ajax({
-                        url: '/install',
+                        url: postUrl,
                         type: 'POST',
                         async: false,
-                        data: params,
+                        data: postData,
                         dataType: 'json',
                         success: function (result) {
                             if (result && result.success) {
                                 isValid = true;
                             } else {
-                                if (result.msg) {
-                                    tale.alertError(result.msg || '安装失败');
-                                }
+                                blog.alertError(result.message || '安装失败');
                             }
                         },
                         error: function (e) {
-                            console.log('post异常', e);
+                            console.log(e.responseJSON);
                         }
                     });
                     return isValid;
                 } else {
                     return isValid;
                 }
+
             },
-            onStepChanged: function (event, currentIndex) {
-                tale.hideLoading();
+            onStepChanged: function (event, currentIndex, priorIndex) {
+                if (currentIndex === 2) {
+                    $.ajax({
+                        url: constant.INSTALL_URI + "/lock",
+                        type: 'POST',
+                        async: false,
+                        data: {},
+                        dataType: 'json',
+                        success: function (result) {
+                            if (!result.success) {
+                                blog.alertError(result.message || '安装失败, 无法创建锁定文件');
+                            }
+                        },
+                        error: function (e) {
+                            console.log(e.responseJSON);
+                            blog.alertError('安装失败, 无法创建锁定文件');
+                        }
+                    });
+                }
+                blog.hideLoading();
             },
             onFinishing: function (event, currentIndex) {
                 $form_container.validate().settings.ignore = ":disabled";
                 var isValid = $form_container.valid();
-                window.location.href = "/admin/login";
                 return isValid;
             },
             onFinished: function (event, currentIndex) {
                 window.location.href = "/admin/login";
             }
         });
+
         return $form_container;
-    },
-        //init
-        $.FormWizard = new FormWizard, $.FormWizard.Constructor = FormWizard
-}(window.jQuery), $.FormWizard.init();
-var siteUrl = document.location.protocol + '//' + document.location.host;
-var el = document.getElementById('siteUrl');
-// noinspection JSAnnotator
-if(el){
-    el.value = siteUrl;
-}
+    };
+    //init
+    $.FormWizard = new FormWizard;
+    $.FormWizard.Constructor = FormWizard
+})(window.jQuery);
+$.FormWizard.init();
+$("#hostname").val(document.location.host);

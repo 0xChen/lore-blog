@@ -5,7 +5,6 @@ import com.developerchen.core.domain.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,7 +16,6 @@ import org.springframework.util.ResourceUtils;
 
 import javax.crypto.SecretKey;
 import java.io.File;
-import java.io.FileReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
@@ -30,26 +28,21 @@ import java.util.*;
 public final class JwtTokenUtil {
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtil.class);
 
-    private static final SecretKey SECRET_KEY;
+    private static SecretKey SECRET_KEY;
 
-    public static final long EXPIRATION_TIME;
+    public static Long EXPIRE_TIME;
 
-    static {
+    public static String SECRET_KEY_PATH;
+
+
+    public static void initSecretKey() {
         SecretKey tempSecretKey;
-
-        // 10 days for default
-        String expirationTime = "864000000";
         try {
-            File file = ResourceUtils.getFile("classpath:jwt.properties");
-            Properties properties = new Properties();
-            properties.load(new FileReader(file));
-
-            String secretKeyPath = properties.getProperty("secretKeyPath");
-            if (StringUtils.isBlank(secretKeyPath)) {
-                secretKeyPath = AppConfig.HOME_PATH + File.separator + "jwtSecretKey";
+            if (StringUtils.isBlank(SECRET_KEY_PATH)) {
+                SECRET_KEY_PATH = AppConfig.HOME_PATH + File.separator + "jwtSecretKey";
             }
 
-            File secretKeyFile = ResourceUtils.getFile(secretKeyPath);
+            File secretKeyFile = ResourceUtils.getFile(SECRET_KEY_PATH);
             StringBuilder secretKey = new StringBuilder();
             for (String line : Files.readAllLines(secretKeyFile.toPath())) {
                 secretKey.append(line);
@@ -57,17 +50,12 @@ public final class JwtTokenUtil {
             tempSecretKey = Keys.hmacShaKeyFor(secretKey.toString()
                     .getBytes(StandardCharsets.UTF_8));
 
-            String tempExpirationTime = properties.getProperty("expirationTime");
-            if (NumberUtils.isParsable(tempExpirationTime)) {
-                expirationTime = tempExpirationTime;
-            }
         } catch (Exception e) {
             logger.error(e.getMessage());
             // 随机一个
             tempSecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
         }
-        SECRET_KEY = tempSecretKey;
-        EXPIRATION_TIME = Long.parseLong(expirationTime);
+        JwtTokenUtil.SECRET_KEY = tempSecretKey;
     }
 
     /**
@@ -287,7 +275,7 @@ public final class JwtTokenUtil {
      * @return 到期日期
      */
     private static Date calculateExpirationDate(Date createdDate) {
-        return new Date(createdDate.getTime() + EXPIRATION_TIME);
+        return new Date(createdDate.getTime() + EXPIRE_TIME);
     }
 
     public static JwtUser parseTokenToJwtUser(String token) {
@@ -302,5 +290,6 @@ public final class JwtTokenUtil {
                 null,
                 getAuthoritiesFromToken(token));
     }
+
 }
 

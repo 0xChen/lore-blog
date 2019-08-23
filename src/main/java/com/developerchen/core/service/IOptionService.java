@@ -76,4 +76,9 @@ public interface IOptionService extends IBaseService<Option> {
      * @param ids option表主键集合
      */
     void deleteOptionByIds(Collection<? extends Serializable> ids);
+
+    /**
+     * 删除所有设置项
+     */
+    void deleteAllOption();
 }

@@ -48,7 +48,7 @@ public class BlogExpressionObjectFactory implements IExpressionObjectFactory {
 
     @Override
     public boolean isCacheable(String expressionObjectName) {
-        return expressionObjectName != null && CONST_EVALUATION_VARIABLE_NAME.equals(expressionObjectName);
+        return CONST_EVALUATION_VARIABLE_NAME.equals(expressionObjectName);
     }
 
 }

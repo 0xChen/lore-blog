@@ -13,7 +13,9 @@ import java.util.Map;
  * @author syc
  */
 public interface ISiteService {
-    void initSite(User user);
+    void installOption(Map<String, String> parameterMap);
+
+    User installAdminUser(User user);
 
     StatisticsDTO getStatistics();
 

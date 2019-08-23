@@ -1,14 +1,14 @@
 package com.developerchen.core.config;
 
+import com.developerchen.core.security.JwtTokenUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import javax.annotation.PostConstruct;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -30,16 +30,25 @@ public class AppConfig {
      */
     public static final String HOME_PATH = new ApplicationHome().getDir().getPath();
 
-    @Autowired
-    public static Environment env;
     public static String fileLocation;
     public static String staticPathPattern;
     public static String hostname;
+    public static Long jwtExpireTime;
+
+    private AppProperties appProperties;
 
     public AppConfig(AppProperties appProperties) {
+        this.appProperties = appProperties;
+    }
+
+    @PostConstruct
+    protected void initialize() {
         AppConfig.fileLocation = appProperties.getFileLocation();
         AppConfig.staticPathPattern = appProperties.getStaticPathPattern();
         AppConfig.hostname = appProperties.getHostname();
+
+        JwtTokenUtil.EXPIRE_TIME = appProperties.getJwtExpireTime();
+        JwtTokenUtil.SECRET_KEY_PATH = appProperties.getJwtSecretKeyPath();
     }
 
     /**

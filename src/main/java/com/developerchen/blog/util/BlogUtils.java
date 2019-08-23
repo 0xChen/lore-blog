@@ -1,13 +1,20 @@
 package com.developerchen.blog.util;
 
 import com.developerchen.blog.constant.BlogConst;
+import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
+import com.vladsch.flexmark.ext.definition.DefinitionExtension;
+import com.vladsch.flexmark.ext.emoji.EmojiExtension;
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
+import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
+import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
-import com.vladsch.flexmark.profiles.pegdown.Extensions;
-import com.vladsch.flexmark.profiles.pegdown.PegdownOptionsAdapter;
 import com.vladsch.flexmark.util.ast.Node;
-import com.vladsch.flexmark.util.options.DataHolder;
+import com.vladsch.flexmark.util.data.DataHolder;
+import com.vladsch.flexmark.util.data.MutableDataSet;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
 
 /**
  * Blog 工具类
@@ -19,7 +26,15 @@ public class BlogUtils {
     /**
      * markdown options.
      */
-    private static final DataHolder OPTIONS = PegdownOptionsAdapter.flexmarkOptions(Extensions.ALL_WITH_OPTIONALS);
+    private static final DataHolder OPTIONS = new MutableDataSet()
+            .set(Parser.EXTENSIONS, Arrays.asList(
+                    TablesExtension.create(),
+                    TaskListExtension.create(),
+                    StrikethroughExtension.create(),
+                    AutolinkExtension.create(),
+                    EmojiExtension.create(),
+                    DefinitionExtension.create()
+            ));
 
     /**
      * markdown parser.

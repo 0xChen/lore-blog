@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <link rel="shortcut icon" href="/resources/themes/default/img/favicon.png">
+    <link rel="apple-touch-icon" href="/resources/themes/default/img/favicon.png">
+    <title>安装博客</title>
+    <link href="//cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
+    <link href="//cdn.staticfile.org/limonte-sweetalert2/7.28.2/sweetalert2.min.css" rel="stylesheet">
+
+    <link href="/resources/admin/plugins/jquery-steps/1.1.0/jquery.steps.css" rel="stylesheet" >
+    <link href="/resources/admin/plugins/vue-loading/vue-loading.min.css" rel="stylesheet">
+    <link href="/resources/admin/css/style.min.css" rel="stylesheet" type="text/css">
+
+    <style>
+        body, html {
+            background: url('[[|/resources/admin/images/bg/${#blog.random(6)}.png|]]') no-repeat;
+            background-size: cover;
+        }
+        .home-text {
+            -webkit-box-sizing: content-box;
+            -moz-box-sizing: content-box;
+            box-sizing: content-box;
+            cursor: pointer;
+            border: none;
+            font: normal 36px/normal "Passero One", Helvetica, sans-serif;
+            color: rgba(255,255,255,1);
+            text-align: center;
+            -o-text-overflow: clip;
+            text-overflow: clip;
+            text-shadow: 0 1px 0 rgb(204,204,204) , 0 2px 0 rgb(201,201,201) , 0 3px 0 rgb(187,187,187) , 0 4px 0 rgb(185,185,185) , 0 5px 0 rgb(170,170,170) , 0 6px 1px rgba(0,0,0,0.0980392) , 0 0 5px rgba(0,0,0,0.0980392) , 0 1px 3px rgba(0,0,0,0.298039) , 0 3px 5px rgba(0,0,0,0.2) , 0 5px 10px rgba(0,0,0,0.247059) , 0 10px 10px rgba(0,0,0,0.2) , 0 20px 20px rgba(0,0,0,0.14902) ;
+            -webkit-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+            -moz-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+            -o-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+            transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+        }
+        .home-text:hover {
+            color: rgba(106,107,106,1);
+            text-shadow: 0 1px 0 rgba(255,255,255,1) , 0 2px 0 rgba(255,255,255,1) , 0 3px 0 rgba(255,255,255,1) , 0 4px 0 rgba(255,255,255,1) , 0 5px 0 rgba(255,255,255,1) , 0 6px 1px rgba(0,0,0,0.0980392) , 0 0 5px rgba(0,0,0,0.0980392) , 0 1px 3px rgba(0,0,0,0.298039) , 0 3px 5px rgba(0,0,0,0.2) , 0 -5px 10px rgba(0,0,0,0.247059) , 0 -7px 10px rgba(0,0,0,0.2) , 0 -15px 20px rgba(0,0,0,0.14902) ;
+            -webkit-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1) 10ms;
+            -moz-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1) 10ms;
+            -o-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1) 10ms;
+            transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1) 10ms;
+        }
+    </style>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.staticfile.org/html5shiv/3.7.3/html5shiv.js"></script>
+    <script src="//cdn.staticfile.org/respond.js/1.4.2/respond.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+<div class="container" style="max-width: 680px;">
+    <section class="home bg-dark" style="margin-top: 20px; margin-bottom: 20px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <div class="home-wrapper">
+                        <h1 class="home-text"><span class="rotate">博客安装向导</span></h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="row" th:unless="${#blog.hasInstalled()}">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">安装向导</h3>
+                </div>
+                <div class="panel-body">
+                    <form id="wizard-validation-form">
+                        <div>
+                            <h3>网站设置</h3>
+                            <section>
+                                <div class="form-group clearfix">
+                                    <label class="col-md-3 control-label">* 博客名称</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" id="blog_title" name="blog_title" type="text" placeholder="请输入博客名称"
+                                               required aria-required="true" maxlength="100">
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-md-3 control-label">* 博客地址</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" id="hostname" name="hostname" type="text" placeholder="请输入博客地址，未绑定域名则输入ip:port"
+                                               required aria-required="true"/>
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-md-3 control-label">&nbsp;&nbsp;博客简介</label>
+                                    <div class="col-md-8">
+                                        <textarea class="form-control" id="blog_description" name="blog_description" placeholder="请输入博客简介" rows="6"></textarea>
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>添加账户</h3>
+                            <section>
+                                <div class="form-group clearfix">
+                                    <label class="col-md-3 control-label">&nbsp;&nbsp;昵称</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" id="nickname" name="nickname" type="text" placeholder="请输入管理员昵称"
+                                               required aria-required="true" rangelength="[2,20]"/>
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-md-3 control-label">* 管理员用户名</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" id="username" name="username" type="text" placeholder="请输入管理员账号"
+                                               required aria-required="true" rangelength="[4,20]"/>
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-md-3 control-label">&nbsp;&nbsp;管理员邮箱</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" id="email" name="email" type="email"
+                                               placeholder="请输入管理员邮箱"/>
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-md-3 control-label">* 管理员密码</label>
+                                    <div class="col-md-8">
+                                        <input id="password" name="password" type="password" class="form-control"
+                                               required aria-required="true" rangelength="[6,14]" placeholder="请输入6-14位管理员密码"/>
+                                    </div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <label class="col-md-3 control-label">* 确认管理员密码</label>
+                                    <div class="col-md-8">
+                                        <input id="confirm" type="password" class="form-control" equalTo="#password"
+                                               placeholder="请确认管理员密码"/>
+                                    </div>
+                                </div>
+                            </section>
+                            <h3>安装完成</h3>
+                            <section>
+                                <div class="form-group clearfix">
+                                    <div class="col-lg-12 text-center">
+                                        <h3>安装完成！</h3>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </form>
+                </div>  <!-- End panel-body -->
+            </div> <!-- End panel -->
+        </div> <!-- end col -->
+    </div> <!-- End row -->
+    <th:block th:if="${#blog.hasInstalled()}">
+        <p class="text-warning text-center">应用已经安装过了, 如需重新安装请提前做好备份, 删除应用所在目录下的
+        <strong>lock/Installed</strong> 文件, 并重新启动应用再次访问当前页面. </p>
+        <p class="text-danger text-center lead"><em>注意: 重新安装将清空数据库</em></p>
+    </th:block>
+</div>
+
+<script src="//cdn.staticfile.org/jquery/3.3.1/jquery.js"></script>
+<script src="//cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
+<script src="//cdn.staticfile.org/vue/2.5.17/vue.js"></script>
+<script src="//cdn.staticfile.org/limonte-sweetalert2/7.28.2/sweetalert2.js"></script>
+<script src="//cdn.staticfile.org/axios/0.18.0/axios.js"></script>
+<script src="//cdn.staticfile.org/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+<script src="//cdn.staticfile.org/jquery-validate/1.19.1/localization/messages_zh.min.js"></script>
+
+<script src="/resources/admin/plugins/jquery-steps/1.1.0/jquery.steps.min.js"></script>
+<script src="/resources/admin/plugins/vue-loading/vue-loading.min.js"></script>
+<script src="/resources/admin/js/base.js"></script>
+<script src="/resources/admin/js/install.js"></script>
+<th:block th:replace="common/constant::constant"></th:block>
+</body>
+</html>

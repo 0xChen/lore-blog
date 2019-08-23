@@ -61,7 +61,8 @@ public class OptionServiceImpl extends BaseServiceImpl<OptionMapper, Option> imp
         QueryWrapper<Option> qw = new QueryWrapper<>();
         qw.in("name", parameterMap.keySet());
         List<Option> optionList = baseMapper.selectList(qw);
-        Map<String, Option> nameToOption = optionList.stream().collect(Collectors.toMap(Option::getName, option -> option));
+        Map<String, Option> nameToOption = optionList.stream()
+                .collect(Collectors.toMap(Option::getName, option -> option));
 
         parameterMap.forEach((key, value) -> {
             if (nameToOption.containsKey(key)) {
@@ -159,4 +160,11 @@ public class OptionServiceImpl extends BaseServiceImpl<OptionMapper, Option> imp
         AppConfig.updateOptions(getAllOption());
     }
 
+    /**
+     * 删除所有设置项
+     */
+    @Override
+    public void deleteAllOption() {
+        baseMapper.deleteBySql("truncate table sys_option");
+    }
 }

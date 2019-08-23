@@ -19,4 +19,6 @@ public interface IUserService extends IBaseService<User> {
     User getUserById(Serializable id);
 
     void deleteUserById(Serializable id);
+
+    void deleteAllUser();
 }

@@ -1,9 +1,11 @@
 package com.developerchen;
 
+import com.developerchen.core.extension.DecryptJdbcPassword;
+import com.developerchen.core.initializer.DatabaseInitializer;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.TypeExcludeFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -28,7 +30,10 @@ public class BlogApplication {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        SpringApplication.run(BlogApplication.class, args);
+        new SpringApplicationBuilder()
+                .listeners(new DecryptJdbcPassword(), new DatabaseInitializer())
+                .sources(BlogApplication.class)
+                .run(args);
         long end = System.currentTimeMillis();
         System.out.println("应用启动完成, 用时: " + (end - start) + "ms");
     }

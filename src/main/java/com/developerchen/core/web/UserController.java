@@ -5,7 +5,7 @@ import com.developerchen.core.domain.RestResponse;
 import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.security.RefreshToken;
 import com.developerchen.core.service.IUserService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.developerchen.core.util.SecurityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,11 +23,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController extends BaseController {
     private final IUserService userService;
 
-    private final PasswordEncoder passwordEncoder;
-
-    public UserController(IUserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(IUserService userService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -110,7 +107,7 @@ public class UserController extends BaseController {
     public RestResponse updatePassword(@RequestParam String rawPassword,
                                        @RequestParam String newPassword) {
         User user = userService.getUserById(getUserId());
-        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+        if (!SecurityUtils.matchesUserPassword(rawPassword, user.getPassword())) {
             return RestResponse.fail("原密码错误");
         }
         user.setPassword(newPassword);
