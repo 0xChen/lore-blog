@@ -2,6 +2,7 @@ package com.developerchen.blog.module.category.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.developerchen.blog.constant.BlogConst;
+import com.developerchen.blog.exception.BlogException;
 import com.developerchen.blog.module.category.domain.dto.CategoryDTO;
 import com.developerchen.blog.module.category.domain.entity.Category;
 import com.developerchen.blog.module.category.repository.CategoryMapper;
@@ -109,6 +110,9 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
     @Override
     public void deleteCategory(Category category) {
         Long categoryId = category.getId();
+        if (BlogConst.CATEGORY_ROOT_ID.equals(categoryId)) {
+            throw new BlogException("\"默认类别\"不允许删除. ");
+        }
         int length = category.getRightValue() - category.getLeftValue() + 1;
         // 必须先执行删除, 在更新相关节点的左右值
         if (categoryId != null) {
@@ -126,8 +130,11 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      * @param categoryId 要删除的分类ID
      */
     @Override
-    public void deleteCategoryById(Long categoryId) {
+    public void deleteCategoryById(long categoryId) {
         Category category = baseMapper.selectById(categoryId);
+        if (category == null) {
+            throw new BlogException("删除失败, 不存在此分类. ");
+        }
         deleteCategory(category);
     }
 
@@ -212,7 +219,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      * @return Category
      */
     @Override
-    public Category getCategoryById(Long id) {
+    public Category getCategoryById(long id) {
         Validate.notNull(id, "类别主键不能为空");
         return baseMapper.selectById(id);
     }

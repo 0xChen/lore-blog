@@ -56,7 +56,7 @@ public interface ICategoryService extends IBaseService<Category> {
      * @param id 分类主键
      * @return Category
      */
-    Category getCategoryById(Long id);
+    Category getCategoryById(long id);
 
     /**
      * 根据 名称 查询分类
@@ -101,7 +101,7 @@ public interface ICategoryService extends IBaseService<Category> {
      *
      * @param categoryId 待删除分类的主键
      */
-    void deleteCategoryById(Long categoryId);
+    void deleteCategoryById(long categoryId);
 }
 
 

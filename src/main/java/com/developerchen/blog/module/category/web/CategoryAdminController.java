@@ -1,5 +1,6 @@
 package com.developerchen.blog.module.category.web;
 
+import com.developerchen.blog.exception.BlogException;
 import com.developerchen.blog.module.category.domain.dto.CategoryDTO;
 import com.developerchen.blog.module.category.domain.entity.Category;
 import com.developerchen.blog.module.category.service.ICategoryService;
@@ -49,7 +50,11 @@ public class CategoryAdminController extends BaseController {
 
     @DeleteMapping("/category/{categoryId}")
     public RestResponse delete(@PathVariable Long categoryId) {
-        categoryService.deleteCategoryById(categoryId);
+        try {
+            categoryService.deleteCategoryById(categoryId);
+        } catch (BlogException e) {
+            return RestResponse.fail(e.getMessage());
+        }
         return RestResponse.ok();
     }
 
