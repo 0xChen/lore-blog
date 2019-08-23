@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
+<!--/*@thymesVar id="#theme" type="com.developerchen.blog.theme.Theme"*/-->
+<head th:replace="themes/default/partial/header :: head(${categoryName})"></head>
+<body th:classappend="${#theme.is(#ctx, 'post')}? 'bg-grey'" gtools_scp_screen_capture_injected="true">
+<!--[if lt IE 8]>
+<div th:replace="themes/default/partial/header :: browsehappy"></div>
+<![endif]-->
+<header th:replace="themes/default/partial/header :: header"></header>
+<div class="main-content common-page clearfix">
+    <div class="category-item">
+        <div class="common-title" th:text="|类别: ${categoryName}|"></div>
+        <div th:if="${#theme.isEmptyPage(postPage)}">
+            <p>抱歉，还没有相关文章.</p>
+        </div>
+        <div class="post-lists" th:if="${postPage.total != 0}">
+            <div class="post-lists-body">
+                <div class="post-list-item" th:each="post : ${postPage.records}">
+                    <div class="post-list-item-container ">
+                        <div class="item-label ">
+                            <div class="item-title">
+                                <a th:href="${#theme.permalink(post)}" th:text="${#theme.title(#ctx)}"></a>
+                            </div>
+                            <div class="item-meta clearfix">
+                                <div class="item-meta-date" th:text="'发布于' + ${#blog.dateFormat(post.pubdate)}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="themes/default/partial/footer :: footer"></footer>
+</body>
+</html>

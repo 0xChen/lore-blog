@@ -1,0 +1,74 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.0.M3'
+    id 'java'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.developerchen'
+version = '0.0.1-SNAPSHOT'
+description = 'A Blog platform'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url = 'https://repo.spring.io/snapshot'
+    }
+
+    maven {
+        url = 'https://repo.spring.io/milestone'
+    }
+
+    maven {
+        url = 'http://maven.aliyun.com/nexus/content/groups/public/'
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'com.alibaba:druid-spring-boot-starter:1.1.17'
+    implementation('com.baomidou:mybatis-plus-boot-starter:3.1.2') {
+        exclude group: "com.zaxxer", module: "HikariCP"
+    }
+    implementation 'com.zaxxer:HikariCP:3.3.1'
+    implementation 'org.apache.commons:commons-lang3:3.9'
+    implementation 'commons-codec:commons-codec:1.12'
+    implementation('com.vladsch.flexmark:flexmark-all:0.50.26') {
+        exclude group: "com.vladsch.flexmark", module: "flexmark-youtrack-converter"
+        exclude group: "com.vladsch.flexmark", module: "flexmark-pdf-converter"
+        exclude group: "com.vladsch.flexmark", module: "flexmark-jira-converter"
+        exclude group: "com.vladsch.flexmark", module: "flexmark-ext-youtube-embedded"
+        exclude group: "com.vladsch.flexmark", module: "flexmark-ext-gfm-tables"
+    }
+    implementation('com.vdurmont:emoji-java:5.0.0') {
+        exclude group: "org.json", module: "json"
+    }
+    implementation 'io.jsonwebtoken:jjwt-api:0.10.7'
+
+    runtimeOnly 'mysql:mysql-connector-java:8.0.15'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.10.7'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.10.7'
+    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: "org.skyscreamer", module: "jsonassert"
+    }
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked"
+}

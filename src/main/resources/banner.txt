@@ -1,0 +1,15 @@
+${AnsiColor.MAGENTA}
+      __       __
+     /\ \     /\ \
+     \ \ \____\ \ \        ___      __
+      \ \ '__`\\ \ \  __  / __`\  /'_ `\
+       \ \ \L\ \\ \ \O\ \/\ \R\ \/\ \E\ \
+        \ \_,__/ \ \____/\ \____/\ \____ \
+         \/___/   \/___/  \/___/  \/____\ \
+                                    /\____/
+                                    \_/__/
+
+${AnsiColor.BRIGHT_RED}                              <> with ❤ by SYC
+${AnsiColor.CYAN}
+Application Version: ${application.version}${application.formatted-version}
+Spring Boot Version: ${spring-boot.version}${spring-boot.formatted-version}

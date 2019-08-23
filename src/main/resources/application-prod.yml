@@ -1,0 +1,89 @@
+### production environment ###
+
+######### 应用自定义配置 #########
+my-app:
+  file-location: ./file/
+  hostname: developerchen.com
+  jwt-expire-time: 604800000
+  jdbc-secret-key-path: file:.\jdbcSecretKey
+
+############ server ############
+server:
+  tomcat:
+    basedir: ./tomcat/
+    uri-encoding: UTF-8
+    remote-ip-header: X-FORWARDED-FOR
+  port: 8080
+
+########## datasource ##########
+spring.datasource:
+  # 这个值会被 DatabaseInitializer.java 修改
+  initialization-mode: always
+  schema-username: root
+  schema-password: root
+  sql-script-encoding: UTF-8
+  schema:
+    - classpath:db/schema-mysql.sql
+    # 指定文件创建的位置, DatabaseInitializer.java会创建文件及内容
+    - file:./change-passwd.sql
+  data: classpath:db/data-mysql.sql
+  type: com.zaxxer.hikari.HikariDataSource
+  url: $jdbc:mysql://db:3306/sys?serverTimezone=GMT%2B8
+  druid:
+    url: jdbc:mysql://db:3306/lore_blog
+    connection-properties: useSSL=true;useUnicode=true;characterEncoding=UTF-8;zeroDateTimeBehavior=convertToNull;serverTimezone=GMT+8
+    username: root
+    password: rUbdTVegr1nueOx4/WIgxw==
+    initial-size: 5
+    min-idle: 5
+    max-active: 20
+    max-wait: 60000
+    pool-prepared-statements: false
+    time-between-eviction-runs-millis: 60000
+    min-evictable-idle-time-millis: 30000
+    validation-query: select now()
+    test-while-idle: true
+    test-on-borrow: false
+    test-on-return: false
+    filters: stat,slf4j,wall
+    filter:
+      stat:
+        log-slow-sql: true
+        slow-sql-millis: 2000
+        merge-sql: true
+      wall:
+        config:
+          multi-statement-allow: true
+          delete-where-none-check: true
+          update-where-none-check: true
+        log-violation: true
+        throw-exception: true
+    async-init: true
+    stat-view-servlet:
+      enabled: true
+      url-pattern: /druid/monitor/*
+
+######### mybatis-plus #########
+mybatis-plus:
+  typeAliasesPackage: com.developerchen.core.domain.entity, com.developerchen.*.module.*.domain.entity
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    jdbc-type-for-null: 'null'
+  global-config:
+    banner: false
+    db-config:
+      id-type: id_worker
+      table-underline: true
+      insert-strategy: not_null
+      update-strategy: not_null
+      select-strategy: not_null
+
+########## resources ##########
+spring.resources:
+  chain:
+    strategy:
+      content:
+        enabled: true
+        paths: /resources/**

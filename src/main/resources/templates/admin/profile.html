@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" th:with="title='个人设置',active='home'">
+<head>
+    <th:block th:replace="admin/header::header(${title})"></th:block>
+</head>
+<body class="fixed-left">
+<div id="wrapper">
+    <!-- sidebar -->
+    <th:block th:replace="admin/sidebar::sidebar(${active},'home')"></th:block>
+    <!-- content -->
+    <div class="content-page">
+        <div class="content">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-sm-12">
+                        <h4 class="page-title">个人设置</h4>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="panel panel-color panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">个人信息</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form class="form-horizontal" role="form" id="user-form">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">用户名</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" th:value="${user.username}"
+                                                   readonly disabled/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">昵称</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" name="nickname"
+                                                   placeholder="输入您的姓名"
+                                                   th:value="${user.nickname}" required aria-required="true"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">邮箱</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" name="email" placeholder="输入您的邮箱"
+                                                   th:value="${user.email}" required aria-required="true"/>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix pull-right">
+                                        <button type="button" class="btn btn-primary waves-effect waves-light"
+                                                onclick="saveSetting()">
+                                            保存信息
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="panel panel-color panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">修改密码</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form class="form-horizontal" role="form" id="pwd-form">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">输入原密码</label>
+                                        <div class="col-md-9">
+                                            <input type="password" class="form-control" id="rawPassword" name="rawPassword" required
+                                                   aria-required="true"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">输入新密码</label>
+                                        <div class="col-md-9">
+                                            <input type="password" name="newPassword" id="newPassword" class="form-control"
+                                                   required
+                                                   aria-required="true" rangelength="[6,32]"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">确认新密码</label>
+                                        <div class="col-md-9">
+                                            <input type="password" name="confirmPassword" id="confirmPassword" class="form-control"
+                                                   equalTo="#newPassword"/>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix pull-right">
+                                        <button type="submit" class="btn btn-danger waves-effect waves-light">
+                                            设置密码
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="admin/footer :: footer"></div>
+<script src="/resources/admin/plugins/jquery-validate/1.15.1/jquery.validate.min.js"></script>
+<script src="/resources/admin/plugins/jquery-validate/1.15.1/localization/messages_zh.min.js"></script>
+<script>
+    const blog = new $.Blog();
+
+    /**
+     * 保存个人信息
+     */
+    function saveSetting() {
+        var param = $('#user-form').serialize();
+        blog.put({
+            url: '/admin/profile',
+            data: param,
+            success: function (result) {
+                if (result && result.success) {
+                    blog.alertOk('保存成功');
+                } else {
+                    blog.alertError(result.message || '保存失败');
+                }
+            },
+            error: function (error) {
+                console.dir(error);
+                blog.alertError('保存失败');
+            }
+        });
+    }
+
+    $('#pwd-form').validate({
+        submitHandler: function () {
+            var params = $("#pwd-form").serialize();
+            blog.put({
+                url: '/admin/password',
+                data: params,
+                success: function (result) {
+                    if (result && result.success) {
+                        blog.alertOk('密码修改成功');
+                        $("#rawPassword").val("");
+                        $("#newPassword").val("");
+                        $("#confirmPassword").val("");
+                    } else {
+                        blog.alertError(result.message || '密码修改失败');
+                    }
+                },
+                error: function (error) {
+                    console.dir(error);
+                    blog.alertError('修改失败');
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

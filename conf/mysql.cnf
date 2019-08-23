@@ -1,0 +1,87 @@
+#
+# The MySQL database server configuration file.
+#
+#
+# One can use all long options that the program supports.
+# Run program with --help to get a list of available options and with
+# --print-defaults to see which it would actually understand and use.
+#
+# For explanations see
+# http://dev.mysql.com/doc/mysql/en/server-system-variables.html
+
+# This will be passed to all mysql clients
+# It has been reported that passwords should be enclosed with ticks/quotes
+# escpecially if they contain "#" chars...
+# Remember to edit /etc/mysql/debian.cnf when changing the socket location.
+
+
+[mysqld_safe]
+socket      = /var/run/mysqld/mysqld.sock
+nice        = 0
+
+[mysqld]
+#
+# * Basic Settings
+#
+user        = mysql
+pid-file    = /var/run/mysqld/mysqld.pid
+socket      = /var/run/mysqld/mysqld.sock
+port        = 3306
+basedir     = /usr
+datadir     = /var/lib/mysql
+tmpdir      = /tmp
+symbolic-links=0
+
+#
+# The MySQL server listens on one or more network sockets for TCP/IP connections.
+#
+bind-address        = ::
+
+#
+# * Logging and Replication
+#
+# Both location gets rotated by the cronjob.
+# Be aware that this log type is a performance killer.
+# As of 5.1 you can enable the log at runtime!
+#general_log_file        = /var/log/mysql/mysql.log
+#general_log             = 1
+#
+# Error log - should be very few entries.
+# log_timestamps默认值是UTC, 这个有点小坑
+#
+log_timestamps=SYSTEM
+log_error = /var/log/mysql/error.log
+#
+# Here you can see queries with especially long duration
+slow_query_log         = 1
+slow_query_log_file    = /var/log/mysql/mysql-slow.log
+long_query_time        = 5
+# Whether queries that do not use indexes are logged to the slow query log.
+#log-queries-not-using-indexes = OFF
+#
+# The following can be used as easy to replay backup logs or for replication.
+# note: if you are setting up a replication slave, see README.Debian about
+#       other settings you may need to change.
+server-id            = 1
+log_bin              = /var/log/mysql/bin/mysql-bin.log
+#default 30 days
+#binlog_expire_logs_seconds = 2592000
+max_binlog_size      = 100M
+#binlog_do_db        = include_database_name
+#binlog_ignore_db    = include_database_name
+#
+# * InnoDB
+#
+# InnoDB is enabled by default with a 10MB datafile in /var/lib/mysql/.
+# Read the manual for more InnoDB related options. There are many!
+#
+# * Security Features
+#
+# Read the manual, too, if you want chroot!
+# chroot = /var/lib/mysql/
+#
+# For generating SSL certificates I recommend the OpenSSL GUI "tinyca".
+#
+# ssl-ca=/etc/mysql/cacert.pem
+# ssl-cert=/etc/mysql/server-cert.pem
+# ssl-key=/etc/mysql/server-key.pem

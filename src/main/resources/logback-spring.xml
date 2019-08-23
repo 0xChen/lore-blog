@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <springProfile name="dev">
+        <property name="LOG_PATH" value=".\\log\\"/>
+        <!-- 测试环境日志保留 8 天 -->
+        <property name="LOG_FILE_MAX_HISTORY" value="8"/>
+        <property name="LOG_FILE_CLEAN_HISTORY_ON_START" value="true"/>
+    </springProfile>
+
+    <springProfile name="prod">
+        <property name="LOG_PATH" value="./log/"/>
+    </springProfile>
+
+    <!-- 简化配置直接引入spring基础设置 -->
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <springProfile name="dev">
+        <root level="DEBUG"/>
+
+        <logger name="org.apache.tomcat.util.digester.Digester" level="INFO"/>
+        <logger name="org.apache.tomcat.util.digester.Digester.sax " level="INFO"/>
+        <logger name="org.apache.tomcat.util.IntrospectionUtils" level="INFO"/>
+        <logger name="org.apache.tomcat.util.modeler.modules.MbeansDescriptorsIntrospectionSource" level="INFO"/>
+        <logger name="org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener"
+                level="INFO"/>
+        <logger name="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"
+                level="INFO"/>
+        <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"
+                level="INFO"/>
+        <logger name="com.baomidou.mybatisplus.core.MybatisConfiguration" level="INFO"/>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="INFO"/>
+    </springProfile>
+</configuration>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
+<!--/*@thymesVar id="#theme" type="com.developerchen.blog.theme.Theme"*/-->
+<!--/*@thymesVar id="post" type="com.developerchen.blog.module.post.domain.entity.Post"*/-->
+<!--/*@thymesVar id="archive" type="com.developerchen.blog.module.post.domain.dto.Archive"*/-->
+<!--/*@thymesVar id="archives" type="java.util.List"*/-->
+<head th:replace="themes/default/partial/header :: head('文章归档')"></head>
+<body gtools_scp_screen_capture_injected="true">
+<!--[if lt IE 8]>
+<div th:replace="themes/default/partial/header :: browsehappy"></div>
+<![endif]-->
+<header th:replace="themes/default/partial/header :: header"></header>
+<div class="main-content archive-page clearfix">
+    <div class="category-item">
+        <th:block th:each="archive : ${archives}">
+        <div class="category-title" th:text="${archive.dateString}"></div>
+        <div class="post-lists">
+            <div class="post-lists-body">
+                <div class="post-list-item" th:each="post : ${archive.postList}">
+                    <div class="post-list-item-container">
+                        <div class="item-label">
+                            <div class="item-title">
+                                <a th:href="${#theme.permalink(post)}" th:text="${post.title}"></a>
+                            </div>
+                            <div class="item-meta clearfix">
+                                <div class="item-meta-date" th:text="|发布于 ${#blog.dateFormat(post.pubdate)}|"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </th:block>
+    </div>
+</div>
+<footer th:replace="themes/default/partial/footer :: footer"></footer>
+</body>
+</html>

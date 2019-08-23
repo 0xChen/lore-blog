@@ -1,0 +1,24 @@
+*.js linguist-language=Java
+* text=auto eol=lf
+
+*.java text
+*.gradle text
+
+*.js text
+*.css text
+*.html text
+
+*.yml text
+*.xml text
+*.conf text
+*.cnf text
+*.properties text
+
+*.txt text
+*.md text
+
+*.png -text
+*.gif -text
+*.jpg -text
+*.jpeg -text
+*.jar -text

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:fragment="header(title)">
+        <meta charset="utf-8"/>
+        <title th:text="${#strings.defaultString(title,'博客后台')}"></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <link rel="icon" sizes="any" href="/resources/admin/images/favicon.png">
+        <link href="//cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
+        <link href="//cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="//cdn.staticfile.org/limonte-sweetalert2/7.28.2/sweetalert2.min.css" rel="stylesheet">
+        <link href="//cdn.staticfile.org/animate.css/3.7.0/animate.css" rel="stylesheet">
+
+        <link href="/resources/admin/css/style.min.css" rel="stylesheet">
+        <link href="/resources/admin/plugins/vue-loading/vue-loading.min.css" rel="stylesheet">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="//cdn.staticfile.org/html5shiv/3.7.3/html5shiv.js"></script>
+        <script src="//cdn.staticfile.org/respond.js/1.4.2/respond.js"></script>
+        <![endif]-->
+    </th:block>
+</head>
+<body class="fixed-left">
+</body>
+</html>

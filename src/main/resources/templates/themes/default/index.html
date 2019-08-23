@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
+<!--/*@thymesVar id="#theme" type="com.developerchen.blog.theme.Theme"*/-->
+<head th:replace="themes/default/partial/header :: head('首页')"></head>
+<body gtools_scp_screen_capture_injected="true">
+<!--[if lt IE 8]>
+<div th:replace="themes/default/partial/header :: browsehappy"></div>
+<![endif]-->
+<header th:replace="themes/default/partial/header :: header"></header>
+<div class="main-content index-page onelist-page clearfix" th:with="postPage = ${#theme.postPage(#ctx)}">
+    <div class="post-lists">
+        <div class="post-lists-body">
+            <div class="post-onelist-item" th:each="post : ${postPage.records}">
+                <div class="post-onelist-item-container">
+                    <a th:if="${#blog.hasThumbnail(post)}" th:href="${#theme.permalink(post)}">
+                        <div class="onelist-item-thumbnail bg-deepgrey" th:style="'background-image: url(' + ${#blog.showThumb(post)} + ');'"></div>
+                    </a>
+                    <div class="onelist-item-info">
+                        <div class="item-title">
+                            <a th:href="${#theme.permalink(post)}" th:text="${post.title}"></a>
+                        </div>
+                        <div class="item-meta">
+                            <time th:datetime="${#blog.dateFormat(post.pubdate)}" itemprop="pubdate" th:text="'发布于' + ${#blog.dateFormat(post.pubdate)}"></time>
+                            <i class="fa fa-tag" aria-hidden="true"></i><th:block th:utext="${#theme.category(post)}"></th:block>
+                            <i class="fa fa-eye" aria-hidden="true"></i><th:block th:utext="${post.readCount}"></th:block>
+                        </div>
+                        <div class="item-meta-hr bg-deepgrey"></div>
+                        <div class="item-content">
+                            <p th:utext="${#blog.intro(post.content, 300, '...')}"></p>
+                        </div>
+                        <div class="item-readmore">
+                            <a th:href="${#theme.permalink(post)}"> 阅读全文 → </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="lists-navigator clearfix">
+        <div th:replace="common/macros::pageNav(${postPage},'←','→','page')"></div>
+    </div>
+</div>
+<footer th:replace="themes/default/partial/footer :: footer"></footer>
+</body>
+</html>

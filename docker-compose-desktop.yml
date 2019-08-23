@@ -1,0 +1,59 @@
+# For Docker Desktop
+version: "3.7"
+
+services:
+
+  db:
+    container_name: mysql
+    image: mysql:8.0.16
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: lore_blog
+      MYSQL_USER: lore
+      MYSQL_PASSWORD: lore
+    volumes:
+      - e:/Docker/data-desktop/lore-blog/mysql/data/:/var/lib/mysql/
+      - e:/Docker/data-desktop/lore-blog/mysql/conf/:/etc/mysql/conf.d/
+      - e:/Docker/data-desktop/lore-blog/mysql/log/:/var/log/mysql/
+      - e:/Docker/data-desktop/lore-blog/mysql/log/bin/:/var/log/mysql/bin/
+    ports:
+      - "6612:3306"
+    networks:
+      - webapp-db
+
+  webapp:
+    container_name: lore-blog
+    depends_on:
+      - db
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: lore-blog:latest
+    volumes:
+      - e:/Docker/data-desktop/lore-blog/webapp/:/opt/lore-blog/webapp/
+    expose:
+      - "8080"
+    networks:
+      - webapp-db
+      - nginx-webapp
+
+  nginx:
+    container_name: nginx
+    depends_on:
+      - webapp
+    image: nginx:1.17.2
+    volumes:
+      - e:/Docker/data-desktop/lore-blog/nginx/log/:/var/log/nginx/
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - nginx-webapp
+
+networks:
+  webapp-db:
+  nginx-webapp:
+
+

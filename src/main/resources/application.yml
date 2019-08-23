@@ -1,0 +1,40 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: lore-blog
+  mvc:
+    static-path-pattern: ${my-app.static-path-pattern}
+  resources:
+    static-locations: ["classpath:/META-INF/resources/", "classpath:/resources/",
+                       "classpath:/static/"]
+
+######### 应用自定义配置 #########
+my-app:
+  static-path-pattern: /resources/**
+
+########## actuator ##########
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: '*'
+
+########## jackson ##########
+spring.jackson:
+  time-zone: GMT+8
+  locale: zh_CN
+  serialization:
+    write-dates-as-timestamps: true
+
+########## multipart ##########
+spring.servlet.multipart:
+  max-file-size: 15MB
+  max-request-size: 150MB
+
+########## task ##########
+spring.task:
+  scheduling:
+    pool:
+      size: 6

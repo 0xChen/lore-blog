@@ -1,0 +1,251 @@
+package com.developerchen.blog.theme;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.developerchen.blog.constant.BlogConst;
+import com.developerchen.blog.module.post.domain.entity.Post;
+import com.developerchen.blog.util.BlogUtils;
+import com.developerchen.core.config.AppConfig;
+import com.developerchen.core.domain.entity.User;
+import com.developerchen.core.util.UserUtils;
+import com.vdurmont.emoji.EmojiParser;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+
+import java.util.Date;
+import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Blog公共函数
+ * <p>
+ *
+ * @author syc
+ */
+public final class Common {
+
+    /**
+     * 通过Installed文件是否存在判断程序是否已经安装过了
+     *
+     * @return true 安装过
+     */
+    public static boolean hasInstalled() {
+        return BlogConst.INSTALLED.exists();
+    }
+
+    /**
+     * 判断分页中是否有数据
+     *
+     * @param page 分页对象
+     * @return true 有, false 无
+     */
+    public static boolean isEmptyPage(IPage<?> page) {
+        return null == page || page.getTotal() == 0;
+    }
+
+    /**
+     * 获取网站首页链接
+     */
+    public static String blogUrl() {
+        return "//" + getBlogOption("hostname");
+    }
+
+    /**
+     * 获取网站下子链接
+     *
+     * @param sub 后面追加的地址
+     */
+    public static String blogUrl(String sub) {
+        return blogUrl() + sub;
+    }
+
+    /**
+     * 获取当前主题名称
+     */
+    public static String blogTheme() {
+        return getBlogOption(BlogConst.OPTION_BLOG_THEME, "default");
+    }
+
+    /**
+     * 获取当前Blog的logo地址
+     */
+    public static String blogLogo() {
+        return getBlogOption(BlogConst.OPTION_BLOG_LOGO_URL, Theme.themeUrl(Theme.THEME_LOGO_PATH));
+    }
+
+    /**
+     * 网站标题
+     */
+    public static String blogTitle() {
+        return getBlogOption(BlogConst.OPTION_BLOG_TITLE);
+    }
+
+    /**
+     * 网站子标题
+     */
+    public static String blogSubtitle() {
+        return getBlogOption("blog_subtitle");
+    }
+
+    /**
+     * 获取网站关键字
+     */
+    public static String blogKeywords() {
+        return getBlogOption("blog_keywords");
+    }
+
+    /**
+     * 获取站点设置的描述信息
+     */
+    public static String blogDescription() {
+        return getBlogOption(BlogConst.OPTION_BLOG_DESCRIPTION);
+    }
+
+    /**
+     * 获取网站指定的配置项值
+     *
+     * @param key 配置项
+     * @return value 配置项值
+     */
+    public static String getBlogOption(String key) {
+        return getBlogOption(key, "");
+    }
+
+    /**
+     * 获取网站指定的配置项值
+     *
+     * @param key          配置项
+     * @param defaultValue 默认值
+     * @return value 配置项值
+     */
+    public static String getBlogOption(String key, String defaultValue) {
+        return StringUtils.isBlank(key) ? "" : AppConfig.getOption(key, defaultValue);
+    }
+
+    /**
+     * 获取gravatar头像地址
+     *
+     * @param email 邮箱地址
+     */
+    public static String gravatar(String email) {
+        String gravatarUrl = "https://cn.gravatar.com/avatar/";
+        if (StringUtils.isBlank(email)) {
+            return gravatarUrl;
+        }
+        String emailHash = DigestUtils.md5Hex(email.toLowerCase().trim());
+        return gravatarUrl + emailHash;
+    }
+
+    /**
+     * 获取1到指定数值之间的随机整数, 随机值的范围包含最大值与1本身
+     *
+     * @param max 最大值
+     * @return 随机整数的字符串形式
+     */
+    public static String random(int max) {
+        int r = new Random().nextInt(max) + 1;
+        return String.valueOf(r);
+    }
+
+    /**
+     * 字符转换为emoji表情
+     * Examples:<br>
+     * <code>:smile:</code> will be replaced by <code>😄</code><br>
+     * <code>&amp;#128516;</code> will be replaced by <code>😄</code><br>
+     * <code>:boy|type_6:</code> will be replaced by <code>👦🏿</code>
+     *
+     * @param value the string to parse
+     * @return emoji表情unicode字符串
+     */
+    public static String emoji(String value) {
+        return EmojiParser.parseToUnicode(value);
+    }
+
+    private static final Pattern SRC_PATTERN = Pattern.compile("src\\s*=\\s*\'?\"?(.*?)(\'|\"|>|\\s+)");
+
+    /**
+     * 获取文章的缩略图地址, 如果没有则取文章内容中的第一张图片作为文章的缩略图
+     */
+    public static String showThumb(Post post) {
+        if (StringUtils.isNotEmpty(post.getThumbnail())) {
+            return post.getThumbnail();
+        }
+        return showThumb(post.getContent());
+    }
+
+    /**
+     * 获取文章中第一张图片地址
+     *
+     * @param content 文章内容
+     * @return 第一张图片的URL
+     */
+    public static String showThumb(String content) {
+        content = BlogUtils.mdToHtml(content);
+        String imgTagPrefix = "<img";
+        if (content.contains(imgTagPrefix)) {
+            String img = "";
+            String imgReg = "<img\\s*src\\s*=\\s*(.*?)[^>]*?>";
+            Pattern imageP = Pattern.compile(imgReg, Pattern.CASE_INSENSITIVE);
+            Matcher imageM = imageP.matcher(content);
+            if (imageM.find()) {
+                img = img + "," + imageM.group();
+                // 匹配src
+                Matcher m = SRC_PATTERN.matcher(img);
+                if (m.find()) {
+                    return m.group(1);
+                }
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 是文章中否有图片
+     *
+     * @param post 文章
+     * @return true 有图片, false 无图片
+     */
+    public static boolean hasThumbnail(Post post) {
+        return !StringUtils.isBlank(showThumb(post));
+    }
+
+    /**
+     * 截取文章摘要
+     *
+     * @param content  文章内容
+     * @param len      要截取文字的个数
+     * @param ellipsis 省略符号
+     * @return 文章摘要
+     */
+    public static String intro(String content, int len, String ellipsis) {
+        String intro;
+        int pos = content.indexOf("<!--more-->");
+        if (pos != -1) {
+            String html = content.substring(0, pos);
+            intro = BlogUtils.htmlToText(BlogUtils.mdToHtml(html));
+        } else {
+            String text = BlogUtils.htmlToText(BlogUtils.mdToHtml(content));
+            if (text.length() > len) {
+                intro = text.substring(0, len) + ellipsis;
+            } else {
+                intro = text;
+            }
+        }
+        return intro;
+    }
+
+    /**
+     * 将指定时间格式化为"yyyy-MM-dd'T'HH:mm:ss"格式
+     */
+    public static String dateFormat(Date date) {
+        return DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(date);
+    }
+
+    /**
+     * 获取当前登陆用户
+     */
+    public static User user() {
+        return UserUtils.getUser();
+    }
+}

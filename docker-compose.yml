@@ -1,0 +1,73 @@
+# 注意:在指定文件版本时, 请确保同时指定主号和副号.
+# 如果没有提供子版本, 则默认使用0, 而不是最新的子版本.
+# 就是说 version: "3" 等同于 version: "3.0"
+# 因此, 在以后版本中添加的功能将不受支持.
+version: "3.7"
+
+services:
+
+  db:
+    container_name: mysql
+    image: mysql:8.0.17
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: lore_blog
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /etc/timezone:/etc/timezone
+      - /opt/lore-blog/mysql/data/:/var/lib/mysql/
+      - /opt/lore-blog/mysql/conf/:/etc/mysql/conf.d/
+      - /opt/lore-blog/mysql/log/:/var/log/mysql/
+      - /opt/lore-blog/mysql/log/bin/:/var/log/mysql/bin/
+      - /opt/lore-blog/init.sh/:/docker-entrypoint-initdb.d/
+    ports:
+      - "6612:3306"
+    networks:
+      - webapp-db
+    restart: always
+
+  webapp:
+    container_name: lore-blog
+    depends_on:
+      - db
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: lore-blog:latest
+    volumes:
+      - /opt/lore-blog/webapp/file/:/opt/lore-blog/webapp/file/
+      - /opt/lore-blog/webapp/log/:/opt/lore-blog/webapp/log/
+      - /opt/lore-blog/webapp/lock/:/opt/lore-blog/webapp/lock/
+    networks:
+      - webapp-db
+      - nginx-webapp
+    restart: always
+
+  nginx:
+    container_name: nginx
+    depends_on:
+      - webapp
+    image: nginx:1.17.2
+    environment:
+      NGINX_HOST: developerchen.com
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /etc/timezone:/etc/timezone
+      - /opt/lore-blog/nginx/conf/:/etc/nginx/conf.d
+      - /opt/lore-blog/nginx/ssl/:/etc/nginx/ssl/
+      - /opt/lore-blog/nginx/log/:/var/log/nginx/
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - nginx-webapp
+    command: /bin/bash -c "envsubst '$$NGINX_HOST' < /etc/nginx/conf.d/nginx.conf >
+             /etc/nginx/nginx.conf && exec nginx -g 'daemon off;'"
+    restart: always
+
+networks:
+  webapp-db:
+  nginx-webapp:

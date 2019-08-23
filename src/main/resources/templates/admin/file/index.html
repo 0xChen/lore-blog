@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" th:with="title='文件管理',active='files'">
+<!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
+<head>
+    <th:block th:replace="admin/header::header(${title})"></th:block>
+    <link href="//cdn.staticfile.org/dropzone/5.5.1/dropzone.css" rel="stylesheet">
+    <style>
+        #dropzone {
+            margin-bottom: 3rem;
+        }
+
+        .dropzone {
+            border: 2px dashed #0087F7;
+            border-radius: 5px;
+            background: white;
+        }
+
+        .dropzone .dz-message {
+            font-weight: 400;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .dropzone .dz-message .note {
+            font-size: 0.8em;
+            font-weight: 200;
+            display: block;
+            margin-top: 1.4rem;
+        }
+
+        .file-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 8px #333;
+        }
+
+        .file-text {
+            font-size: 12px;
+            font-weight: 300;
+        }
+
+        .file-img:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body class="fixed-left">
+<div id="wrapper">
+    <!-- sidebar -->
+    <th:block th:replace="admin/sidebar::sidebar(${active},'')"></th:block>
+    <!-- content -->
+    <div class="content-page">
+        <div class="content">
+            <div class="container">
+                <!-- app -->
+                <div id="app" class="row" v-cloak>
+                    <loading :active.sync="isLoading" :can-cancel="true"></loading>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">附件管理</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12 portlets">
+                                    <!-- Your awesome content goes here -->
+                                    <div class="m-b-30">
+                                        <form action="#" class="dropzone" id="dropzone">
+                                            <div class="fallback">
+                                                <input name="file" type="file" multiple="multiple">
+                                            </div>
+                                            <div class="dz-message">
+                                                <p>将文件拖至此处或点击上传.</p>
+                                                <p>
+                                                    <span style="font-size: 16px; color: #d0d0d0;">一次最多可以上传10个文件</span>
+                                                </p>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 attach">
+                                    <div v-if="filePage.records.length == 0" class="row">
+                                        <div class="col-md-4 text-center">
+                                            <div class="alert alert-warning">
+                                                目前还没有一个附件呢，你可以上传试试!
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-xs-6 text-center m-t-10" v-for="file in filePage.records">
+                                        <a :href="'/file/' + file.name" target="_blank">
+                                            <img v-if="(file.type).includes('image')" class="file-img" :src="'/file/' + file.name"
+                                                 :title="file.originalName"/>
+                                            <img v-if="!(file.type).includes('image')" class="file-img" src="/resources/admin/images/attach.png"
+                                                 :title="file.originalName"/>
+                                        </a>
+                                        <div class="clearfix m-t-10">
+                                            <span class="file-text" data-toggle="tooltip" data-placement="top" :data-original-title="file.originalName">{{file.originalName | truncate(15)}}</span>
+                                        </div>
+                                        <div class="clearfix">
+                                            <button :url="'/file/' + file.name" type="button"
+                                                    class="btn btn-warning btn-sm waves-effect waves-light m-t-5 copy">
+                                                <i class="fa fa-copy"></i> <span>复制</span>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm waves-effect waves-light m-t-5"
+                                                    @click="deleteFile(file.id)">
+                                                <i class="fa fa-trash-o"></i> <span>删除</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="clearfix"></div>
+                                    <ul class="pagination m-b-5 pull-right">
+                                        <li v-if="filePage.hasPrev">
+                                            <a @click="load(filePage.prevPage)" aria-label="Previous">
+                                                <i class="fa fa-angle-left"></i>&nbsp;上一页
+                                            </a>
+                                        </li>
+
+                                        <li class="page-item" v-for="num in filePage.pages" :class="{ active: filePage.current == num }">
+                                            <a @click="load(num)">
+                                                {{ num }}</i>
+                                            </a>
+                                        </li>
+                                        <li v-if="filePage.hasNext">
+                                            <a type="button" class="page-link" @click="load(filePage.nextPage)">
+                                                下一页&nbsp;<i class="fa fa-angle-right"></i>
+                                            </a>
+                                        </li>
+                                        <li><span>共 {{filePage.pages}} 页</span></li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="admin/footer :: footer"></div>
+<script src="//cdn.staticfile.org/dropzone/5.5.1/dropzone.js"></script>
+<script src="//cdn.staticfile.org/clipboard.js/2.0.1/clipboard.js"></script>
+<script >
+    var blog = new $.Blog();
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            filePage: {
+                records: []
+            },
+            isLoading: true
+        },
+        beforeCreate: function(){
+            vueLoding = this.$loading.show();
+        },
+        mounted: function () {
+            this.load();
+        },
+        methods: {
+            load: function (page) {
+                var $vm = this;
+                blog.get({
+                    url: '/files',
+                    data: {
+                        page: page
+                    },
+                    success: function (data) {
+                        $vm.filePage = data.data
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert(error || '数据加载失败');
+                    }
+                });
+            },
+            deleteFile: function (id) {
+                var $vm = this;
+                blog.alertConfirm({
+                    title: '确定删除该附件吗?',
+                    then: function () {
+                        blog.delete({
+                            url: '/file/' + id,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    blog.alertOk('附件删除成功');
+                                    $vm.load();
+                                } else {
+                                    blog.alertError(result.message || '附件删除失败');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+    Dropzone.autoDiscover = false;
+
+    $("#dropzone").dropzone({
+        url: "/files",
+        filesizeBase: 1024,//定义字节算法 默认1000
+        maxFiles: 10,//最大文件数量
+        maxFilesize: '15', //MB
+        fallback: function () {
+            blog.alertError('暂不支持您的浏览器上传!');
+        },
+        uploadMultiple: true,
+        dictFileTooBig: '您的文件超过15MB!',
+        dictInvalidInputType: '不支持您上传的类型',
+        dictMaxFilesExceeded: '您的文件超过10个!',
+        headers: {
+        },
+        init: function () {
+            this.on('queuecomplete', function (files) {
+                blog.alertOk('上传成功');
+                vm.load();
+            });
+            this.on('error', function (a, errorMessage, result) {
+                if (errorMessage && !result) {
+                    blog.alertError(errorMessage);
+                    return;
+                }
+                if (!result.success && result.message) {
+                    blog.alertError(result.message || '文件上传失败');
+                }
+            });
+            this.on('maxfilesreached', function () {
+                this.removeAllFiles(true);
+                blog.alertWarn('文件数量超出限制');
+            });
+        }
+    });
+
+    var clipboard = new ClipboardJS('button.copy', {
+        text: function (trigger) {
+            return $(trigger).attr('url');
+        }
+    });
+
+    clipboard.on('success', function (e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+        e.clearSelection();
+    });
+
+    $(document).ready(function () {
+        vm.isLoading = false;
+        vueLoding.hide();
+    });
+
+</script>
+</body>
+</html>
