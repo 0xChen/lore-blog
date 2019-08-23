@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.repository.UserMapper;
 import com.developerchen.core.service.IUserService;
+import com.developerchen.core.util.SecurityUtils;
 import org.apache.commons.lang3.Validate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -20,11 +20,9 @@ import java.io.Serializable;
 @Service
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implements IUserService {
 
-    private final PasswordEncoder passwordEncoder;
-
-    public UserServiceImpl(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
+    public UserServiceImpl() {
     }
+
 
     /**
      * 新增或更新用户信息
@@ -36,7 +34,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         String password = user.getPassword();
         if (password != null) {
             // 加密
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setPassword(SecurityUtils.encodeUserPassword(password));
         }
         super.saveOrUpdate(user);
     }
@@ -72,5 +70,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     public void deleteUserById(Serializable id) {
         Validate.notNull(id, "用户ID不能为空, 删除失败!");
         baseMapper.deleteById(id);
+    }
+
+    /**
+     * 删除所有用户
+     */
+    @Override
+    public void deleteAllUser() {
+        baseMapper.deleteBySql("truncate table sys_user");
     }
 }
