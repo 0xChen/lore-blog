@@ -34,7 +34,7 @@ import java.util.List;
 public final class Theme {
     private static final Logger logger = LoggerFactory.getLogger(Theme.class);
 
-    public static final String THEME_PATH = "resources/themes/";
+    public static final String THEME_PATH = "/resources/themes/";
     public static final String THEME_LOGO_PATH = "/img/logo.png";
 
     private static IUserService userService;
@@ -58,7 +58,7 @@ public final class Theme {
      * 获取主题URL
      */
     public static String themeUrl() {
-        return Common.blogUrl(THEME_PATH) + Common.getBlogOption(BlogConst.BLOG_THEME, "default");
+        return Common.blogUrl(THEME_PATH) + Common.getBlogOption(BlogConst.OPTION_BLOG_THEME, "default");
     }
 
     /**

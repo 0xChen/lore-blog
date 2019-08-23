@@ -26,6 +26,15 @@ import java.util.regex.Pattern;
 public final class Common {
 
     /**
+     * 通过Installed文件是否存在判断程序是否已经安装过了
+     *
+     * @return true 安装过
+     */
+    public static boolean hasInstalled() {
+        return BlogConst.INSTALLED.exists();
+    }
+
+    /**
      * 判断分页中是否有数据
      *
      * @param page 分页对象
@@ -39,7 +48,7 @@ public final class Common {
      * 获取网站首页链接
      */
     public static String blogUrl() {
-        return getBlogOption("blog_url");
+        return "//" + getBlogOption("hostname");
     }
 
     /**
@@ -55,21 +64,21 @@ public final class Common {
      * 获取当前主题名称
      */
     public static String blogTheme() {
-        return getBlogOption(BlogConst.BLOG_THEME, "default");
+        return getBlogOption(BlogConst.OPTION_BLOG_THEME, "default");
     }
 
     /**
      * 获取当前Blog的logo地址
      */
     public static String blogLogo() {
-        return getBlogOption(BlogConst.BLOG_LOGO_URL, Theme.themeUrl(Theme.THEME_LOGO_PATH));
+        return getBlogOption(BlogConst.OPTION_BLOG_LOGO_URL, Theme.themeUrl(Theme.THEME_LOGO_PATH));
     }
 
     /**
      * 网站标题
      */
     public static String blogTitle() {
-        return getBlogOption(BlogConst.BLOG_TITLE);
+        return getBlogOption(BlogConst.OPTION_BLOG_TITLE);
     }
 
     /**
@@ -90,7 +99,7 @@ public final class Common {
      * 获取站点设置的描述信息
      */
     public static String blogDescription() {
-        return getBlogOption(BlogConst.BLOG_DESCRIPTION);
+        return getBlogOption(BlogConst.OPTION_BLOG_DESCRIPTION);
     }
 
     /**
