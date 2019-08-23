@@ -2,28 +2,29 @@
 
 ######### 应用自定义配置 #########
 my-app:
-  file-location: E:\lore-blog\file
+  file-location: E:\lore-blog\file\
   hostname: 127.0.0.1
+  jwt-expire-time: 864000000
 
 ############ server ############
 server:
-  tomcat.uri-encoding: UTF-8
-  basedir: E:\lore-blog\tomcat
+  tomcat:
+    uri-encoding: UTF-8
+    basedir: E:\lore-blog\tomcat\
   port: 8080
 
 ########## datasource ##########
 # 配置属性列表详细说明 https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8
 spring.datasource:
-  type: com.alibaba.druid.pool.DruidDataSource
   druid:
     # Druid会自动根据url识别驱动类名，如果连接的数据库非常见数据库，才需配置属性 driver-class-name
-    url: jdbc:mysql://127.0.0.1:3306/blog_dev
-    connection-properties: useSSL=true;useUnicode=true;characterEncoding=utf-8;zeroDateTimeBehavior=convertToNull;serverTimezone=GMT+8
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${jdbc.dev.username}
-    password: ${jdbc.dev.password}
+    url: jdbc:mysql://127.0.0.1:3306/lore_blog
+    # characterEncoding=UTF-8, 对于8.0.12及更早版本将映射到MySQL字符集名称utf8, 对于8.0.13及更高版本将映射到MySQL字符集名称utf8mb4
+    connection-properties: useSSL=true;useUnicode=true;characterEncoding=UTF-8;zeroDateTimeBehavior=convertToNull;serverTimezone=GMT+8
+    username: root
+    password: root
     # 获取连接失败后重试次数
-    connection-error-retry-attempts: 5
+#    connection-error-retry-attempts: 5
     # 超过重试次数仍然失败则终止, 省得无休止的在后台抛异常, 生产环境最好别设置
     break-after-acquire-failure: true
     # 配置初始化大小、最小、最大
@@ -83,15 +84,15 @@ mybatis-plus:
     jdbc-type-for-null: 'null'
   global-config:
     banner: false
-    # 刷新mapper 开发环境时打开方便调试
-    refresh: true
     db-config:
       # 主键类型
       id-type: id_worker
-      # 字段名、是否使用下划线命名
-      column-underline: true
+      # 表名是否使用下划线命名
+      table-underline: true
       # 字段验证策略 ignored:"忽略判断",not_null:"非 NULL 判断"),not_empty:"非空判断"
-      field-strategy: not_null
+      insert-strategy: not_null
+      update-strategy: not_null
+      select-strategy: not_null
 
 ########## resources ##########
 spring.resources:
@@ -114,4 +115,3 @@ spring:
   application:
     admin:
       enabled: true
-
