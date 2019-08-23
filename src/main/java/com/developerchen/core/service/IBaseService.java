@@ -17,7 +17,8 @@ public interface IBaseService<T> extends IService<T> {
      * 根据 sql 语句，查询记全部录
      * </p>
      *
-     * @param sql
+     * @param sql 需要执行的SQL
+     * @return List<Map < String, Object>>
      */
     List<Map<String, Object>> selectMapsBySql(String sql);
 
@@ -26,7 +27,8 @@ public interface IBaseService<T> extends IService<T> {
      * 根据 sql 语句，查询记录
      * </p>
      *
-     * @param sql
+     * @param sql 需要执行的SQL
+     * @return Map<String, Object>
      */
     Map<String, Object> selectMapBySql(String sql);
 
@@ -38,4 +40,14 @@ public interface IBaseService<T> extends IService<T> {
      * @param sql 需要执行的SQL
      */
     void updateBySql(String sql);
+
+    /**
+     * <p>
+     * 执行SQL删除语句
+     * </p>
+     *
+     * @param sql 需要执行的SQL
+     */
+    void deleteBySql(String sql);
+    
 }

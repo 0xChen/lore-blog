@@ -61,4 +61,15 @@ public abstract class BaseServiceImpl<M extends CoreMapper<T>, T> extends Servic
         baseMapper.updateBySql(sql);
     }
 
+    /**
+     * <p>
+     * 执行SQL删除语句
+     * </p>
+     *
+     * @param sql 需要执行的SQL
+     */
+    @Override
+    public void deleteBySql(String sql) {
+        baseMapper.deleteBySql(sql);
+    }
 }

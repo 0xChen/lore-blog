@@ -1,10 +1,7 @@
 package com.developerchen.core.repository;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Map;
@@ -80,5 +77,15 @@ public interface CoreMapper<T> extends BaseMapper<T> {
      */
     @Update("${sql}")
     void updateBySql(@Param("sql") String sql);
+
+    /**
+     * <p>
+     * 执行SQL删除语句
+     * </p>
+     *
+     * @param sql 需要执行的SQL
+     */
+    @Delete("${sql}")
+    void deleteBySql(@Param("sql") String sql);
 
 }
