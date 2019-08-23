@@ -8,6 +8,7 @@ import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.web.BaseController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -70,7 +71,7 @@ public class SiteController extends BaseController {
      */
     @ResponseBody
     @PostMapping(BlogConst.INSTALL_URI + "/user")
-    public RestResponse installAdminUser(User user) {
+    public RestResponse installAdminUser(@Validated User user) {
         try {
             this.siteService.installAdminUser(user);
         } catch (Exception e) {
