@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--suppress ThymeleafVariablesResolveInspection -->
-<html xmlns:th="http://www.thymeleaf.org" th:with="title='通用设置',active='theme/setting/common'">
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" th:with="title='通用设置',active='theme/setting/common'">
 <head>
     <th:block th:replace="admin/header::header(${title})"></th:block>
     <link href="//cdn.staticfile.org/bootstrap-toggle/2.2.2/css/bootstrap-toggle.css" rel="stylesheet">
@@ -33,7 +33,7 @@
                                                     <div class="form-group">
                                                         <label class="col-md-3 control-label">网站地址</label>
                                                         <div class="col-md-9">
-                                                            <input type="text" v-model="options.blog_url" class="form-control" placeholder="网站地址" required aria-required="true"/>
+                                                            <input type="text" v-model="options.hostname" class="form-control" placeholder="网站地址" required aria-required="true"/>
                                                             <span class="help-block"><small>请和你当前访问的域名保持一致，否则会出现渲染错误。</small></span>
                                                         </div>
                                                     </div>
