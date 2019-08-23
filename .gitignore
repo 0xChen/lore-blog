@@ -34,5 +34,6 @@ target/
 .vscode/
 
 ### customize ###
+lock/
 jdbcSecretKey
 jwtSecretKey

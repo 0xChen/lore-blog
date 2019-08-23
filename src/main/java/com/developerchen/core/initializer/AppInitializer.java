@@ -1,14 +1,14 @@
-package com.developerchen.core.initialize;
+package com.developerchen.core.initializer;
 
 import com.developerchen.blog.constant.BlogConst;
 import com.developerchen.core.config.AppConfig;
 import com.developerchen.core.constant.Const;
+import com.developerchen.core.security.JwtTokenUtil;
 import com.developerchen.core.service.IOptionService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,12 +21,12 @@ import java.util.Map;
  * @author syc
  */
 @Component
-public class InitApp {
+public class AppInitializer {
 
     private IOptionService optionService;
 
 
-    public InitApp(IOptionService optionService) {
+    public AppInitializer(IOptionService optionService) {
         this.optionService = optionService;
     }
 
@@ -35,7 +35,7 @@ public class InitApp {
      *
      * @throws IOException 创建保存上传文件的目录失败时
      */
-    @EventListener(ApplicationStartedEvent.class)
+    @PostConstruct
     private void initAppConfig() throws IOException {
         // 读取数据库 sys_option 表中所有配置项, 添加到SystemConfig.OPTION中
         Map<String, String> option = optionService.getAllOption();
@@ -55,6 +55,9 @@ public class InitApp {
                 throw new IOException("用于保存上传文件的文件夹初始化失败，请检查配置文件中的[my-app:file-location]配置", e);
             }
         }
+
+        // 初始化jwt
+        JwtTokenUtil.initSecretKey();
 
         // 初始化静态常量Map
         try {

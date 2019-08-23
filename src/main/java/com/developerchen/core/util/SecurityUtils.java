@@ -4,27 +4,42 @@ import com.developerchen.core.config.AppConfig;
 import com.developerchen.core.exception.CryptoException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.ResourceUtils;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
- * 安全相关工具类, 加密解密等
+ * 安全相关工具类, 加密解密等.
+ * <p>
+ * http://ctf.ssleye.com/caes.html https://tool.lami.fun/jiami/aes
+ * 可以用以上两个在线工具生成加密密码.
+ * 参考设置:
+ * AES加密模式: CBC
+ * 填充: pkcs5padding
+ * 密钥长度: 256位
+ * 密钥: ******
+ * 偏移量: I-love-lore-blog
+ * 输出: base64
  *
  * @author syc
  */
-public final class SecureUtils {
+public final class SecurityUtils {
+
+    /**
+     * for encoding user passwords
+     */
+    public static final PasswordEncoder USER_PASSWORD_ENCODER = PasswordEncoderFactories
+            .createDelegatingPasswordEncoder();
 
     /**
      * Default initialization vector which use IVs are ciphers in feedback mode
@@ -39,18 +54,40 @@ public final class SecureUtils {
 
 
     /**
+     * Encode the raw password.
+     */
+    public static String encodeUserPassword(String password) {
+        return SecurityUtils.USER_PASSWORD_ENCODER.encode(password);
+    }
+
+    /**
+     * Verify the encoded password obtained from storage matches the submitted raw
+     * password after it too is encoded. Returns true if the passwords match, false if
+     * they do not. The stored password itself is never decoded.
+     *
+     * @param rawPassword     the raw password to encode and match
+     * @param encodedPassword the encoded password from storage to compare with
+     * @return true if the raw password, after encoding, matches the encoded password from
+     * storage
+     */
+    public static boolean matchesUserPassword(CharSequence rawPassword,
+                                              String encodedPassword) {
+        return SecurityUtils.USER_PASSWORD_ENCODER.matches(rawPassword, encodedPassword);
+    }
+
+    /**
      * 获取一个 Cipher 实例
      *
      * @param transformation transformation的名称, 例如: AES/CBC/PKCS5Padding
      */
     public static Cipher getCipherInstant(String transformation) {
         Cipher cipher;
-        if (SecureUtils.CIPHER_CACHE.containsKey(transformation)) {
-            cipher = SecureUtils.CIPHER_CACHE.get(transformation);
+        if (SecurityUtils.CIPHER_CACHE.containsKey(transformation)) {
+            cipher = SecurityUtils.CIPHER_CACHE.get(transformation);
         } else {
             try {
                 cipher = Cipher.getInstance(transformation);
-                SecureUtils.CIPHER_CACHE.put(transformation, cipher);
+                SecurityUtils.CIPHER_CACHE.put(transformation, cipher);
             } catch (Exception e) {
                 throw new CryptoException(e);
             }
@@ -107,37 +144,35 @@ public final class SecureUtils {
      * 生成用于加密jwt token的密钥文件
      *
      * @param secretKey 密钥, 如果是空则生成随机密钥
-     * @throws IOException
+     * @throws IOException 密钥文件创建失败时
      */
-    public static void generateJwtSecretKeyFile(String secretKey) throws IOException {
-        generateSecretKeyFile("classpath:jwt.properties", secretKey, "jwtSecretKey");
+    public static void generateJwtSecretKeyFile(String secretKeyPath, String secretKey) throws IOException {
+        generateSecretKeyFile(secretKeyPath, secretKey, "jwtSecretKey");
     }
 
     /**
      * 生成用于数据库连接密码的密钥文件
      *
      * @param secretKey 密钥, 如果是空则生成随机密钥
-     * @throws IOException
+     * @throws IOException 密钥文件创建失败时
      */
-    public static void generateJdbcSecretKeyFile(String secretKey) throws IOException {
-        generateSecretKeyFile("classpath:jdbc.properties", secretKey, "jdbcSecretKey");
+    public static void generateJdbcSecretKeyFile(String secretKeyPath, String secretKey)
+            throws IOException {
+        generateSecretKeyFile(secretKeyPath, secretKey, "jdbcSecretKey");
     }
 
     /**
      * 生成用于加密解密的密钥文件
      *
-     * @param propertyPath 配置文件的位置, 配置文件中"secretKeyPath"的值决定了secretKey文件生成的位置
-     * @param secretKey    密钥, 如果是空则生成随机密钥
-     * @param fileName     生成的密钥的文件名
-     * @throws IOException
+     * @param secretKeyPath 密钥文件生成后的保存位置
+     * @param secretKey     密钥, 如果是空则生成随机密钥
+     * @param fileName      生成的密钥的文件名
+     * @throws IOException 密钥文件创建失败时
      */
-    public static void generateSecretKeyFile(String propertyPath,
+    public static void generateSecretKeyFile(String secretKeyPath,
                                              String secretKey,
                                              String fileName) throws IOException {
-        File file = ResourceUtils.getFile(propertyPath);
-        Properties properties = new Properties();
-        properties.load(new FileReader(file));
-        String secretKeyPath = properties.getProperty("secretKeyPath");
+
         if (StringUtils.isBlank(secretKeyPath)) {
             // 如果没有指定位置则在当前项目所在目录下生成
             secretKeyPath = AppConfig.HOME_PATH + File.separator + fileName;
@@ -156,13 +191,6 @@ public final class SecureUtils {
                 throw new IOException(fileName + "文件创建失败.");
             }
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        generateJwtSecretKeyFile(null);
-        System.out.println("jwtSecretKey文件成功生成!");
-        generateJdbcSecretKeyFile(null);
-        System.out.println("jdbcSecretKey文件成功生成!");
     }
 
 }
