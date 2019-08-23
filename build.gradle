@@ -36,31 +36,27 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'com.alibaba:druid-spring-boot-starter:1.1.17'
-    implementation('com.baomidou:mybatis-plus-boot-starter:3.1.1') {
+    implementation('com.baomidou:mybatis-plus-boot-starter:3.1.2') {
         exclude group: "com.zaxxer", module: "HikariCP"
     }
-    implementation 'org.apache.commons:commons-lang3:3.8.1'
+    implementation 'com.zaxxer:HikariCP:3.3.1'
+    implementation 'org.apache.commons:commons-lang3:3.9'
     implementation 'commons-codec:commons-codec:1.12'
-    implementation('com.vladsch.flexmark:flexmark-all:0.42.12') {
+    implementation('com.vladsch.flexmark:flexmark-all:0.50.26') {
         exclude group: "com.vladsch.flexmark", module: "flexmark-youtrack-converter"
         exclude group: "com.vladsch.flexmark", module: "flexmark-pdf-converter"
         exclude group: "com.vladsch.flexmark", module: "flexmark-jira-converter"
         exclude group: "com.vladsch.flexmark", module: "flexmark-ext-youtube-embedded"
-        exclude group: "com.vladsch.flexmark", module: "flexmark-ext-yaml-front-matter"
-        exclude group: "com.vladsch.flexmark", module: "flexmark-ext-jekyll-tag"
-        exclude group: "com.vladsch.flexmark", module: "flexmark-ext-jekyll-front-matter"
-        exclude group: "com.vladsch.flexmark", module: "flexmark-ext-xwiki-macros"
         exclude group: "com.vladsch.flexmark", module: "flexmark-ext-gfm-tables"
-        exclude group: "com.vladsch.flexmark", module: "flexmark-ext-macros"
     }
-    implementation('com.vdurmont:emoji-java:4.0.0') {
+    implementation('com.vdurmont:emoji-java:5.0.0') {
         exclude group: "org.json", module: "json"
     }
-    implementation 'io.jsonwebtoken:jjwt-api:0.10.5'
+    implementation 'io.jsonwebtoken:jjwt-api:0.10.7'
 
     runtimeOnly 'mysql:mysql-connector-java:8.0.15'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.10.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.10.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.10.7'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.10.7'
     runtimeOnly 'org.springframework.boot:spring-boot-devtools'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
