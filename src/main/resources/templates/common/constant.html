@@ -15,7 +15,7 @@
          * 登陆用户ID
          * @type {String}
          */
-        const loginUserId = [[${#request.getAttribute("userId")}]] || null;
+        const loginUserId = [[${#request.getAttribute(#const.REQUEST_USER_ID)}]] || null;
     </script>
     </th:block>
 </head>
