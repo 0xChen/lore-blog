@@ -1,11 +1,14 @@
 package com.developerchen.core.util;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.developerchen.core.constant.Const;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * <p>
@@ -19,78 +22,84 @@ import java.util.List;
 public class RestPage<T> implements IPage<T> {
 
     private static final long serialVersionUID = -7711850453638062509L;
+
     /**
      * 查询数据列表
      */
     private List<T> records = Collections.emptyList();
+
     /**
      * 总数
      */
     private long total = 0;
+
     /**
      * 每页显示条数，默认 10
      */
     private long size = Const.PAGE_DEFAULT_SIZE;
+
     /**
      * 当前页
      */
     private long current = 1;
     /**
-     * <p>
-     * SQL 排序 ASC 数组
-     * </p>
+     * 排序字段信息
      */
-    private String[] ascs;
-    /**
-     * <p>
-     * SQL 排序 DESC 数组
-     * </p>
-     */
-    private String[] descs;
+    private List<OrderItem> orders = new ArrayList<>();
     /**
      * <p>
      * 自动优化 COUNT SQL
      * </p>
      */
     private boolean optimizeCountSql = true;
+
     /**
      * <p>
      * 是否进行 count 查询
      * </p>
      */
     private boolean isSearchCount = true;
+
     /**
      * 当前分页总页数
      */
     private long totalPage;
+
     /**
      * 每次显示导航页码数量
      */
     private int navPages = 8;
+
     /**
      * 所有导航页码
      */
     private long[] navPageNums;
+
     /**
      * 是否存在上一页
      */
     private boolean hasPrev = false;
+
     /**
      * 是否存在下一页
      */
     private boolean hasNext = false;
+
     /**
      * 上一页页码
      */
     private long prevPage = 1;
+
     /**
      * 下一页页码
      */
     private long nextPage = 1;
+
     /**
      * 是否第一页
      */
     private boolean isFirstPage = false;
+
     /**
      * 是否最后一页
      */
@@ -321,54 +330,57 @@ public class RestPage<T> implements IPage<T> {
         return this;
     }
 
-    @Override
-    public String[] ascs() {
-        return ascs;
-    }
-
-    public RestPage<T> setAscs(List<String> ascs) {
-        if (CollectionUtils.isNotEmpty(ascs)) {
-            this.ascs = ascs.toArray(new String[0]);
-        }
-        return this;
+    /**
+     * 查找 order 中正序排序的字段数组
+     *
+     * @param filter 过滤器
+     * @return 返回正序排列的字段数组
+     */
+    private String[] mapOrderToArray(Predicate<OrderItem> filter) {
+        List<String> columns = new ArrayList<>(orders.size());
+        orders.forEach(i -> {
+            if (filter.test(i)) {
+                columns.add(i.getColumn());
+            }
+        });
+        return columns.toArray(new String[0]);
     }
 
     /**
-     * <p>
-     * 升序
-     * </p>
+     * 移除符合条件的条件
      *
-     * @param ascs 多个升序字段
-     * @return
+     * @param filter 条件判断
      */
-    public RestPage<T> setAsc(String... ascs) {
-        this.ascs = ascs;
+    private void removeOrder(Predicate<OrderItem> filter) {
+        for (int i = orders.size() - 1; i >= 0; i--) {
+            if (filter.test(orders.get(i))) {
+                orders.remove(i);
+            }
+        }
+    }
+
+    /**
+     * 添加新的排序条件
+     *
+     * @param items 条件
+     * @return 返回分页参数本身
+     */
+    public RestPage<T> addOrder(OrderItem... items) {
+        orders.addAll(Arrays.asList(items));
         return this;
     }
 
     @Override
-    public String[] descs() {
-        return descs;
+    public List<OrderItem> orders() {
+        return getOrders();
     }
 
-    public RestPage<T> setDescs(List<String> descs) {
-        if (CollectionUtils.isNotEmpty(descs)) {
-            this.descs = descs.toArray(new String[0]);
-        }
-        return this;
+    public List<OrderItem> getOrders() {
+        return orders;
     }
 
-    /**
-     * <p>
-     * 降序
-     * </p>
-     *
-     * @param descs 多个降序字段
-     * @return
-     */
-    public RestPage<T> setDesc(String... descs) {
-        this.descs = descs;
-        return this;
+    public void setOrders(List<OrderItem> orders) {
+        this.orders = orders;
     }
 
     @Override
