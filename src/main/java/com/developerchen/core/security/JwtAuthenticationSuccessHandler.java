@@ -41,7 +41,7 @@ public class JwtAuthenticationSuccessHandler extends
         String token = JwtTokenUtil.generateToken(jwtUser);
 
         Cookie cookie = new Cookie(Const.COOKIE_ACCESS_TOKEN, token);
-        cookie.setMaxAge((int) (JwtTokenUtil.EXPIRATION_TIME / 1000));
+        cookie.setMaxAge((int) (JwtTokenUtil.EXPIRE_TIME / 1000));
         cookie.setPath(getCookiePath(request));
         cookie.setSecure(request.isSecure());
         cookie.setHttpOnly(true);
@@ -64,6 +64,6 @@ public class JwtAuthenticationSuccessHandler extends
 
     private boolean isAjaxRequest(HttpServletRequest request) {
         String ajaxHeader = request.getHeader("X-Requested-With");
-        return ajaxHeader != null && "XMLHttpRequest".equals(ajaxHeader);
+        return "XMLHttpRequest".equals(ajaxHeader);
     }
 }
