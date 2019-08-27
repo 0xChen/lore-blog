@@ -5,7 +5,7 @@ my-app:
   file-location: ./file/
   hostname: developerchen.com
   jwt-expire-time: 604800000
-  jdbc-secret-key-path: file:.\jdbcSecretKey
+  jdbc-secret-key-path: file:./jdbcSecretKey
 
 ############ server ############
 server:
