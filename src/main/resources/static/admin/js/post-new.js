@@ -137,7 +137,6 @@ const vm = new Vue({
 });
 
 $(document).ready(function () {
-console.dir($('#commentStatus').prop("checked"))
     mditor = window.mditor = Mditor.fromTextarea(document.getElementById('md-editor'));
     // 富文本编辑器
     htmlEditor = $('.summernote').summernote({
