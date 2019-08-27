@@ -112,6 +112,9 @@ var vm = new Vue({
                         $('#dropzone-container').hide();
                     }
                 },
+                afterSuccess: function () {
+                    initTagsAndToggle();
+                },
                 error: function (error) {
                     console.log(error);
                     alert('数据加载失败');
@@ -207,7 +210,7 @@ var vm = new Vue({
     }
 });
 
-$(document).ready(function () {
+function initTagsAndToggle() {
     // Tags Input
     $('#tags').tagsinput({
 
@@ -227,7 +230,9 @@ $(document).ready(function () {
         on: '添加',
         off: '取消'
     });
+}
 
+$(document).ready(function () {
     $('#commentStatus').change(function() {
         var checked = $(this).prop('checked');
         if (checked) {

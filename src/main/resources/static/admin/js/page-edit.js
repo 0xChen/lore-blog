@@ -100,6 +100,17 @@ var vm = new Vue({
                         $('#dropzone-container').hide();
                     }
                 },
+                afterSuccess: function () {
+                    $('#commentStatus').bootstrapToggle({
+                        on: '开启',
+                        off: '关闭'
+                    });
+
+                    $('#addThumbnail').bootstrapToggle({
+                        on: '添加',
+                        off: '取消'
+                    });
+                },
                 error: function (error) {
                     console.log(error);
                     alert('数据加载失败');
@@ -255,17 +266,6 @@ $(document).ready(function () {
 
     vm.isLoading = false;
     vueLoding.hide();
-
-    $('#commentStatus').bootstrapToggle({
-        on: '开启',
-        off: '关闭'
-    });
-
-
-    $('#addThumbnail').bootstrapToggle({
-        on: '添加',
-        off: '取消'
-    });
 
     $('#commentStatus').change(function() {
         var checked = $(this).prop('checked');
