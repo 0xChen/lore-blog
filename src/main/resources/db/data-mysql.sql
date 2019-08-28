@@ -6,7 +6,7 @@
 -- Table data for `blog_category`
 -- ----------------------------
 INSERT INTO `blog_category` (`id`, `name`, `left_value`, `right_value`)
-VALUES (1, '默认分类', 1, 2);
+VALUES (0, '默认分类', 1, 2);
 
 -- ----------------------------
 -- Table data for `sys_user`

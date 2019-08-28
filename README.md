@@ -33,10 +33,18 @@
 ## 说明
 系统还不是很完善, 还有很多我个人不满意的地方在逐步完善中, 暂时关闭 Issues 功能. 作者联系方式Email: sunyuchen1990@gmail.com
 
-## 安装说明
-运行docker-compose.yml前先将"mysql-chown.sh"文件放入"/opt/lore-blog/init.sh/"路径下,
-否则mysql的docker容器因为权限问题无法启动. 或者在运行docker-compose.yml前手动创建目录"/opt/lore-blog/mysql/log",
-并执行命令chown -R 999:999 /opt/lore-blog/mysql/log
+## 简要安装说明
+### 使用idea编译器远程连接服务器Docker安装
+1. 将项目根目录的install.sh文件上传到服务器并执行
+2. build项目后在idea中执行docker-compose.yml
+
+### 直接在服务器上安装
+1. 自行在服务器上安装好Docker及Docker Compose. 
+2. 将项目中的install.sh, Dockerfile, docker-compose.yml, 项目编译后的jar
+及 jwtSecretKey, jwtSecretKey(这两个密钥文件是自行制作的)全部上传到服务器
+修改Dockerfile文件的15行中的'./build/libs/*.jar' 为jar文件在服务器的实际
+位置. 
+3. 分别执行install.sh, Dockerfile及docker-compose.yml
 
 ## 致谢
 

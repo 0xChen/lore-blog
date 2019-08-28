@@ -143,6 +143,8 @@ $.Blog.prototype.get = function (options) {
         params: options.data || {}
     }).then(function (response) {
         options.success && options.success(response.data)
+    }).then(function () {
+        options.afterSuccess && options.afterSuccess()
     }).catch(function (error) {
         options.error && options.error(error)
     });

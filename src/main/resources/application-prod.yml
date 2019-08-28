@@ -5,7 +5,7 @@ my-app:
   file-location: ./file/
   hostname: developerchen.com
   jwt-expire-time: 604800000
-  jdbc-secret-key-path: file:.\jdbcSecretKey
+  jdbc-secret-key-path: file:./jdbcSecretKey
 
 ############ server ############
 server:
@@ -28,7 +28,7 @@ spring.datasource:
     - file:./change-passwd.sql
   data: classpath:db/data-mysql.sql
   type: com.zaxxer.hikari.HikariDataSource
-  url: $jdbc:mysql://db:3306/sys?serverTimezone=GMT%2B8
+  url: jdbc:mysql://db:3306/sys?serverTimezone=GMT%2B8
   druid:
     url: jdbc:mysql://db:3306/lore_blog
     connection-properties: useSSL=true;useUnicode=true;characterEncoding=UTF-8;zeroDateTimeBehavior=convertToNull;serverTimezone=GMT+8
