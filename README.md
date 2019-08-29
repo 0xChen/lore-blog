@@ -1,4 +1,15 @@
 # Lore-Blog 博客系统
+          __       __
+         /\ \     /\ \
+         \ \ \____\ \ \        ___      __
+          \ \ '__`\\ \ \  __  / __`\  /'_ `\
+           \ \ \L\ \\ \ \O\ \/\ \R\ \/\ \E\ \
+            \ \____/ \ \____/\ \____/\ \____ \
+             \/___/   \/___/  \/___/  \/____\ \
+                                        /\____/
+                                        \_/__/
+                                        
+                                         <> with ❤ by SYC
 ## 简介
  `Lore`是一个主要定位于像作者这样热衷折腾, 并在学习和使用[Spring](https://spring.io)技术栈的你而开发的单用户博客系统. 
  如果你只是单纯的在寻找一个小而美并专注发表文章的系统那么它并不适合你.
@@ -6,7 +17,7 @@
  希望这个博客系统能够让使用者: 学到学识, 记录学识, 传播学识.
  
 [![License](https://img.shields.io/badge/license-MIT-4EB1BA.svg?style=flat-square)](https://github.com/sssyyyccc/lore-blog/blob/dev/LICENSE)
-[![code with hearth by SYC](https://img.shields.io/badge/%3C%2F%3E%20with%20%E2%99%A5%20by-SYC-3caa62.svg)](https://github.com/0xChen)
+[![code with hearth by SYC](https://img.shields.io/badge/%3C%3E%20with%20%E2%99%A5%20by-SYC-3caa62.svg)](https://github.com/0xChen)
 ## 主要技术
 
 + Spring Boot
