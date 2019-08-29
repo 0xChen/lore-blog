@@ -1,5 +1,6 @@
-var mditor, htmlEditor;
-var blog = new $.Blog();
+let mditor, htmlEditor, converter = new showdown.Converter({tables: true, underline: true, tasklists: true});
+converter.setFlavor('github');
+const blog = new $.Blog();
 // 每60秒自动保存一次草稿
 var refreshIntervalId;
 Dropzone.autoDiscover = false;
@@ -155,9 +156,8 @@ var vm = new Vue({
             var this_ = event.target;
             if (contentType === 'markdown') {
                 // 切换为富文本编辑器
-                if ($('#md-container .markdown-body').html().length > 0) {
-                    $('#html-container .note-editable').empty().html($('#md-container .markdown-body').html());
-                    $('#html-container .note-placeholder').hide();
+                if (mditor.value.length > 0) {
+                    htmlEditor.summernote('code', converter.makeHtml(mditor.value));
                 }
                 mditor.value = '';
                 $('#md-container').hide();
@@ -168,9 +168,9 @@ var vm = new Vue({
                 this.post.contentType = 'html';
             } else {
                 // 切换为markdown编辑器
-                if ($('#html-container .note-editable').html().length > 0) {
+                if (!htmlEditor.summernote('isEmpty')) {
                     mditor.value = '';
-                    mditor.value = toMarkdown($('#html-container .note-editable').html());
+                    mditor.value = converter.makeMarkdown(htmlEditor.summernote('code'));
                 }
                 $('#html-container').hide();
                 $('#md-container').show();
