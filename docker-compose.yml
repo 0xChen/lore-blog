@@ -9,7 +9,6 @@ services:
   db:
     container_name: mysql
     image: mysql:8.0.17
-
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: lore_blog
