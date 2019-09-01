@@ -36,4 +36,11 @@ public abstract class BaseController {
     protected String getUsername() {
         return (String) request.getAttribute(Const.REQUEST_USER_NAME);
     }
+
+    /**
+     * 返回404页面
+     */
+    protected String page404() {
+        return "error/404";
+    }
 }
