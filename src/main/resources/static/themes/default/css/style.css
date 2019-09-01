@@ -937,9 +937,8 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 
 .post-onelist-item-container .item-meta-hr {
     display: block;
-    width: 100px;
-    height: 2px;
-    margin: 2px auto 0
+    height: 1px;
+    margin: 2px 15% 0
 }
 
 .post-header-thumb {
@@ -2280,10 +2279,6 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 
     .post-onelist-item-container {
         padding: 20px 20px 25px
-    }
-
-    .post-onelist-item-container .item-content {
-        display: none
     }
 
     .post-onelist-item-container .item-readmore {
