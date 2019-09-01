@@ -43,6 +43,9 @@ public class PostController extends BaseController {
                        @RequestParam(name = "cp", defaultValue = "1") long cp,
                        Model model) {
         Post post = postService.getPostByIdOrSlug(idOrSlug);
+        if (post == null) {
+            return page404();
+        }
         model.addAttribute("post", post);
         model.addAttribute("cp", cp);
         model.addAttribute("is", "post");
@@ -60,6 +63,9 @@ public class PostController extends BaseController {
                        @RequestParam(name = "cp", defaultValue = "1") long cp,
                        Model model) {
         Post post = postService.getPostById(id);
+        if (post == null) {
+            return page404();
+        }
         model.addAttribute("post", post);
         model.addAttribute("cp", cp);
         model.addAttribute("is", "page");
@@ -87,6 +93,9 @@ public class PostController extends BaseController {
                              Model model) {
         size = size == null ? Const.PAGE_DEFAULT_SIZE : size;
         Category category = categoryService.getCategoryById(categoryId);
+        if (category == null) {
+            return page404();
+        }
         IPage<Post> postPage = postService.getPostPageByCategoryId(categoryId, page, size);
         model.addAttribute("categoryName", category.getName());
         model.addAttribute("postPage", postPage);
@@ -96,11 +105,14 @@ public class PostController extends BaseController {
     /**
      * 获取自定义页面
      */
-    @GetMapping("/{name}")
+    @GetMapping("/{name:[^.]+}")
     public String page(@PathVariable String name,
                        @RequestParam(name = "cp", defaultValue = "1") long cp,
                        Model model) {
         Post post = postService.getPageBySlug(name);
+        if (post == null) {
+            return page404();
+        }
         model.addAttribute("post", post);
         model.addAttribute("cp", cp);
         model.addAttribute("is", "page");
