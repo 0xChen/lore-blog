@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorView
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -21,6 +22,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/admin/index").setViewName("admin/index");
         registry.addViewController("/admin/files").setViewName("admin/file/index");
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/robots.txt")
+                .addResourceLocations("classpath:/static/robots.txt");
+
+        registry.addResourceHandler("/favicon.ico")
+                .addResourceLocations("classpath:/static/favicon.ico");
     }
 
     @Bean

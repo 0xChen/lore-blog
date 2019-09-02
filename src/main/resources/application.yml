@@ -5,6 +5,8 @@ spring:
     name: lore-blog
   mvc:
     static-path-pattern: ${my-app.static-path-pattern}
+    favicon:
+      enabled: false
   resources:
     static-locations:
       - classpath:/META-INF/resources/
