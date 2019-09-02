@@ -6,13 +6,13 @@
 <body>
 <div class="social-list" th:fragment="social">
     <a th:if="${#blog.getBlogOption('social_weibo')}" class="social weibo" target="blank"
-       th:href="@{|http://weibo.com/${#blog.getBlogOption('social_weibo')}|}">微博</a>
+       th:href="@{|//weibo.com/${#blog.getBlogOption('social_weibo')}|}">新浪微博</a>
 
     <a th:if="${#blog.getBlogOption('social_github')}" class="social github" target="blank"
-       th:href="@{|http://github.com/${#blog.getBlogOption('social_github')}|}">Github</a>
+       th:href="@{|//github.com/${#blog.getBlogOption('social_github')}|}">GitHub</a>
 
     <a th:if="${#blog.getBlogOption('social_twitter')}" class="social twitter" target="blank"
-       th:href="@{|http://twitter.com/${#blog.getBlogOption('social_twitter')}|}">Twitter</a>
+       th:href="@{|//twitter.com/${#blog.getBlogOption('social_twitter')}|}">Twitter</a>
 </div>
 </body>
 </html>
