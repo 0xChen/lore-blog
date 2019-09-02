@@ -11,7 +11,7 @@
 <div class="main-content common-page clearfix">
     <div class="category-item">
         <div class="common-title" th:text="|类别: ${categoryName}|"></div>
-        <div th:if="${#theme.isEmptyPage(postPage)}">
+        <div th:if="${#blog.isEmptyPage(postPage)}">
             <p>抱歉，还没有相关文章.</p>
         </div>
         <div class="post-lists" th:if="${postPage.total != 0}">
