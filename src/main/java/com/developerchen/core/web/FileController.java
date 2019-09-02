@@ -59,7 +59,6 @@ public class FileController extends BaseController {
     }
 
     /**
-     * 2
      * 显示指定文件名的图片或者下载指定文件
      *
      * @param filename 文件名
