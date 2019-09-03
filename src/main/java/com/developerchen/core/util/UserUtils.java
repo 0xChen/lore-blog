@@ -48,7 +48,7 @@ public class UserUtils {
 
     /**
      * 通过request获取调用者的IP
-     * 会以请求头中的key "x-forwarded-for"判断是否有反向代理以获取真实IP
+     * 会以请求头中的key "X-Forwarded-For"判断是否有反向代理以获取真实IP
      *
      * @param request the current request
      * @return real ip
@@ -59,7 +59,7 @@ public class UserUtils {
         if (request == null) {
             return null;
         }
-        String ip = request.getHeader("x-forwarded-for");
+        String ip = request.getHeader("X-Forwarded-For");
         if (StringUtils.isNotBlank(ip)) {
             if (StringUtils.contains(ip, separatorChar)) {
                 ip = ip.split(separatorChar)[0];
