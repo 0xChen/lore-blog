@@ -22,7 +22,7 @@ INSERT INTO `lore_blog`.`blog_post`(`id`, `title`, `slug`, `author_id`, `thumbna
                                     `read_count`, `pubdate`, `create_time`, `update_time`)
 VALUES (1164530409608876033, '演示文章', 'demo', 1, '',
         '# Lore-Blog 博客系统\n## 简介\n `Lore`是一个主要定位于像作者这样热衷折腾, 并在学习和使用[Spring](https://spring.io)技术栈的你而开发的单用户博客系统. \n \n > lore [lɔː(r)] n. 学问; 知识;   \n 希望这个博客系统能够让使用者: 学到学识, 记录学识, 传播学识.\n \n## 主要技术\n\n+ Spring Boot\n+ Spring Security\n+ Spring Framework\n+ Mybatis-plus\n+ Thymeleaf\n\n## 部分显示效果演示\n### 我是图片\n![演示图片](https://i.loli.net/2019/08/22/VobFDJ1CHZ8RQKE.jpg)\n### 我是代码块\n```java\npublic static void main(String[] args){\n    System.out.println(\"Hello  World\");\n}\n```\n### 我是表格\nFirst Header | Second Header\n------------ | -------------\nCell 1 | Cell 2\nCell 2 | Cell 4\n#### 我是超连接\n[点击访问作者博客网站](https://developerchen.com)  \n[点我查看Markdown教程](https://guides.github.com/features/mastering-markdown/)  \n\n**好啦, 祝您使用愉快.**\n\n',
-        'demo', 1, 'post', 'markdown', '3', '1', '1', 0, 0, '2019-08-22 21:31:28.000', '2019-08-22 12:00:00.521',
+        'demo', 0, 'post', 'markdown', '3', '1', '1', 0, 0, '2019-08-22 21:31:28.000', '2019-08-22 12:00:00.521',
         '2019-08-23 00:15:55.396');
 INSERT INTO `blog_post`(`id`, `title`, `slug`, `author_id`, `thumbnail`, `content`, `tags`, `category_id`, `type`,
                         `content_type`, `status`, `comment_status`, `ping_status`, `comment_count`, `read_count`,
