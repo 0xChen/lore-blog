@@ -12,6 +12,8 @@ spring:
       - classpath:/META-INF/resources/
       - classpath:/resources/
       - classpath:/static/
+server:
+  max-http-header-size: 16KB
 
 ######### 应用自定义配置 #########
 my-app:

@@ -9,11 +9,13 @@ my-app:
 
 ############ server ############
 server:
+  forward-headers-strategy: native
+  port: 8080
   tomcat:
     basedir: ./tomcat/
     uri-encoding: UTF-8
-    remote-ip-header: X-FORWARDED-FOR
-  port: 8080
+    remote-ip-header: X-Forwarded-For
+    protocol-header: X-Forwarded-Proto
 
 ########## datasource ##########
 spring.datasource:
