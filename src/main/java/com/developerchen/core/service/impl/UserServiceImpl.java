@@ -73,10 +73,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     }
 
     /**
-     * 删除所有用户
+     * 删除默认用户以外的所有用户
      */
     @Override
     public void deleteAllUser() {
-        baseMapper.deleteBySql("truncate table sys_user");
+        baseMapper.deleteBySql("DELETE FROM `sys_user` WHERE `id` <> 1");
     }
 }
