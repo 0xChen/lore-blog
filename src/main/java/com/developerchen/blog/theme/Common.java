@@ -48,7 +48,7 @@ public final class Common {
      * 获取网站首页链接
      */
     public static String blogUrl() {
-        return "//" + getBlogOption("hostname");
+        return getBlogOption("scheme") + "://" + getBlogOption("hostname");
     }
 
     /**
