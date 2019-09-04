@@ -43,6 +43,7 @@
                         postUrl = constant.INSTALL_URI + "/option";
                         postData = {
                             "blog_title": $("#blog_title").val(),
+                            "scheme": $("#scheme").val(),
                             "hostname": $("#hostname").val(),
                             "blog_description": $("#blog_description").val()
                         };
@@ -119,3 +120,4 @@
 })(window.jQuery);
 $.FormWizard.init();
 $("#hostname").val(document.location.host);
+$("#scheme").val(document.location.protocol.replace(":", ""));

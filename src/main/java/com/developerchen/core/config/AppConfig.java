@@ -32,8 +32,8 @@ public class AppConfig {
 
     public static String fileLocation;
     public static String staticPathPattern;
+    public static String scheme;
     public static String hostname;
-    public static Long jwtExpireTime;
 
     private AppProperties appProperties;
 
@@ -45,6 +45,7 @@ public class AppConfig {
     protected void initialize() {
         AppConfig.fileLocation = appProperties.getFileLocation();
         AppConfig.staticPathPattern = appProperties.getStaticPathPattern();
+        AppConfig.scheme = appProperties.getScheme();
         AppConfig.hostname = appProperties.getHostname();
 
         JwtTokenUtil.EXPIRE_TIME = appProperties.getJwtExpireTime();

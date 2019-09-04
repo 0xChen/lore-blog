@@ -4,6 +4,16 @@
 <head>
     <th:block th:replace="admin/header::header(${title})"></th:block>
     <link href="//cdn.staticfile.org/bootstrap-toggle/2.2.2/css/bootstrap-toggle.css" rel="stylesheet">
+    <style>
+        #scheme {
+            width: 23%;
+            display: inline-block;
+        }
+        #hostname {
+            width: 76%;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body class="fixed-left">
 <div id="wrapper">
@@ -33,7 +43,11 @@
                                                     <div class="form-group">
                                                         <label class="col-md-3 control-label">网站地址</label>
                                                         <div class="col-md-9">
-                                                            <input type="text" v-model="options.hostname" class="form-control" placeholder="网站地址" required aria-required="true"/>
+                                                            <select class="form-control" id="scheme" v-model="options.scheme">
+                                                                <option value="https">https://</option>
+                                                                <option value="http">http://</option>
+                                                            </select>
+                                                            <input class="form-control" type="text" id="hostname" v-model="options.hostname"  placeholder="网站地址" required aria-required="true"/>
                                                             <span class="help-block"><small>请和你当前访问的域名保持一致，否则会出现渲染错误。</small></span>
                                                         </div>
                                                     </div>
@@ -169,25 +183,9 @@
     $(function () {
         vm.isLoading = false;
         vueLoding.hide();
-        $('#allowInstall').bootstrapToggle({
-            on: '开启',
-            off: '关闭'
-        });
         $('#allowCommentAudit').bootstrapToggle({
             on: '开启',
             off: '关闭'
-        });
-        $('#allowCloudCDN').bootstrapToggle({
-            on: '开启',
-            off: '关闭'
-        });
-        $('#allowInstall').change(function() {
-            var checked = $(this).prop('checked');
-            if (checked) {
-                vm.options.allow_install = '1';
-            } else {
-                vm.options.allow_install = '0';
-            }
         });
         $('#allowCommentAudit').change(function() {
             var checked = $(this).prop('checked');
@@ -197,16 +195,7 @@
                 vm.options.allow_comment_audit = '0';
             }
         });
-        $('#allowCloudCDN').change(function() {
-            var checked = $(this).prop('checked');
-            if (checked) {
-                vm.options.allow_cloud_CDN = '1';
-            } else {
-                vm.options.allow_cloud_CDN = '0';
-            }
-        });
     });
-    console.dir($('#allowInstall').prop("checked"));
 </script>
 </body>
 </html>

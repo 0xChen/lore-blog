@@ -21,6 +21,11 @@ public class AppProperties {
     private String staticPathPattern;
 
     /**
+     * scheme
+     */
+    private String scheme;
+
+    /**
      * hostName
      */
     private String hostname;
@@ -57,6 +62,14 @@ public class AppProperties {
 
     public void setStaticPathPattern(String staticPathPattern) {
         this.staticPathPattern = staticPathPattern;
+    }
+
+    public String getScheme() {
+        return scheme;
+    }
+
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
     }
 
     public String getHostname() {
