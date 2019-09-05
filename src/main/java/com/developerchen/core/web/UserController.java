@@ -140,6 +140,6 @@ public class UserController extends BaseController {
     public String loginUser(Model model) {
         User user = userService.getUserById(getUserId());
         model.addAttribute("user", user);
-        return "/admin/profile";
+        return "admin/profile";
     }
 }
