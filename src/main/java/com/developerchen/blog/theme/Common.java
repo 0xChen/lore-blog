@@ -82,13 +82,6 @@ public final class Common {
     }
 
     /**
-     * 网站子标题
-     */
-    public static String blogSubtitle() {
-        return getBlogOption("blog_subtitle");
-    }
-
-    /**
      * 获取网站关键字
      */
     public static String blogKeywords() {
