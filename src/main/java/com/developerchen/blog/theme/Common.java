@@ -89,7 +89,7 @@ public final class Common {
     }
 
     /**
-     * 获取站点设置的描述信息
+     * 获取网站描述信息
      */
     public static String blogDescription() {
         return getBlogOption(BlogConst.OPTION_BLOG_DESCRIPTION);
@@ -179,10 +179,10 @@ public final class Common {
         if (content.contains(imgTagPrefix)) {
             String img = "";
             String imgReg = "<img\\s*src\\s*=\\s*(.*?)[^>]*?>";
-            Pattern imageP = Pattern.compile(imgReg, Pattern.CASE_INSENSITIVE);
-            Matcher imageM = imageP.matcher(content);
-            if (imageM.find()) {
-                img = img + "," + imageM.group();
+            Pattern imagePattern = Pattern.compile(imgReg, Pattern.CASE_INSENSITIVE);
+            Matcher imageMatcher = imagePattern.matcher(content);
+            if (imageMatcher.find()) {
+                img = img + "," + imageMatcher.group();
                 // 匹配src
                 Matcher m = SRC_PATTERN.matcher(img);
                 if (m.find()) {
