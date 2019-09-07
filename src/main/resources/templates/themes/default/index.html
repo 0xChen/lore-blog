@@ -13,9 +13,7 @@
         <div class="post-lists-body">
             <div class="post-onelist-item" th:each="post : ${postPage.records}">
                 <div class="post-onelist-item-container">
-                    <a th:if="${#blog.hasThumbnail(post)}" th:href="${#theme.permalink(post)}">
-                        <div class="onelist-item-thumbnail bg-deepgrey" th:style="'background-image: url(' + ${#blog.showThumb(post)} + ');'"></div>
-                    </a>
+                    <div class="onelist-item-thumbnail bg-deepgrey" th:style="'background-image: url(' + ${#blog.showThumb(post)} + ');'"></div>
                     <div class="onelist-item-info">
                         <div class="item-title">
                             <a th:href="${#theme.permalink(post)}" th:text="${post.title}"></a>
@@ -25,7 +23,7 @@
                             <i class="fa fa-tag" aria-hidden="true"></i><th:block th:utext="${#theme.category(post)}"></th:block>
                             <i class="fa fa-eye" aria-hidden="true"></i><th:block th:utext="${post.readCount}"></th:block>
                         </div>
-                        <div class="item-meta-hr bg-deepgrey"></div>
+                        <div class="item-meta-hr anim-rainbow"></div>
                         <div class="item-content">
                             <p th:utext="${#blog.intro(post.content, 300, '...')}"></p>
                         </div>
