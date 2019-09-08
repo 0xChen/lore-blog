@@ -49,7 +49,7 @@ services:
     container_name: nginx
     depends_on:
       - webapp
-    image: nginx:1.17.2
+    image: nginx:1.17.3
     environment:
       NGINX_HOST: developerchen.com
     volumes:
