@@ -53,7 +53,7 @@ public class PostController extends BaseController {
     }
 
     /**
-     * 获取指定文章
+     * 获取指定页面
      *
      * @param id post主键
      * @param cp 当前post评论的页码
