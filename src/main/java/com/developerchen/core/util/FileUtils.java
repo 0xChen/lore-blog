@@ -5,6 +5,9 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * 文件工具类
@@ -77,15 +80,56 @@ public class FileUtils {
     }
 
     /**
-     * {@link org.springframework.core.io.support.ResourcePatternResolver#getResources(String)}
+     * 获取指定位置下的所有文件, 如果文件是Jar文件中的文件
+     * 将读取文件中的内容并写入一个同名的临时文件中然后返回这个临时文件
+     *
+     * @param locationPattern 文件位置, 可使用通配符等
+     * @return 一组文件
      */
-    public static File[] getResources(String locationPattern) throws IOException {
+    public static File[] getFiles(String locationPattern) throws IOException {
         Resource[] resources = RESOURCE_RESOLVER.getResources(locationPattern);
         File[] files = new File[resources.length];
         for (int i = 0; i < resources.length; i++) {
-            files[i] = resources[i].getFile();
+            Resource resource = resources[i];
+            if (!resource.exists()) {
+                continue;
+            }
+            if (resource.isFile()) {
+                files[i] = resource.getFile();
+            } else {
+                // 可能是Jar中的文件尝试以流的形式获取
+                String filename = resource.getFilename();
+                if (filename != null) {
+                    String suffix = filename.substring(filename.lastIndexOf("."));
+                    String prefix = filename.replace(suffix, "");
+                    Path path = Files.createTempFile(prefix, suffix);
+                    try (InputStream inputStream = resource.getInputStream()) {
+                        byte[] bytes = new byte[inputStream.available()];
+                        int read = inputStream.read(bytes);
+                        if (bytes.length != read) {
+                            inputStream.close();
+                            throw new IOException("读取文件内容时发生错误.");
+                        }
+                        Files.write(path, bytes);
+                        files[i] = path.toFile();
+                    }
+                }
+            }
         }
         return files;
     }
 
+    /**
+     * {@link org.springframework.core.io.support.ResourcePatternResolver#getResource(String)}
+     */
+    public static Resource getResource(String location) throws IOException {
+        return RESOURCE_RESOLVER.getResource(location);
+    }
+
+    /**
+     * {@link org.springframework.core.io.support.ResourcePatternResolver#getResources(String)}
+     */
+    public static Resource[] getResources(String locationPattern) throws IOException {
+        return RESOURCE_RESOLVER.getResources(locationPattern);
+    }
 }

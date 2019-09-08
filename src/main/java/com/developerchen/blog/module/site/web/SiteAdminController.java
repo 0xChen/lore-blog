@@ -12,16 +12,14 @@ import com.developerchen.blog.theme.Common;
 import com.developerchen.core.config.AppConfig;
 import com.developerchen.core.domain.RestResponse;
 import com.developerchen.core.exception.RestException;
+import com.developerchen.core.util.FileUtils;
 import com.developerchen.core.web.BaseController;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -79,18 +77,20 @@ public class SiteAdminController extends BaseController {
     public RestResponse getThemes() {
         List<ThemeDTO> themeList = new ArrayList<>(6);
         try {
-            File themes = new ClassPathResource("templates/themes").getFile();
-            File[] themesFile = themes.listFiles();
-            if (themesFile != null) {
-                for (File file : themesFile) {
-                    if (file.isDirectory()) {
-                        ThemeDTO themeDTO = new ThemeDTO(file.getName());
-                        if (Files.exists(Paths.get(file.getPath()).resolve("setting.html"))) {
-                            themeDTO.setHasSetting(true);
-                        }
-                        themeList.add(themeDTO);
-                    }
+            // 获取所有主题下的首页页面
+            Resource[] resources = FileUtils.getResources("classpath:templates/themes/*/index.html");
+            for (Resource resource : resources) {
+                String indexPagePath = resource.getURL().getPath();
+
+                int beginIndex = indexPagePath.lastIndexOf("themes/") + 7;
+                int endIndex = indexPagePath.lastIndexOf("/index.html");
+                String themeName = indexPagePath.substring(beginIndex, endIndex);
+                ThemeDTO themeDTO = new ThemeDTO(themeName);
+                String settingPagePath = "classpath:templates/themes/" + themeName + "/setting.html";
+                if (FileUtils.getResource(settingPagePath).exists()) {
+                    themeDTO.setHasSetting(true);
                 }
+                themeList.add(themeDTO);
             }
         } catch (IOException e) {
             throw new RestException("获取主题文件失败", e);
