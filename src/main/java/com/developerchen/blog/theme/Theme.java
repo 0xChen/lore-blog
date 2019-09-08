@@ -106,7 +106,7 @@ public final class Theme {
             Post post = currentPost(ctx);
             return Common.intro(post.getContent(), 100, "...");
         } else {
-            return Common.blogKeywords();
+            return Common.blogDescription();
         }
     }
 
