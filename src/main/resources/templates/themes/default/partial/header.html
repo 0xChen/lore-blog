@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
-<head th:fragment="head(title)">
+<!--/*@thymesVar id="#theme" type="com.developerchen.blog.theme.Theme"*/-->
+<head th:fragment="head (title)">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
     <meta name="renderer" content="webkit">
@@ -9,11 +10,11 @@
           content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="Cache-Control" content="no-transform"/>
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
-    <meta name="keywords" th:content="${#blog.blogKeywords()}"/>
-    <meta name="description" th:content="${#blog.blogDescription()}"/>
+    <title th:text="|${title} - ${#blog.blogTitle()}|"></title>
+    <meta name="keywords" th:content="${#theme.metaKeywords(#ctx)}"/>
+    <meta name="description" th:content="${#theme.metaDescription(#ctx)}"/>
     <link rel="shortcut icon" href="/resources/themes/default/img/favicon.png">
     <link rel="apple-touch-icon" href="/resources/themes/default/img/favicon.png">
-    <title th:text="${title}"></title>
     <link rel="stylesheet" href="/resources/themes/default/plugin/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/resources/themes/default/plugin/highlight/9.15.8/atom-one-dark.css">
     <link rel="stylesheet" href="/resources/themes/default/css/style.css">

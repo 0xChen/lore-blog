@@ -87,6 +87,30 @@ public final class Theme {
     }
 
     /**
+     * 获取用于SEO的keywords
+     */
+    public static String metaKeywords(WebEngineContext ctx) {
+        if (is(ctx, "post")) {
+            Post post = currentPost(ctx);
+            return post.getTags();
+        } else {
+            return Common.blogKeywords();
+        }
+    }
+
+    /**
+     * 获取用于SEO的description
+     */
+    public static String metaDescription(WebEngineContext ctx) {
+        if (is(ctx, "post")) {
+            Post post = currentPost(ctx);
+            return Common.intro(post.getContent(), 100, "...");
+        } else {
+            return Common.blogKeywords();
+        }
+    }
+
+    /**
      * 获取指定数量的最新文章
      *
      * @param size 文章数量
