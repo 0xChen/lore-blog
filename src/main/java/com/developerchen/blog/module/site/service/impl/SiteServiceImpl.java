@@ -1,9 +1,9 @@
 package com.developerchen.blog.module.site.service.impl;
 
 import com.developerchen.blog.constant.BlogConst;
-import com.developerchen.blog.exception.BlogException;
 import com.developerchen.blog.module.category.service.ICategoryService;
 import com.developerchen.blog.module.comment.service.ICommentService;
+import com.developerchen.blog.module.post.domain.entity.Post;
 import com.developerchen.blog.module.post.service.IPostService;
 import com.developerchen.blog.module.site.domain.dto.StatisticsDTO;
 import com.developerchen.blog.module.site.service.ISiteService;
@@ -12,13 +12,9 @@ import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.service.IFileService;
 import com.developerchen.core.service.IOptionService;
 import com.developerchen.core.service.IUserService;
-import com.developerchen.core.util.SecurityUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -97,6 +93,16 @@ public class SiteServiceImpl implements ISiteService {
         statistics.setCategories(categories);
 
         return statistics;
+    }
+
+    /**
+     * 获取用于构建站点地图的Post
+     *
+     * @return Post集合
+     */
+    @Override
+    public List<Post> getPostForSitemap() {
+        return this.postService.getPostForSitemap();
     }
 
     /**

@@ -1,8 +1,10 @@
 package com.developerchen.blog.module.site.service;
 
+import com.developerchen.blog.module.post.domain.entity.Post;
 import com.developerchen.blog.module.site.domain.dto.StatisticsDTO;
 import com.developerchen.core.domain.entity.User;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,4 +27,5 @@ public interface ISiteService {
 
     void saveSiteSetting(Map<String, String> parameterMap);
 
+    List<Post> getPostForSitemap();
 }

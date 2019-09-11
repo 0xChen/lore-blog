@@ -51,4 +51,5 @@ public interface IPostService extends IBaseService<Post> {
 
     void reducePostCommentCount(long postId);
 
+    List<Post> getPostForSitemap();
 }

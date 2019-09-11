@@ -1,11 +1,15 @@
 package com.developerchen.blog.module.site.web;
 
 import com.developerchen.blog.constant.BlogConst;
+import com.developerchen.blog.module.post.domain.entity.Post;
+import com.developerchen.blog.module.site.domain.Sitemap;
 import com.developerchen.blog.module.site.service.ISiteService;
+import com.developerchen.core.config.AppConfig;
 import com.developerchen.core.constant.Const;
 import com.developerchen.core.domain.RestResponse;
 import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.web.BaseController;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +22,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,6 +55,27 @@ public class SiteController extends BaseController {
         model.addAttribute("page", page);
         model.addAttribute("size", size);
         return "themes/{theme}/index";
+    }
+
+    @ResponseBody()
+    @GetMapping(value = "sitemap.xml", produces = {"application/xml; charset=utf-8"})
+    public String sitemap() {
+        List<Post> postList = siteService.getPostForSitemap();
+        Sitemap sitemap = new Sitemap(postList.size());
+        for (Post post : postList) {
+            String postUrl = AppConfig.scheme + "://" + AppConfig.hostname + "/post/";
+            if (StringUtils.isNotEmpty(post.getSlug())) {
+                postUrl = postUrl + post.getSlug();
+            } else {
+                postUrl = postUrl + post.getId();
+            }
+
+            Date lastMod = post.getUpdateTime();
+            lastMod = lastMod == null ? post.getCreateTime() : lastMod;
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(lastMod.toInstant(), ZoneId.systemDefault());
+            sitemap.addUrl(postUrl, localDateTime.format(DateTimeFormatter.ISO_DATE_TIME));
+        }
+        return sitemap.toXmlString();
     }
 
     /**

@@ -382,4 +382,23 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
                 .eq("id", postId));
     }
 
+    /**
+     * 获取用于构建站点地图的Post
+     *
+     * @return Post集合
+     */
+    @Override
+    public List<Post> getPostForSitemap() {
+        // 查询条件
+        QueryWrapper<Post> qw = new QueryWrapper<>();
+        qw.eq("status", BlogConst.POST_STATUS_PUBLISH);
+        qw.eq("type", BlogConst.POST_TYPE_POST);
+        // 排序
+        qw.orderByDesc("pubdate");
+        qw.orderByDesc("create_time");
+        qw.orderByDesc("update_time");
+
+        return baseMapper.selectList(qw);
+    }
+
 }
