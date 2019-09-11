@@ -3,6 +3,7 @@ package com.developerchen.blog.module.comment.web;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.developerchen.blog.module.comment.domain.entity.Comment;
 import com.developerchen.blog.module.comment.service.ICommentService;
+import com.developerchen.core.config.AppConfig;
 import com.developerchen.core.constant.Const;
 import com.developerchen.core.domain.RestResponse;
 import com.developerchen.core.domain.entity.User;
@@ -73,7 +74,7 @@ public class CommentAdminController extends BaseController {
         comment.setParentId(commentId);
         comment.setIp(UserUtils.getRemoteIp(request));
         comment.setAgent(UserUtils.getUserAgent(request));
-        comment.setUrl(Const.HOSTNAME);
+        comment.setUrl(AppConfig.scheme + "://" + AppConfig.hostname);
 
         commentService.replyComment(comment);
         return RestResponse.ok();

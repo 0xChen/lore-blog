@@ -29,10 +29,10 @@ public final class Const {
     }
 
     /**
-     * 域名
+     * 配置项相关
      */
-    public static String HOSTNAME;
-    public static String OPTION_HOSTNAME = "hostname";
+    public static final String OPTION_SCHEME = "scheme";
+    public static final String OPTION_HOSTNAME = "hostname";
 
     /**
      * 是/否

@@ -40,7 +40,12 @@ public class AppInitializer {
         // 读取数据库 sys_option 表中所有配置项, 添加到SystemConfig.OPTION中
         Map<String, String> option = optionService.getAllOption();
         AppConfig.addOptions(option);
-        String hostname = option.get("hostname");
+        String scheme = option.get(Const.OPTION_SCHEME);
+        String hostname = option.get(Const.OPTION_HOSTNAME);
+        if (StringUtils.isNotBlank(scheme)) {
+            // 数据库中的设置优先级高于配置文件中指定的
+            AppConfig.scheme = scheme;
+        }
         if (StringUtils.isNotBlank(hostname)) {
             // 数据库中设置的域名优先级高于配置文件中指定的
             AppConfig.hostname = hostname;
@@ -61,7 +66,6 @@ public class AppInitializer {
 
         // 初始化静态常量Map
         try {
-            Const.HOSTNAME = AppConfig.hostname;
             Const.init();
             BlogConst.init();
         } catch (IllegalAccessException e) {

@@ -5,6 +5,7 @@ import com.developerchen.blog.constant.BlogConst;
 import com.developerchen.blog.module.post.domain.entity.Post;
 import com.developerchen.blog.util.BlogUtils;
 import com.developerchen.core.config.AppConfig;
+import com.developerchen.core.constant.Const;
 import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.util.UserUtils;
 import com.vdurmont.emoji.EmojiParser;
@@ -48,7 +49,7 @@ public final class Common {
      * 获取网站首页链接
      */
     public static String blogUrl() {
-        return getBlogOption("scheme") + "://" + getBlogOption("hostname");
+        return getBlogOption(Const.OPTION_SCHEME) + "://" + getBlogOption(Const.OPTION_HOSTNAME);
     }
 
     /**
