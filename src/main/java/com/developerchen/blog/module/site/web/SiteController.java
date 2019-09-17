@@ -22,8 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -49,8 +49,7 @@ public class SiteController extends BaseController {
      */
     @GetMapping(value = {"", "/index"})
     public String index(@RequestParam(defaultValue = "1") Long page,
-                        @RequestParam(required = false) Long size,
-                        Model model) {
+                        @RequestParam(required = false) Long size, Model model) {
         size = size == null ? Const.PAGE_DEFAULT_SIZE : size;
         model.addAttribute("page", page);
         model.addAttribute("size", size);
@@ -72,8 +71,9 @@ public class SiteController extends BaseController {
 
             Date lastMod = post.getUpdateTime();
             lastMod = lastMod == null ? post.getCreateTime() : lastMod;
-            LocalDateTime localDateTime = LocalDateTime.ofInstant(lastMod.toInstant(), ZoneId.systemDefault());
-            sitemap.addUrl(postUrl, localDateTime.format(DateTimeFormatter.ISO_DATE_TIME));
+            OffsetDateTime offsetDateTime = OffsetDateTime.ofInstant(lastMod.toInstant(),
+                    ZoneOffset.systemDefault());
+            sitemap.addUrl(postUrl, offsetDateTime.withNano(0).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         }
         return sitemap.toXmlString();
     }
@@ -131,8 +131,8 @@ public class SiteController extends BaseController {
         }
         if (errorMessage != null) {
             BlogConst.HAS_INSTALLED = false;
-            return RestResponse.fail("初始化站点失败, 无法创建["
-                    + BlogConst.INSTALLED.getPath() + "]文件, " + errorMessage + ". ");
+            return RestResponse.fail("初始化站点失败, 无法创建[" +
+                    BlogConst.INSTALLED.getPath() + "]文件, " + errorMessage + ". ");
         } else {
             BlogConst.HAS_INSTALLED = true;
             return RestResponse.ok();
