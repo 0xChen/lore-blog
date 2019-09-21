@@ -3,6 +3,7 @@ package com.developerchen.blog.module.category.service;
 import com.developerchen.blog.module.category.domain.dto.CategoryDTO;
 import com.developerchen.blog.module.category.domain.entity.Category;
 import com.developerchen.core.service.IBaseService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public interface ICategoryService extends IBaseService<Category> {
     /**
      * 初始化构建根节点
      */
+    @Transactional
     void initRootCategory();
 
     /**
@@ -40,6 +42,7 @@ public interface ICategoryService extends IBaseService<Category> {
      * @param name     分类名称
      * @param parentId 新增分类的父分类ID, 如果没有父ID, 则插入到默认分类下面
      */
+    @Transactional
     void insertCategory(String name, Long parentId);
 
     /**
@@ -87,6 +90,7 @@ public interface ICategoryService extends IBaseService<Category> {
      *
      * @param category 更新内容
      */
+    @Transactional
     void updateCategoryById(Category category);
 
     /**
@@ -94,6 +98,7 @@ public interface ICategoryService extends IBaseService<Category> {
      *
      * @param category 待删除的分类
      */
+    @Transactional
     void deleteCategory(Category category);
 
     /**
@@ -101,6 +106,7 @@ public interface ICategoryService extends IBaseService<Category> {
      *
      * @param categoryId 待删除分类的主键
      */
+    @Transactional
     void deleteCategoryById(long categoryId);
 }
 

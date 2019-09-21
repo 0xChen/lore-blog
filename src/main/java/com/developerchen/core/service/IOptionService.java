@@ -1,6 +1,7 @@
 package com.developerchen.core.service;
 
 import com.developerchen.core.domain.entity.Option;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -21,11 +22,13 @@ public interface IOptionService extends IBaseService<Option> {
      * @param name  配置名称
      * @param value 配置值
      */
+    @Transactional
     void saveOrUpdateOptionByName(String name, String value);
 
     /**
      * 保存或更新指定配置
      */
+    @Transactional
     void saveOrUpdateOption(Option option);
 
     /**
@@ -33,6 +36,7 @@ public interface IOptionService extends IBaseService<Option> {
      *
      * @param parameterMap key: 配置名称 -> value: 值
      */
+    @Transactional
     void saveOrUpdateOptions(Map<String, String> parameterMap);
 
     /**
@@ -61,6 +65,7 @@ public interface IOptionService extends IBaseService<Option> {
      *
      * @param name 配置名称
      */
+    @Transactional
     void deleteOptionByName(String name);
 
     /**
@@ -68,6 +73,7 @@ public interface IOptionService extends IBaseService<Option> {
      *
      * @param id option表主键
      */
+    @Transactional
     void deleteOptionById(String id);
 
     /**
@@ -75,10 +81,12 @@ public interface IOptionService extends IBaseService<Option> {
      *
      * @param ids option表主键集合
      */
+    @Transactional
     void deleteOptionByIds(Collection<? extends Serializable> ids);
 
     /**
      * 删除所有设置项
      */
+    @Transactional
     void deleteAllOption();
 }

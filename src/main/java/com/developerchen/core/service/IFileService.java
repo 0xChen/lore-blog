@@ -3,6 +3,7 @@ package com.developerchen.core.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.developerchen.core.domain.entity.Attachment;
 import org.springframework.core.io.Resource;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
@@ -19,12 +20,15 @@ import java.util.stream.Stream;
 public interface IFileService extends IBaseService<Attachment> {
     int fileCount(String type);
 
+    @Transactional
     String saveFile(MultipartFile files);
 
     Resource loadAsResource(String filename);
 
+    @Transactional
     void deleteAll();
 
+    @Transactional
     void delete(Set<Long> fileIds);
 
     IPage<Attachment> getFiles(String name, String key, String type, long page, long size);
@@ -32,6 +36,5 @@ public interface IFileService extends IBaseService<Attachment> {
     Path load(String filename);
 
     Stream<Path> loadAll();
-
 
 }

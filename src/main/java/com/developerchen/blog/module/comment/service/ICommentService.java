@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.developerchen.blog.module.comment.domain.dto.CommentDTO;
 import com.developerchen.blog.module.comment.domain.entity.Comment;
 import com.developerchen.core.service.IBaseService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,12 +16,16 @@ import java.util.List;
  * @author syc
  */
 public interface ICommentService extends IBaseService<Comment> {
+    @Transactional
     void replyComment(Comment comment);
 
+    @Transactional
     void deleteCommentById(long id);
 
+    @Transactional
     void deleteCommentByOwnerId(long ownerId);
 
+    @Transactional
     void updateStatusByCommentId(long id, String status);
 
     List<Comment> recentComments(long size);
