@@ -1,4 +1,4 @@
-package com.developerchen.blog.module.link.service.impl;
+package com.developerchen.blog.module.link.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

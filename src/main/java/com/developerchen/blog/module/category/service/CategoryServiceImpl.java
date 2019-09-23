@@ -1,4 +1,4 @@
-package com.developerchen.blog.module.category.service.impl;
+package com.developerchen.blog.module.category.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.developerchen.blog.constant.BlogConst;

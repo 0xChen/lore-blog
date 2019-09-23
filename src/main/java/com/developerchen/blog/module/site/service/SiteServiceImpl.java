@@ -1,4 +1,4 @@
-package com.developerchen.blog.module.site.service.impl;
+package com.developerchen.blog.module.site.service;
 
 import com.developerchen.blog.constant.BlogConst;
 import com.developerchen.blog.module.category.service.ICategoryService;
