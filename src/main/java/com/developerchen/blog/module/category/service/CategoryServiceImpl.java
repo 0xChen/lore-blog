@@ -69,7 +69,6 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      * @param name     分类名称
      * @param parentId 新增分类的父分类ID
      */
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void insertCategory(String name, Long parentId) {
         parentId = parentId == null ? BlogConst.CATEGORY_ROOT_ID : parentId;
