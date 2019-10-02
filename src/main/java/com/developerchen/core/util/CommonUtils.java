@@ -20,14 +20,15 @@ public class CommonUtils {
      * @param propertyKey 属性名称
      * @return 目标属性所在的Map
      */
-    public static Map getPropertyMap(ConfigurableEnvironment environment, String propertyKey) {
-        Map propertyMap = null;
+    @SuppressWarnings("unchecked")
+    public static Map<Object, Object> getPropertyMap(ConfigurableEnvironment environment, String propertyKey) {
+        Map<Object, Object> propertyMap = null;
         MutablePropertySources propertySources = environment.getPropertySources();
         for (PropertySource<?> propertySource : propertySources) {
             if (propertySource.containsProperty(propertyKey)) {
                 Object source = propertySource.getSource();
                 if (source instanceof Map) {
-                    propertyMap = (Map) source;
+                    propertyMap = (Map<Object, Object>) source;
                     break;
                 }
             }

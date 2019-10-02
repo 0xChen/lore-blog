@@ -3,6 +3,7 @@
 ######### 应用自定义配置 #########
 my-app:
   file-location: E:\lore-blog\file\
+  scheme: http
   hostname: 127.0.0.1
   jwt-expire-time: 864000000
 

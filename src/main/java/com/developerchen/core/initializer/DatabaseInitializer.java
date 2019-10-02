@@ -32,7 +32,6 @@ import java.util.Map;
 public class DatabaseInitializer implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
     private final Logger logger = LoggerFactory.getLogger(DatabaseInitializer.class);
 
-    @SuppressWarnings("all")
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
         String initializationModeKey = "spring.datasource.initialization-mode";
@@ -43,7 +42,7 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationEnvir
             return;
         }
 
-        Map propertyMap = CommonUtils.getPropertyMap(environment, initializationModeKey);
+        Map<Object, Object> propertyMap = CommonUtils.getPropertyMap(environment, initializationModeKey);
 
         if (propertyMap != null) {
             if (BlogConst.INSTALLED.exists()) {

@@ -25,7 +25,6 @@ public class DecryptJdbcPassword implements ApplicationListener<ApplicationEnvir
     public static String JDBC_SECRET_KEY_PATH_KEY = "my-app.jdbc-secret-key-path";
     public static String DEFAULT_JDBC_SECRET_KEY_PATH = AppConfig.HOME_PATH + File.separator + "jdbcSecretKey";
 
-    @SuppressWarnings("all")
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
 
@@ -35,7 +34,7 @@ public class DecryptJdbcPassword implements ApplicationListener<ApplicationEnvir
             return;
         }
 
-        Map propertyMap = CommonUtils.getPropertyMap(environment, ENCRYPTED_PASSWORD_KEY);
+        Map<Object, Object> propertyMap = CommonUtils.getPropertyMap(environment, ENCRYPTED_PASSWORD_KEY);
 
         if (propertyMap != null) {
             String jdbcSecretKeyPath = environment.getProperty(JDBC_SECRET_KEY_PATH_KEY);
