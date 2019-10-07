@@ -4,7 +4,7 @@
 # 目前只负责创建程序目录及配置文件, 后续会逐渐增加其它构建步骤
 # -------------------------------------------------
 
-appPath="/opt/lore-blog-test"
+appPath="/opt/lore-blog"
 if  [ ! -d $appPath ];then
   mkdir -p $appPath
 else
