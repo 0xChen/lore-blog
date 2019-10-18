@@ -1,0 +1,15 @@
+language: java
+
+jdk:
+  - openjdk8
+
+sudo: required
+
+notifications:
+  email: false
+
+before_install:
+ - chmod +x gradlew
+
+script:
+  - ./gradlew assemble
