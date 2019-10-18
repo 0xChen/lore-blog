@@ -13,3 +13,7 @@ before_install:
 
 script:
   - ./gradlew assemble
+
+cache:
+  directories:
+    - $HOME/.gradle
