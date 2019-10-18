@@ -16,6 +16,7 @@
  > lore	[lɔː(r)] n. 学问; 知识;  
  希望这个博客系统能够让使用者: 学到学识, 记录学识, 传播学识.
  
+![Build Status](https://api.travis-ci.org/0xChen/lore-blog.svg?branch=master)
 [![License](https://img.shields.io/badge/license-MIT-4EB1BA.svg?style=flat-square)](https://github.com/0xChen/lore-blog/blob/dev/LICENSE)
 [![code with hearth by SYC](https://img.shields.io/badge/%3C%3E%20with%20%E2%99%A5%20by-SYC-3caa62.svg)](https://github.com/0xChen)
 ## 主要技术
