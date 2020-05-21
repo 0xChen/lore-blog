@@ -25,7 +25,7 @@ public class MyYamlPropertySourceLoader extends YamlPropertySourceLoader {
 
         for (PropertySource<?> propertySource : propertySources) {
             if (propertySource instanceof OriginTrackedMapPropertySource) {
-                Map<?, ?> source = (Map) propertySource.getSource();
+                Map<?, ?> source = (Map<?, ?>) propertySource.getSource();
                 Map<Object, Object> newSource = new LinkedHashMap<>((int) (source.size() / 0.75 + 1));
                 for (Object key : source.keySet()) {
                     Object value = source.get(key);
