@@ -151,8 +151,9 @@ public final class JwtTokenUtil {
      * @return Claims
      */
     private static Claims getClaimsFromToken(String token) {
-        return Jwts.parser()
+        return Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -251,7 +252,7 @@ public final class JwtTokenUtil {
      */
     public static boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
             return true;
         } catch (UnsupportedJwtException
                 | MalformedJwtException
