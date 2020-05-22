@@ -132,7 +132,7 @@ public class RestResponse<T> {
         this.timestamp = timestamp;
     }
 
-    public static RestResponse ok() {
+    public static RestResponse<?> ok() {
         RestResponse<?> r = new RestResponse<>(true);
         r.setStatus(200);
         return r;
@@ -144,7 +144,7 @@ public class RestResponse<T> {
         return r;
     }
 
-    public static RestResponse ok(int status) {
+    public static RestResponse<?> ok(int status) {
         return new RestResponse<>(true, null, status);
     }
 
@@ -152,19 +152,19 @@ public class RestResponse<T> {
         return new RestResponse<>(true, payload, status);
     }
 
-    public static RestResponse fail() {
+    public static RestResponse<?> fail() {
         return new RestResponse<>(false);
     }
 
-    public static RestResponse fail(String message) {
+    public static RestResponse<?> fail(String message) {
         return new RestResponse<>(false, message);
     }
 
-    public static RestResponse fail(int status) {
+    public static RestResponse<?> fail(int status) {
         return new RestResponse<>(false, null, status);
     }
 
-    public static RestResponse fail(int status, String message) {
+    public static RestResponse<?> fail(int status, String message) {
         return new RestResponse<>(false, message, status);
     }
 
