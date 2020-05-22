@@ -283,8 +283,8 @@ public final class JwtTokenUtil {
         Claims claims = getClaimsFromToken(token);
         return new JwtUser(
                 claims.get("id", Long.class),
-                claims.get("nickname", String.class),
                 claims.getSubject(),
+                claims.get("nickname", String.class),
                 null,
                 claims.get("status", String.class),
                 claims.get("email", String.class),

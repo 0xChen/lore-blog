@@ -35,7 +35,7 @@ public class UserController extends BaseController {
      */
     @ResponseBody
     @PostMapping("/user")
-    public RestResponse saveOrUpdate(User user) {
+    public RestResponse<User> saveOrUpdate(User user) {
         userService.saveOrUpdateUser(user);
         return RestResponse.ok(user);
     }
