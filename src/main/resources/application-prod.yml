@@ -4,7 +4,7 @@
 my-app:
   file-location: ./file/
   hostname: developerchen.com
-  jwt-expire-time: 604800000
+  jwt-expire-time: 86400000
   jdbc-secret-key-path: file:./jdbcSecretKey
 
 ############ server ############
@@ -14,8 +14,9 @@ server:
   tomcat:
     basedir: ./tomcat/
     uri-encoding: UTF-8
-    remote-ip-header: X-Forwarded-For
-    protocol-header: X-Forwarded-Proto
+    remoteip:
+      remote-ip-header: X-Forwarded-For
+      protocol-header: X-Forwarded-Proto
 
 ########## datasource ##########
 spring.datasource:

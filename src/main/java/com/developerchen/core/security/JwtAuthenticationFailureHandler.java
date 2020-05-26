@@ -45,7 +45,6 @@ public class JwtAuthenticationFailureHandler extends
     }
 
     private boolean isAjaxRequest(HttpServletRequest request) {
-        String ajaxHeader = request.getHeader("X-Requested-With");
-        return ajaxHeader != null && "XMLHttpRequest".equals(ajaxHeader);
+        return "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
     }
 }

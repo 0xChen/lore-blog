@@ -1,5 +1,5 @@
 # https://docs.docker.com/engine/reference/builder/
-FROM openjdk:8-jre-alpine
+FROM adoptopenjdk:8-jre-hotspot
 LABEL maintainer="sunyuchen1990@gmail.com"
 
 WORKDIR /opt/lore-blog/webapp/
@@ -16,6 +16,7 @@ COPY ./build/libs/*.jar lore-blog.jar
 # jdbc和jwt的密钥文件, 根据实际设置位置做相应修改
 COPY ./jdbcSecretKey jdbcSecretKey
 COPY ./jwtSecretKey jwtSecretKey
+COPY ./change-passwd.sql change-passwd.sql
 
 EXPOSE 8080
 

@@ -40,14 +40,20 @@ public class JwtAuthenticationSuccessHandler extends
         JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
         String token = JwtTokenUtil.generateToken(jwtUser);
 
-        Cookie cookie = new Cookie(Const.COOKIE_ACCESS_TOKEN, token);
-        cookie.setMaxAge((int) (JwtTokenUtil.EXPIRE_TIME / 1000));
-        cookie.setPath(getCookiePath(request));
-        cookie.setSecure(request.isSecure());
-        cookie.setHttpOnly(true);
+        boolean isAjaxRequest = isAjaxRequest(request);
+        boolean isRememberMe = Boolean.parseBoolean(request.getParameter(Const.REQUEST_REMEMBER_ME));
 
-        response.addCookie(cookie);
-        if (isAjaxRequest(request)) {
+        if (!isAjaxRequest || isRememberMe) {
+            // 记住我
+            Cookie cookie = new Cookie(Const.COOKIE_ACCESS_TOKEN, token);
+            cookie.setMaxAge((int) (JwtTokenUtil.EXPIRE_TIME / 1000));
+            cookie.setPath(getCookiePath(request));
+            cookie.setSecure(request.isSecure());
+            cookie.setHttpOnly(true);
+
+            response.addCookie(cookie);
+        }
+        if (isAjaxRequest) {
             PrintWriter pw = response.getWriter();
             pw.print(true);
             pw.flush();
@@ -63,7 +69,6 @@ public class JwtAuthenticationSuccessHandler extends
     }
 
     private boolean isAjaxRequest(HttpServletRequest request) {
-        String ajaxHeader = request.getHeader("X-Requested-With");
-        return "XMLHttpRequest".equals(ajaxHeader);
+        return "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
     }
 }

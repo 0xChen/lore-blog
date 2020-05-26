@@ -48,18 +48,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
             .addFilterAfter(new JwtAuthorizationFilter(userDetailsServiceImpl), UsernamePasswordAuthenticationFilter.class)
-            .formLogin()
+            .formLogin(form -> form
                 .loginPage("/admin/login").permitAll()
                 .loginProcessingUrl("/admin/login")
                 .successHandler(new JwtAuthenticationSuccessHandler("/admin/index"))
                 .failureHandler(new JwtAuthenticationFailureHandler())
-                .and()
-            .logout()
+            )
+            .logout(logout -> logout
                 .logoutUrl("/admin/logout").permitAll()
                 .logoutSuccessUrl("/admin/login")
                 .deleteCookies(Const.COOKIE_ACCESS_TOKEN)
-                .and()
-            .authorizeRequests()
+            )
+            .authorizeRequests(authorizeRequests -> authorizeRequests
                 // actuator endpoint
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).hasAuthority(Const.ROLE_ADMIN)
                 .antMatchers("/admin/**").hasAuthority(Const.ROLE_ADMIN)
@@ -67,11 +67,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 静态资源
                 .antMatchers(AppConfig.staticPathPattern).permitAll()
                 .anyRequest().permitAll()
-                .and()
-            .headers()
+            )
+            .headers(headers -> headers
                 .frameOptions()
                 .sameOrigin()
-                .and()
+            )
             .servletApi()
                 .disable();
         // @formatter:on

@@ -74,6 +74,7 @@ public final class Const {
      */
     public static final String REQUEST_USER_ID = "userId";// 放置当前登陆用户的ID
     public static final String REQUEST_USER_NAME = "username";// 放置当前登陆用户的用户名
+    public static final String REQUEST_REMEMBER_ME = "remember-me";// 记住我
 
     /**
      * Cookie key

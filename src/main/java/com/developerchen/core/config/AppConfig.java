@@ -35,7 +35,7 @@ public class AppConfig {
     public static String scheme;
     public static String hostname;
 
-    private AppProperties appProperties;
+    private final AppProperties appProperties;
 
     public AppConfig(AppProperties appProperties) {
         this.appProperties = appProperties;

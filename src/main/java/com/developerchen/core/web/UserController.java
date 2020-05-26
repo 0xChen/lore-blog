@@ -48,7 +48,7 @@ public class UserController extends BaseController {
      */
     @ResponseBody
     @GetMapping("/user/{userId}")
-    public RestResponse getById(@PathVariable("userId") Long userId) {
+    public RestResponse<User> getById(@PathVariable("userId") Long userId) {
         User user = userService.getUserById(userId);
         return user != null ? RestResponse.ok(user) : RestResponse.fail("没有此用户");
     }
@@ -61,7 +61,7 @@ public class UserController extends BaseController {
      */
     @ResponseBody
     @GetMapping("/api/user")
-    public RestResponse getByUsername(@RequestParam String username) {
+    public RestResponse<User> getByUsername(@RequestParam String username) {
         User user = userService.getUserByUsername(username);
         return user != null ? RestResponse.ok(user) : RestResponse.fail("没有此用户");
     }
@@ -73,7 +73,7 @@ public class UserController extends BaseController {
      */
     @ResponseBody
     @DeleteMapping("/user/{userId}")
-    public RestResponse deleteById(@PathVariable("userId") Long userId) {
+    public RestResponse<String> deleteById(@PathVariable("userId") Long userId) {
         userService.deleteUserById(userId);
         return RestResponse.ok();
     }
@@ -86,7 +86,7 @@ public class UserController extends BaseController {
      */
     @ResponseBody
     @PutMapping("/user/password")
-    public RestResponse updateUserPassword(@RequestParam Long userId,
+    public RestResponse<String> updateUserPassword(@RequestParam Long userId,
                                            @RequestParam String newPassword) {
         User user = userService.getUserById(userId);
         user.setPassword(newPassword);
@@ -104,7 +104,7 @@ public class UserController extends BaseController {
     @RefreshToken
     @ResponseBody
     @PutMapping("/password")
-    public RestResponse updatePassword(@RequestParam String rawPassword,
+    public RestResponse<String> updatePassword(@RequestParam String rawPassword,
                                        @RequestParam String newPassword) {
         User user = userService.getUserById(getUserId());
         if (!SecurityUtils.matchesUserPassword(rawPassword, user.getPassword())) {
@@ -122,7 +122,7 @@ public class UserController extends BaseController {
     @RefreshToken
     @ResponseBody
     @PutMapping("/profile")
-    public RestResponse updateLoginUser(@ModelAttribute User user, BindingResult result) {
+    public RestResponse<String> updateLoginUser(@ModelAttribute User user, BindingResult result) {
         if (result.hasErrors()) {
             return RestResponse.fail();
         }

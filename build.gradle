@@ -1,9 +1,8 @@
 plugins {
     id 'org.springframework.boot' version '2.3.0.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
 }
-
-apply plugin: 'io.spring.dependency-management'
 
 group = 'com.developerchen'
 version = '0.0.1-SNAPSHOT'
@@ -13,8 +12,9 @@ sourceCompatibility = '1.8'
 repositories {
     mavenLocal()
     mavenCentral()
+
     maven {
-        url = 'https://repo.spring.io/snapshot'
+        url = 'http://maven.aliyun.com/nexus/content/groups/public/'
     }
 
     maven {
@@ -22,12 +22,14 @@ repositories {
     }
 
     maven {
-        url = 'http://maven.aliyun.com/nexus/content/groups/public/'
+        url = 'https://repo.spring.io/snapshot'
     }
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
@@ -60,15 +62,19 @@ dependencies {
     runtimeOnly 'org.springframework.boot:spring-boot-devtools'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         exclude group: "org.skyscreamer", module: "jsonassert"
     }
     testImplementation 'org.springframework.security:spring-security-test'
 
     compileOnly "org.springframework.boot:spring-boot-configuration-processor"
-    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:unchecked"
+}
+
+test {
+    useJUnitPlatform()
 }

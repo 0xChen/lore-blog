@@ -27,7 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userService.getUserByUsername(username.toLowerCase());
 
         if (user == null) {
-            throw new UsernameNotFoundException(username + " 用户名不存在. ");
+            throw new UsernameNotFoundException(" 用户名不存在. ");
         }
         return JwtUser.JwtUserBuilder.build(user);
     }

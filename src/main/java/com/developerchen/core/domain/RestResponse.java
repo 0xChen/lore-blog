@@ -50,6 +50,12 @@ public class RestResponse<T> {
         this.success = success;
     }
 
+    public RestResponse(boolean success, int status) {
+        this.timestamp = System.currentTimeMillis() / 1000;
+        this.success = success;
+        this.status = status;
+    }
+
     public RestResponse(boolean success, T data) {
         this.timestamp = System.currentTimeMillis() / 1000;
         this.success = success;
@@ -132,19 +138,19 @@ public class RestResponse<T> {
         this.timestamp = timestamp;
     }
 
-    public static RestResponse<?> ok() {
-        RestResponse<?> r = new RestResponse<>(true);
-        r.setStatus(200);
-        return r;
+    public static <T> RestResponse<T> ok() {
+        return new RestResponse<>(true, 200);
     }
 
     public static <T> RestResponse<T> ok(T payload) {
-        RestResponse<T> r = new RestResponse<>(true, payload);
-        r.setStatus(200);
-        return r;
+        return new RestResponse<>(true, payload, 200);
     }
 
-    public static RestResponse<?> ok(int status) {
+    public static <T> RestResponse<T> ok(String message) {
+        return new RestResponse<>(true, message, 200);
+    }
+
+    public static <T> RestResponse<T> ok(int status) {
         return new RestResponse<>(true, null, status);
     }
 
@@ -152,19 +158,19 @@ public class RestResponse<T> {
         return new RestResponse<>(true, payload, status);
     }
 
-    public static RestResponse<?> fail() {
+    public static <T>RestResponse<T> fail() {
         return new RestResponse<>(false);
     }
 
-    public static RestResponse<?> fail(String message) {
+    public static <T> RestResponse<T> fail(String message) {
         return new RestResponse<>(false, message);
     }
 
-    public static RestResponse<?> fail(int status) {
+    public static <T> RestResponse<T> fail(int status) {
         return new RestResponse<>(false, null, status);
     }
 
-    public static RestResponse<?> fail(int status, String message) {
+    public static <T> RestResponse<T> fail(int status, String message) {
         return new RestResponse<>(false, message, status);
     }
 

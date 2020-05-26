@@ -38,7 +38,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
-    private AntPathRequestMatcher staticRequestPattern =
+    private final AntPathRequestMatcher staticRequestPattern =
             new AntPathRequestMatcher(AppConfig.staticPathPattern);
 
 
@@ -48,7 +48,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     public static final String TOKEN_HEADER = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer ";
 
-    private UserDetailsService userDetailsServiceImpl;
+    private final UserDetailsService userDetailsServiceImpl;
 
     public JwtAuthorizationFilter(UserDetailsService userDetailsServiceImpl) {
         this.userDetailsServiceImpl = userDetailsServiceImpl;
