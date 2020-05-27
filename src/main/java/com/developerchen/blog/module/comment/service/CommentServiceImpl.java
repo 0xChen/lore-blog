@@ -7,11 +7,10 @@ import com.developerchen.blog.constant.BlogConst;
 import com.developerchen.blog.module.comment.domain.dto.CommentDTO;
 import com.developerchen.blog.module.comment.domain.entity.Comment;
 import com.developerchen.blog.module.comment.repository.CommentMapper;
-import com.developerchen.blog.module.comment.service.ICommentService;
 import com.developerchen.core.event.EntityCreateEvent;
 import com.developerchen.core.event.EntityDeleteEvent;
 import com.developerchen.core.service.impl.BaseServiceImpl;
-import com.developerchen.core.util.RestPage;
+import com.developerchen.core.domain.RestPage;
 import org.apache.commons.lang3.Validate;
 import org.springframework.stereotype.Service;
 

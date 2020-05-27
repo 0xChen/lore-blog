@@ -163,18 +163,18 @@ public final class JwtTokenUtil {
      *
      * @return token
      */
-    public static String generateToken(JwtUser JwtUser) {
+    public static String generateToken(JwtUser jwtUser) {
         Map<String, Object> claims = new LinkedHashMap<>(16);
-        Collection<? extends GrantedAuthority> authorities = JwtUser.getAuthorities();
+        Collection<? extends GrantedAuthority> authorities = jwtUser.getAuthorities();
         Set<String> roles = new HashSet<>();
         authorities.forEach(o -> roles.add(o.getAuthority()));
 
-        claims.put("id", JwtUser.getId());
-        claims.put("nickname", JwtUser.getNickname());
-        claims.put("status", JwtUser.getStatus());
-        claims.put("email", JwtUser.getEmail());
+        claims.put("id", jwtUser.getId());
+        claims.put("nickname", jwtUser.getNickname());
+        claims.put("status", jwtUser.getStatus());
+        claims.put("email", jwtUser.getEmail());
         claims.put("authorities", roles);
-        return generateToken(claims, JwtUser.getUsername());
+        return generateToken(claims, jwtUser.getUsername());
     }
 
     /**

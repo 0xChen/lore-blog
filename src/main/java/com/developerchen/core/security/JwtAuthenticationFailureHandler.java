@@ -1,6 +1,6 @@
 package com.developerchen.core.security;
 
-import com.developerchen.core.constant.Const;
+import com.developerchen.core.util.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
@@ -32,19 +32,11 @@ public class JwtAuthenticationFailureHandler extends
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
-        if (logger.isDebugEnabled()) {
-            String username = request.getParameter(Const.REQUEST_USER_NAME);
-            logger.debug("用户名: " + username + " 登陆失败! " + exception.getMessage());
-        }
-        if (isAjaxRequest(request)) {
+        if (RequestUtils.isAjaxRequest(request)) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
         } else {
             // Redirect url
             super.onAuthenticationFailure(request, response, exception);
         }
-    }
-
-    private boolean isAjaxRequest(HttpServletRequest request) {
-        return "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
     }
 }

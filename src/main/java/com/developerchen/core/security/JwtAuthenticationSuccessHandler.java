@@ -1,6 +1,8 @@
 package com.developerchen.core.security;
 
 import com.developerchen.core.constant.Const;
+import com.developerchen.core.util.JsonUtils;
+import com.developerchen.core.util.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -40,7 +42,7 @@ public class JwtAuthenticationSuccessHandler extends
         JwtUser jwtUser = (JwtUser) authentication.getPrincipal();
         String token = JwtTokenUtil.generateToken(jwtUser);
 
-        boolean isAjaxRequest = isAjaxRequest(request);
+        boolean isAjaxRequest = RequestUtils.isAjaxRequest(request);
         boolean isRememberMe = Boolean.parseBoolean(request.getParameter(Const.REQUEST_REMEMBER_ME));
 
         if (!isAjaxRequest || isRememberMe) {
@@ -55,6 +57,7 @@ public class JwtAuthenticationSuccessHandler extends
         }
         if (isAjaxRequest) {
             PrintWriter pw = response.getWriter();
+            JsonUtils.getObjectMapper().writeValue(pw, "{token: "+token +"}");
             pw.print(true);
             pw.flush();
         } else {
@@ -66,9 +69,5 @@ public class JwtAuthenticationSuccessHandler extends
     private String getCookiePath(HttpServletRequest request) {
         String contextPath = request.getContextPath();
         return contextPath.length() > 0 ? contextPath : "/";
-    }
-
-    private boolean isAjaxRequest(HttpServletRequest request) {
-        return "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
     }
 }

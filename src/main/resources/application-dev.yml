@@ -19,7 +19,7 @@ server:
 spring.datasource:
   druid:
     # Druid会自动根据url识别驱动类名，如果连接的数据库非常见数据库，才需配置属性 driver-class-name
-    url: jdbc:mysql://127.0.0.1:3306/lore_blog
+    url: jdbc:mysql://127.0.0.1:3306/lore_blog_bak
     # characterEncoding=UTF-8, 对于8.0.12及更早版本将映射到MySQL字符集名称utf8, 对于8.0.13及更高版本将映射到MySQL字符集名称utf8mb4
     connection-properties: useSSL=true;useUnicode=true;characterEncoding=UTF-8;zeroDateTimeBehavior=convertToNull;serverTimezone=GMT+8
     username: root

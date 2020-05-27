@@ -26,7 +26,6 @@ public class JwtAuthenticationToken extends UsernamePasswordAuthenticationToken 
     public JwtAuthenticationToken(Object principal, Object credentials) {
         super(principal, credentials);
         user = ((JwtUser) principal).toUser();
-
     }
 
     /**

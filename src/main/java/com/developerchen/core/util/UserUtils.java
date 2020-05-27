@@ -6,8 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -55,7 +53,7 @@ public class UserUtils {
      */
     public static String getRemoteIp(HttpServletRequest request) {
         String separatorChar = ",";
-        request = getRequest(request);
+        request = RequestUtils.getRequest(request);
         if (request == null) {
             return null;
         }
@@ -81,77 +79,7 @@ public class UserUtils {
      * @return agent
      */
     public static String getUserAgent(HttpServletRequest request) {
-        request = getRequest(request);
+        request = RequestUtils.getRequest(request);
         return request != null ? request.getHeader("User-Agent") : null;
-    }
-
-    /**
-     * 获取request中的URL
-     *
-     * @return URL String
-     */
-    public static String getRequestURI() {
-        return getRequestURI(null);
-    }
-
-    /**
-     * 获取request中的URL
-     *
-     * @param request the current request
-     * @return URL
-     */
-    public static String getRequestURI(HttpServletRequest request) {
-        request = getRequest(request);
-        return request != null ? request.getRequestURI() : null;
-    }
-
-    /**
-     * 获取request中URL的查询参数
-     *
-     * @return URL中的查询参数
-     */
-    public static String getRequestQueryString() {
-        return getRequestQueryString(null);
-    }
-
-    /**
-     * 获取request中URL的查询参数
-     *
-     * @param request the current request
-     * @return URL中的查询参数
-     */
-    public static String getRequestQueryString(HttpServletRequest request) {
-        request = getRequest(request);
-        return request != null ? request.getQueryString() : null;
-    }
-
-    /**
-     * 获取request请求方法(get, post, ...)
-     *
-     * @return 请求方法
-     */
-    public static String getRequestMethod() {
-        return getRequestMethod(null);
-    }
-
-    /**
-     * 获取request请求方法(get, post, ...)
-     *
-     * @param request the current request
-     * @return 请求方法
-     */
-    public static String getRequestMethod(HttpServletRequest request) {
-        request = getRequest(request);
-        return request != null ? request.getMethod() : null;
-    }
-
-    public static HttpServletRequest getRequest(HttpServletRequest request) {
-        if (request == null) {
-            ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            if (requestAttributes != null) {
-                request = requestAttributes.getRequest();
-            }
-        }
-        return request;
     }
 }

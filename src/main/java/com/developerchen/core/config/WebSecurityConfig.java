@@ -4,6 +4,7 @@ import com.developerchen.core.constant.Const;
 import com.developerchen.core.security.JwtAuthenticationFailureHandler;
 import com.developerchen.core.security.JwtAuthenticationSuccessHandler;
 import com.developerchen.core.security.JwtAuthorizationFilter;
+import com.developerchen.core.security.JwtLoginConfigurer;
 import com.developerchen.core.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
@@ -48,12 +49,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
             .addFilterAfter(new JwtAuthorizationFilter(userDetailsServiceImpl), UsernamePasswordAuthenticationFilter.class)
-            .formLogin(form -> form
+            .apply(new JwtLoginConfigurer<>())
                 .loginPage("/admin/login").permitAll()
                 .loginProcessingUrl("/admin/login")
                 .successHandler(new JwtAuthenticationSuccessHandler("/admin/index"))
                 .failureHandler(new JwtAuthenticationFailureHandler())
-            )
+                .and()
             .logout(logout -> logout
                 .logoutUrl("/admin/logout").permitAll()
                 .logoutSuccessUrl("/admin/login")

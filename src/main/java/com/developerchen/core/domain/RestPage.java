@@ -1,4 +1,4 @@
-package com.developerchen.core.util;
+package com.developerchen.core.domain;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;

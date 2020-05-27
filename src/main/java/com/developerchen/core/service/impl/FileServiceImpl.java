@@ -9,7 +9,7 @@ import com.developerchen.core.exception.TipException;
 import com.developerchen.core.repository.FileMapper;
 import com.developerchen.core.service.IFileService;
 import com.developerchen.core.util.FileUtils;
-import com.developerchen.core.util.RestPage;
+import com.developerchen.core.domain.RestPage;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;

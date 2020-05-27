@@ -29,8 +29,8 @@ public class JwtUser implements UserDetails {
 
     public JwtUser(
             Long id,
-            String username,
             String nickname,
+            String username,
             String password,
             String status,
             String email,
@@ -38,8 +38,8 @@ public class JwtUser implements UserDetails {
             Set<? extends GrantedAuthority> authorities
     ) {
         this.id = id;
-        this.username = username;
         this.nickname = nickname;
+        this.username = username;
         this.password = password;
         this.status = status;
         this.email = email;

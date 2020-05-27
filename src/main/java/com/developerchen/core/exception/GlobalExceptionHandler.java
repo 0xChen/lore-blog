@@ -1,6 +1,7 @@
 package com.developerchen.core.exception;
 
 import com.developerchen.core.domain.RestResponse;
+import com.developerchen.core.util.RequestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
@@ -101,9 +102,7 @@ public class GlobalExceptionHandler {
      */
     @SuppressWarnings("unchecked")
     private boolean isAjaxRequest(HttpServletRequest request, Object method) {
-        String headerValue = request.getHeader("X-Requested-With");
-        String ajaxHeader = "XMLHttpRequest";
-        if (ajaxHeader.equals(headerValue)) {
+        if (RequestUtils.isAjaxRequest(request)) {
             return true;
         }
         if (method instanceof HandlerMethod) {
@@ -111,7 +110,7 @@ public class GlobalExceptionHandler {
             if (handlerMethod.hasMethodAnnotation(ResponseBody.class)) {
                 return true;
             }
-            Class methodClass = handlerMethod.getMethod().getDeclaringClass();
+            Class<?> methodClass = handlerMethod.getMethod().getDeclaringClass();
             return methodClass.isAnnotationPresent(RestController.class);
         }
         return false;

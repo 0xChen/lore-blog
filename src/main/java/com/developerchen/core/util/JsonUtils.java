@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+import java.util.Map;
+
 /**
  * JSON工具类
  *
@@ -27,6 +29,10 @@ public final class JsonUtils {
         } catch (JsonProcessingException e) {
             return null;
         }
+    }
+
+    public static ObjectMapper getObjectMapper() {
+        return JsonUtils.objectMapper;
     }
 
     /**

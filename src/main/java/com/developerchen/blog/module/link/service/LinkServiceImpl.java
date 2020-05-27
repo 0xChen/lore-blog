@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.developerchen.blog.module.link.domain.entity.Link;
 import com.developerchen.blog.module.link.repository.LinkMapper;
-import com.developerchen.blog.module.link.service.ILinkService;
 import com.developerchen.core.constant.Const;
 import com.developerchen.core.service.impl.BaseServiceImpl;
-import com.developerchen.core.util.RestPage;
+import com.developerchen.core.domain.RestPage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
