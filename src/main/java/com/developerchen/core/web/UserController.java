@@ -98,16 +98,16 @@ public class UserController extends BaseController {
      * 当前登陆用户修改自己的密码
      * 此方法会更新前端的access_token
      *
-     * @param rawPassword 原密码
+     * @param oldPassword 原密码
      * @param newPassword 新密码
      */
     @RefreshToken
     @ResponseBody
     @PutMapping("/password")
-    public RestResponse<String> updatePassword(@RequestParam String rawPassword,
+    public RestResponse<String> updatePassword(@RequestParam String oldPassword,
                                        @RequestParam String newPassword) {
         User user = userService.getUserById(getUserId());
-        if (!SecurityUtils.matchesUserPassword(rawPassword, user.getPassword())) {
+        if (!SecurityUtils.matchesUserPassword(oldPassword, user.getPassword())) {
             return RestResponse.fail("原密码错误");
         }
         user.setPassword(newPassword);

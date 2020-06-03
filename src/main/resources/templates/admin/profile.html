@@ -67,7 +67,7 @@
                                     <div class="form-group">
                                         <label class="col-md-3 control-label">输入原密码</label>
                                         <div class="col-md-9">
-                                            <input type="password" class="form-control" id="rawPassword" name="rawPassword" required
+                                            <input type="password" class="form-control" id="oldPassword" name="oldPassword" required
                                                    aria-required="true"/>
                                         </div>
                                     </div>
@@ -137,7 +137,7 @@
                 success: function (result) {
                     if (result && result.success) {
                         blog.alertOk('密码修改成功');
-                        $("#rawPassword").val("");
+                        $("#oldPassword").val("");
                         $("#newPassword").val("");
                         $("#confirmPassword").val("");
                     } else {
