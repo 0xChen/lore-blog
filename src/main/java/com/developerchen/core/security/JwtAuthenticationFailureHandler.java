@@ -3,6 +3,7 @@ package com.developerchen.core.security;
 import com.developerchen.core.util.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
@@ -33,7 +34,13 @@ public class JwtAuthenticationFailureHandler extends
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
         if (RequestUtils.isAjaxRequest(request)) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
+            String message;
+            if (exception instanceof BadCredentialsException) {
+                message = "用户名或密码错误";
+            } else {
+                message = exception.getMessage();
+            }
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
         } else {
             // Redirect url
             super.onAuthenticationFailure(request, response, exception);

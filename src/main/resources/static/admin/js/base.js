@@ -134,10 +134,6 @@ function getCookieValue(name) {
     return "";
 }
 
-window.axios.defaults.headers.common = {
-    'X-Requested-With': 'XMLHttpRequest'
-};
-
 $.Blog.prototype.get = function (options) {
     axios.get(options.url, {
         params: options.data || {}

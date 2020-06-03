@@ -1,10 +1,12 @@
 package com.developerchen.core.security;
 
 import com.developerchen.core.constant.Const;
+import com.developerchen.core.domain.RestResponse;
 import com.developerchen.core.util.JsonUtils;
 import com.developerchen.core.util.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
@@ -14,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 登陆成功处理
@@ -56,8 +60,12 @@ public class JwtAuthenticationSuccessHandler extends
             response.addCookie(cookie);
         }
         if (isAjaxRequest) {
+            response.setCharacterEncoding("UTF-8");
+            response.setHeader("Content-Type", "application/json");
             PrintWriter pw = response.getWriter();
-            JsonUtils.getObjectMapper().writeValue(pw, "{token: "+token +"}");
+            RestResponse<String> restResponse = new RestResponse<>(true, HttpStatus.OK.value());
+            restResponse.setData(token);
+            JsonUtils.getObjectMapper().writeValue(pw, restResponse);
             pw.print(true);
             pw.flush();
         } else {

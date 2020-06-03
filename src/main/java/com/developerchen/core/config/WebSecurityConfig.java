@@ -20,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher;
 
 /**
@@ -56,8 +58,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureHandler(new JwtAuthenticationFailureHandler())
                 .and()
             .logout(logout -> logout
-                .logoutUrl("/admin/logout").permitAll()
-                .logoutSuccessUrl("/admin/login")
+                    .logoutUrl("/admin/logout").permitAll()
+                    .defaultLogoutSuccessHandlerFor(new HttpStatusReturningLogoutSuccessHandler(),
+                            new AntPathRequestMatcher("/admin/logout", "POST"))
+                    .logoutSuccessUrl("/admin/login")
                 .deleteCookies(Const.COOKIE_ACCESS_TOKEN)
             )
             .authorizeRequests(authorizeRequests -> authorizeRequests
