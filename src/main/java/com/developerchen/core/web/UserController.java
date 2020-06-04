@@ -6,10 +6,13 @@ import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.security.RefreshToken;
 import com.developerchen.core.service.IUserService;
 import com.developerchen.core.util.SecurityUtils;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -103,16 +106,26 @@ public class UserController extends BaseController {
      */
     @RefreshToken
     @ResponseBody
-    @PutMapping("/password")
+    @PutMapping(path = "/password", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public RestResponse<String> updatePassword(@RequestParam String oldPassword,
-                                       @RequestParam String newPassword) {
+                                               @RequestParam String newPassword) {
         User user = userService.getUserById(getUserId());
         if (!SecurityUtils.matchesUserPassword(oldPassword, user.getPassword())) {
-            return RestResponse.fail("原密码错误");
+            return RestResponse.fail(600, "原密码错误");
         }
         user.setPassword(newPassword);
         userService.saveOrUpdateUser(user);
         return RestResponse.ok("密码修改成功");
+    }
+
+    @RefreshToken
+    @ResponseBody
+    @PutMapping(path = "/password", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestResponse<String> updatePassword(@RequestBody Map<String, String> parameterMap) {
+        String oldPassword = parameterMap.get("oldPassword");
+        String newPassword = parameterMap.get("newPassword");
+
+        return this.updatePassword(oldPassword, newPassword);
     }
 
     /**
