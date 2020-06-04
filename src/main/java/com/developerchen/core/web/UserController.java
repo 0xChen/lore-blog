@@ -53,7 +53,12 @@ public class UserController extends BaseController {
     @GetMapping("/user/{userId}")
     public RestResponse<User> getById(@PathVariable("userId") Long userId) {
         User user = userService.getUserById(userId);
-        return user != null ? RestResponse.ok(user) : RestResponse.fail("没有此用户");
+        if (user != null) {
+            user.setPassword(null);
+            return RestResponse.ok(user);
+        } else {
+            return RestResponse.fail("没有此用户");
+        }
     }
 
     /**
@@ -66,7 +71,12 @@ public class UserController extends BaseController {
     @GetMapping("/api/user")
     public RestResponse<User> getByUsername(@RequestParam String username) {
         User user = userService.getUserByUsername(username);
-        return user != null ? RestResponse.ok(user) : RestResponse.fail("没有此用户");
+        if (user != null) {
+            user.setPassword(null);
+            return RestResponse.ok(user);
+        } else {
+            return RestResponse.fail("没有此用户");
+        }
     }
 
     /**
@@ -90,7 +100,7 @@ public class UserController extends BaseController {
     @ResponseBody
     @PutMapping("/user/password")
     public RestResponse<String> updateUserPassword(@RequestParam Long userId,
-                                           @RequestParam String newPassword) {
+                                                   @RequestParam String newPassword) {
         User user = userService.getUserById(userId);
         user.setPassword(newPassword);
         userService.saveOrUpdateUser(user);
@@ -106,7 +116,7 @@ public class UserController extends BaseController {
      */
     @RefreshToken
     @ResponseBody
-    @PutMapping(path = "/password", produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PutMapping(path = "/password", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public RestResponse<String> updatePassword(@RequestParam String oldPassword,
                                                @RequestParam String newPassword) {
         User user = userService.getUserById(getUserId());
@@ -120,7 +130,7 @@ public class UserController extends BaseController {
 
     @RefreshToken
     @ResponseBody
-    @PutMapping(path = "/password", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/password", consumes = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<String> updatePassword(@RequestBody Map<String, String> parameterMap) {
         String oldPassword = parameterMap.get("oldPassword");
         String newPassword = parameterMap.get("newPassword");
@@ -129,13 +139,13 @@ public class UserController extends BaseController {
     }
 
     /**
-     * 当前登陆用户修改自己的信息
+     * 当前登陆用户修改自己的个人信息
      * 此方法会更新前端的access_token
      */
     @RefreshToken
     @ResponseBody
     @PutMapping("/profile")
-    public RestResponse<String> updateLoginUser(@ModelAttribute User user, BindingResult result) {
+    public RestResponse<String> updateProfile(@ModelAttribute User user, BindingResult result) {
         if (result.hasErrors()) {
             return RestResponse.fail();
         }
@@ -147,12 +157,39 @@ public class UserController extends BaseController {
     }
 
     /**
+     * 当前登陆用户修改自己的个人信息
+     * 此方法会更新前端的access_token
+     */
+    @RefreshToken
+    @ResponseBody
+    @PutMapping(path = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public RestResponse<String> updateProfile(@RequestBody User user) {
+        user.setId(getUserId());
+        // 防御前端构造表单修改用户名
+        user.setUsername(null);
+        userService.saveOrUpdateUser(user);
+        return RestResponse.ok();
+    }
+
+    /**
      * 显示当前登陆用户的信息
      */
     @GetMapping("/profile")
-    public String loginUser(Model model) {
+    public String getProfile(Model model) {
         User user = userService.getUserById(getUserId());
+        user.setPassword(null);
         model.addAttribute("user", user);
         return "admin/profile";
+    }
+
+    /**
+     * 获取当前登陆用户的信息
+     */
+    @ResponseBody
+    @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestResponse<User> getProfile() {
+        User user = userService.getUserById(getUserId());
+        user.setPassword(null);
+        return RestResponse.ok(user);
     }
 }
