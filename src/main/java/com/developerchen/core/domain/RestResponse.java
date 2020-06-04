@@ -6,6 +6,8 @@ import java.util.Map;
 /**
  * 返回对象
  *
+ * 自定义Http状态码从600开始
+ * 600表示有需要alert的错误消息
  * @param <T>
  * @author syc
  */
@@ -138,6 +140,7 @@ public class RestResponse<T> {
         this.timestamp = timestamp;
     }
 
+
     public static <T> RestResponse<T> ok() {
         return new RestResponse<>(true, 200);
     }
@@ -157,6 +160,7 @@ public class RestResponse<T> {
     public static <T> RestResponse<T> ok(T payload, int status) {
         return new RestResponse<>(true, payload, status);
     }
+
 
     public static <T>RestResponse<T> fail() {
         return new RestResponse<>(false);
