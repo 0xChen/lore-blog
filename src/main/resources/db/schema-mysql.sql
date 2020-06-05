@@ -32,7 +32,7 @@ DROP TABLE IF EXISTS `sys_option`;
 CREATE TABLE `sys_option` (
   `id` bigint(20) unsigned NOT NULL,
   `name` varchar(50) NOT NULL COMMENT '设置项名称',
-  `value` varchar(100) COMMENT '设置项值',
+  `value` varchar(500) COMMENT '设置项值',
   `description` varchar(200) DEFAULT NULL COMMENT '描述',
   `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
   `update_time` datetime(3) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间',
