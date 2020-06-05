@@ -15,6 +15,7 @@ import com.developerchen.core.exception.RestException;
 import com.developerchen.core.util.FileUtils;
 import com.developerchen.core.web.BaseController;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -73,7 +74,7 @@ public class SiteAdminController extends BaseController {
      * 获取所有主题
      */
     @ResponseBody
-    @GetMapping("/api/themes")
+    @GetMapping("/themes")
     public RestResponse getThemes() {
         List<ThemeDTO> themeList = new ArrayList<>(6);
         try {
@@ -102,7 +103,7 @@ public class SiteAdminController extends BaseController {
      * 激活指定主题
      */
     @ResponseBody
-    @PostMapping("/api/themes/active")
+    @PostMapping("/themes/active")
     public RestResponse activeTheme(@RequestBody Map<String, String> parameterMap) {
         String themeName = parameterMap.get("themeName");
         siteService.activeTheme(themeName);
@@ -113,7 +114,7 @@ public class SiteAdminController extends BaseController {
      * 设置主题参数
      */
     @ResponseBody
-    @PostMapping("/api/theme/setting")
+    @PostMapping(path = "/theme/setting", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public RestResponse saveThemeSetting(@RequestParam Map<String, String> parameterMap) {
         siteService.saveThemeSetting(parameterMap);
         return RestResponse.ok();
@@ -123,7 +124,7 @@ public class SiteAdminController extends BaseController {
      * 站点参数设置
      */
     @ResponseBody
-    @PostMapping("/api/site/setting")
+    @PostMapping(path = "/site/setting", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public RestResponse saveSiteSetting(@RequestParam Map<String, String> parameterMap) {
         siteService.saveSiteSetting(parameterMap);
         return RestResponse.ok();

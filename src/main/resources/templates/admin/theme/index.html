@@ -61,7 +61,7 @@
             load: function(){
                 var $vm = this;
                 blog.get({
-                    url: '/admin/api/themes',
+                    url: '/admin/themes',
                     success: function (result) {
                         $vm.themes = result.data
                     },
@@ -77,7 +77,7 @@
                     title:'确定启用该主题吗?',
                     then: function () {
                         blog.post({
-                            url : '/admin/api/themes/active',
+                            url : '/admin/themes/active',
                             data: {themeName: name},
                             success: function (result) {
                                 if(result && result.success){

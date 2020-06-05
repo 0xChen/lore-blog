@@ -26,10 +26,10 @@ public class Option extends BaseEntity {
     @Length(max = 50, message = "配置名称长度不能超过50个字符")
     private String name;
 
-    @Length(max = 100, message = "设置值长度不能超过100个字符")
+    @Length(max = 500, message = "设置值长度不能超过500个字符")
     private String value;
 
-    @Length(max = 200, message = "描述长度不能超过100个字符")
+    @Length(max = 200, message = "描述长度不能超过200个字符")
     private String description;
     
     @TableField(fill = FieldFill.INSERT)

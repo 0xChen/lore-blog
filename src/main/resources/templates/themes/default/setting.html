@@ -106,7 +106,7 @@
     function saveThemeOptions(formId) {
         var param = $('#' + formId).serialize();
         blog.post({
-            url: '/admin/api/theme/setting',
+            url: '/admin/theme/setting',
             data: param,
             success: function (result) {
                 if (result && result.success) {
