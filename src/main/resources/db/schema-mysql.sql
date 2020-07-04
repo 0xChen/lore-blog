@@ -172,6 +172,7 @@ CREATE TABLE `sys_attachment` (
   `type` varchar(50) COMMENT '附件类型',
   `size` bigint(20) COMMENT '附件大小',
   `key` varchar(100) DEFAULT NULL COMMENT '文件的唯一标识',
+  `sha1` varchar(40) DEFAULT NULL COMMENT '文件的SHA1值',
   `description` varchar(255) DEFAULT NULL COMMENT '附件描述',
   `height` smallint(5) unsigned COMMENT '如果是图片类型存放图片的高度',
   `width` smallint(5) unsigned COMMENT '如果是图片类型存放图片的宽度',

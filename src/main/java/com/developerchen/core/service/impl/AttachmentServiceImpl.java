@@ -10,6 +10,7 @@ import com.developerchen.core.exception.AlertException;
 import com.developerchen.core.repository.AttachmentMapper;
 import com.developerchen.core.service.IAttachmentService;
 import com.developerchen.core.util.FileUtils;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -77,6 +78,7 @@ public class AttachmentServiceImpl extends BaseServiceImpl<AttachmentMapper, Att
             }
             // 存储文件基础信息到数据库
             Long size = file.getSize();
+            String sha1 = DigestUtils.sha1Hex(file.getBytes());
             String type = file.getContentType();
             String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
             // 避免文件名称重复，生成新的具有唯一性的文件名
@@ -86,6 +88,7 @@ public class AttachmentServiceImpl extends BaseServiceImpl<AttachmentMapper, Att
             attachment.setName(newFilename);
             attachment.setOriginalName(originalFilename);
             attachment.setSize(size);
+            attachment.setSha1(sha1);
             attachment.setType(type);
             baseMapper.insert(attachment);
             // 以新文件名保存文件到磁盘

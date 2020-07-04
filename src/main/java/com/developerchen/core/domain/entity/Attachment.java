@@ -31,6 +31,10 @@ public class Attachment extends DataEntity {
      * 附件大小
      */
     private Long size;
+    /**
+     * 文件的SHA1值
+     */
+    private String sha1;
 
     @TableField("`key`")
     private String key;
@@ -80,6 +84,14 @@ public class Attachment extends DataEntity {
 
     public void setSize(Long size) {
         this.size = size;
+    }
+
+    public String getSha1() {
+        return sha1;
+    }
+
+    public void setSha1(String sha1) {
+        this.sha1 = sha1;
     }
 
     public String getKey() {

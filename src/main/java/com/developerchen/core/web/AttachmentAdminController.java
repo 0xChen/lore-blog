@@ -1,10 +1,14 @@
 package com.developerchen.core.web;
 
+import cn.hutool.core.lang.hash.Hash128;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.developerchen.core.constant.Const;
 import com.developerchen.core.domain.RestResponse;
 import com.developerchen.core.domain.entity.Attachment;
 import com.developerchen.core.service.IAttachmentService;
+import com.sun.crypto.provider.HmacSHA1;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.MessageDigest;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -57,7 +62,7 @@ public class AttachmentAdminController extends BaseController {
      */
     @ResponseBody
     @PostMapping("/attachments")
-    public RestResponse<Attachment> upload(@RequestParam("attachment") MultipartFile multipartFile) {
+    public RestResponse<Attachment> upload(@RequestParam("file") MultipartFile multipartFile) {
         Attachment attachment = attachmentService.saveAttachment(multipartFile);
         return RestResponse.ok(attachment);
     }
