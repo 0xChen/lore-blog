@@ -29,13 +29,13 @@ public class Post extends BaseEntity {
      * 标题
      */
     @NotNull(message = "文章标题不能为空")
-    @Length(max = 200, message = "文章标题不能超过200个字符")
+    @Length(max = 200, message = "文章标题不能超过 200 个字符")
     private String title;
 
     /**
      * 文章缩略名, 用于自定义访问路径
      */
-    @Length(max = 300, message = "文章缩略名不能超过300个字符")
+    @Length(max = 300, message = "文章缩略名不能超过 300 个字符")
     private String slug;
 
     /**

@@ -23,13 +23,16 @@ public class Option extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     @NotNull(message = "配置名称不能为空")
-    @Length(max = 50, message = "配置名称长度不能超过50个字符")
+    @Length(max = 50, message = "配置名称长度不能超过 50 个字符")
     private String name;
 
-    @Length(max = 500, message = "设置值长度不能超过500个字符")
+    @Length(max = 5000, message = "设置值长度不能超过 5000 个字符")
     private String value;
 
-    @Length(max = 200, message = "描述长度不能超过200个字符")
+    @Length(max = 200, message = "Label长度不能超过 200 个字符")
+    private String label;
+
+    @Length(max = 200, message = "描述长度不能超过 200 个字符")
     private String description;
     
     @TableField(fill = FieldFill.INSERT)
@@ -53,6 +56,15 @@ public class Option extends BaseEntity {
 
     public Option setValue(String value) {
         this.value = value;
+        return this;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public Option setLabel(String label) {
+        this.label = label;
         return this;
     }
 

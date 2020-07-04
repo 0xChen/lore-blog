@@ -5,6 +5,7 @@ import com.developerchen.core.repository.CoreMapper;
 import com.developerchen.core.service.IBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ public abstract class BaseServiceImpl<M extends CoreMapper<T>, T> extends Servic
      * @param sql 需要执行的SQL
      */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void updateBySql(String sql) {
         baseMapper.updateBySql(sql);
     }
@@ -69,6 +71,7 @@ public abstract class BaseServiceImpl<M extends CoreMapper<T>, T> extends Servic
      * @param sql 需要执行的SQL
      */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deleteBySql(String sql) {
         baseMapper.deleteBySql(sql);
     }

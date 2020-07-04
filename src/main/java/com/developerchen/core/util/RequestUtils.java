@@ -2,11 +2,17 @@ package com.developerchen.core.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.method.HandlerMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +36,28 @@ public class RequestUtils {
     }
 
     /**
+     * 判断是否 ajax 调用
+     * 1. 处理请求的方法是否有@ResponseBody注解
+     * 2. 方法所在类是否有@RestController注解
+     * 3. HttpServletRequest头信息中X-Requested-With是否等于XMLHttpRequest
+     * 4. request header accept 是否含有json
+     *
+     * @param method 抛出异常的方法
+     * @return true or not
+     */
+    public static boolean isAjaxRequest(HttpServletRequest request, Object method) {
+        if (method instanceof HandlerMethod) {
+            HandlerMethod handlerMethod = (HandlerMethod) method;
+            if (handlerMethod.hasMethodAnnotation(ResponseBody.class)) {
+                return true;
+            }
+            Class<?> methodClass = handlerMethod.getMethod().getDeclaringClass();
+            return methodClass.isAnnotationPresent(RestController.class);
+        }
+        return RequestUtils.isAjaxRequest(request);
+    }
+
+    /**
      * 判断request是否是ajax请求
      *
      * @param request the current request
@@ -40,7 +68,26 @@ public class RequestUtils {
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
             return true;
         }
-        return request.getContentType().toLowerCase().contains("json");
+        List<MediaType> targetMediaTypes = Arrays.asList(
+                MediaType.APPLICATION_JSON,
+                new MediaType("application", "*+json"));
+
+        List<MediaType> mediaTypes = MediaType.parseMediaTypes(request.getHeader("accept"));
+
+        boolean result = false;
+        for (MediaType targetMediaType : targetMediaTypes) {
+            for (MediaType mediaType : mediaTypes) {
+                if (targetMediaType.isCompatibleWith(mediaType)) {
+                    result = true;
+                    break;
+                }
+            }
+            if (result) {
+                break;
+            }
+        }
+
+        return result;
     }
 
     /**

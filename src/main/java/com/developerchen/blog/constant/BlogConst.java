@@ -51,8 +51,12 @@ public final class BlogConst {
     public static final String OPTION_BLOG_THEME = "blog_theme";
     public static final String OPTION_BLOG_TITLE = "blog_title";
     public static final String OPTION_BLOG_DESCRIPTION = "blog_description";
-    public static final String OPTION_BLOG_LOGO_URL = "blog_logo_url";
-    public static final String OPTION_ALLOW_COMMENT_AUDIT = "allow_comment_audit";
+    public static final String OPTION_THEME_LOGO_URL = "theme_logo_url";
+    public static final String OPTION_ALLOW_COMMENT_APPROVE = "allow_comment_approve";
+    /**
+     * 每个主题自定义配置项, 以 'theme_' + "themeName" 作为 name 保存在 option 表中
+     */
+    public static final String OPTION_THEME_OPTION_PREFIC = "theme_";
 
     /* =================== post 相关常量 ====================*/
     /**
@@ -102,13 +106,17 @@ public final class BlogConst {
 
     /* =================== comment 相关常量 ====================*/
     /**
-     * 审批通过
+     * 已批准
      */
-    public static final String COMMENT_APPROVED = "1";
+    public static final String COMMENT_STATUS_APPROVED = "1";
     /**
-     * 审核状态
+     * 未批准
      */
-    public static final String COMMENT_NO_AUDIT = "0";
+    public static final String COMMENT_STATUS_UNAPPROVED = "0";
+    /**
+     * 等待审批
+     */
+    public static final String COMMENT_STATUS_PENDING = "2 ";
     /**
      * 一次获取最近评论的数量
      */

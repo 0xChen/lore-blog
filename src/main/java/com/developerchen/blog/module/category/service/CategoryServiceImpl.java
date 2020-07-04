@@ -6,15 +6,20 @@ import com.developerchen.blog.exception.BlogException;
 import com.developerchen.blog.module.category.domain.dto.CategoryDTO;
 import com.developerchen.blog.module.category.domain.entity.Category;
 import com.developerchen.blog.module.category.repository.CategoryMapper;
-import com.developerchen.blog.module.category.service.ICategoryService;
+import com.developerchen.blog.module.post.domain.entity.Post;
+import com.developerchen.blog.module.post.service.IPostService;
 import com.developerchen.core.constant.Const;
 import com.developerchen.core.service.impl.BaseServiceImpl;
 import org.apache.commons.lang3.Validate;
 import org.apache.ibatis.jdbc.SQL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -26,12 +31,16 @@ import java.util.List;
 @Service
 public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Category> implements ICategoryService {
 
+    @Autowired(required = false)
+    private IPostService postService;
+
     public CategoryServiceImpl() {
     }
 
     /**
      * 初始化构建根节点
      */
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     @Override
     public void initRootCategory() {
         Category root = new Category();
@@ -49,7 +58,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      * @return int 分类数量
      */
     @Override
-    public int categoryCount() {
+    public int countCategory() {
         return baseMapper.selectCount(null);
     }
 
@@ -64,13 +73,71 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
     }
 
     /**
+     * 获取分类树
+     * 采用与 getCategoryDTOWithChildren 方法不同的思路遍历构造树
+     *
+     * @return 分类树
+     */
+    @Override
+    public List<CategoryDTO> getCategoryTree() {
+        List<CategoryDTO> categoryDTOList = getCategoryDTOList(null);
+
+        Map<Integer, List<CategoryDTO>> levelToCategoryDTOList = categoryDTOList.stream()
+                .collect(Collectors.groupingBy(
+                        CategoryDTO::getLevel,
+                        LinkedHashMap::new,
+                        Collectors.toList()));
+
+        // 构造父子结构
+        List<CategoryDTO> topNodeList = null;
+        for (Map.Entry<Integer, List<CategoryDTO>> entry : levelToCategoryDTOList.entrySet()) {
+            Integer level = entry.getKey();
+            List<CategoryDTO> parents = entry.getValue();
+            if (topNodeList == null) {
+                topNodeList = parents;
+            }
+
+            // 判断是否有子分类
+            if (levelToCategoryDTOList.containsKey(level + 1)) {
+                List<CategoryDTO> children = levelToCategoryDTOList.get(level + 1);
+                int cursor = 0;
+                for (CategoryDTO parent : parents) {
+                    for (int i = cursor; i < children.size(); i++, cursor = i) {
+                        CategoryDTO child = children.get(i);
+                        // 判断该child是不是当前parent的子节点
+                        if (parent.getLeftValue() < child.getLeftValue()
+                                && parent.getRightValue() > child.getRightValue()) {
+                            parent.addChild(child);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+            }
+
+        }
+
+
+        return topNodeList;
+    }
+
+    /**
      * 将新分类插入到指定父节点下
      *
      * @param name     分类名称
      * @param parentId 新增分类的父分类ID
      */
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     @Override
-    public void insertCategory(String name, Long parentId) {
+    public Category saveCategory(String name, Long parentId) {
+        QueryWrapper<Category> qw = new QueryWrapper<>();
+        qw.eq("name", name);
+        int count = baseMapper.selectCount(qw);
+        if (count > 0) {
+            throw new BlogException("新增失败, 已经存在 \"" + name + "\" 这个分类, 请换个分类名称");
+        }
+
         parentId = parentId == null ? BlogConst.CATEGORY_ROOT_ID : parentId;
         Category parentCategory = baseMapper.selectById(parentId);
 
@@ -80,16 +147,17 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
         category.setLeftValue(parentCategory.getRightValue());
         category.setRightValue(parentCategory.getRightValue() + 1);
 
-        baseMapper.insertUpdateLeftValue(parentCategory.getRightValue());
-        baseMapper.insertUpdateRightValue(parentCategory.getRightValue());
+        baseMapper.updateLeftValueBeforeInsert(parentCategory.getRightValue());
+        baseMapper.updateRightValueBeforeInsert(parentCategory.getRightValue());
         baseMapper.insert(category);
+        return category;
     }
 
     /**
-     * 获取指定分类的子分类
+     * 获取指定分类的所有子分类
      *
      * @param category 父分类
-     * @return 子分类集合
+     * @return 所有子分类的集合
      */
     @Override
     public List<Category> getChildren(Category category) {
@@ -105,22 +173,44 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      *
      * @param category 要删除的分类
      */
-    @Transactional(rollbackFor = Exception.class)
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deleteCategory(Category category) {
         Long categoryId = category.getId();
         if (BlogConst.CATEGORY_ROOT_ID.equals(categoryId)) {
-            throw new BlogException("\"默认类别\"不允许删除. ");
+            throw new BlogException("\"默认分类\"不允许删除. ");
         }
+
+        // 被文章使用的分类不允许删除
+        if (postService != null) {
+            List<Category> children = getChildren(category);
+            List<Long> categoryIdList = children.stream().map(Category::getId).collect(Collectors.toList());
+            categoryIdList.add(categoryId);
+
+
+
+            QueryWrapper<Post> qw = new QueryWrapper<>();
+            qw.select("category_id");
+            qw.in("category_id", categoryIdList);
+            List<Post> postList = postService.list(qw);
+
+            if (postList.size() > 0) {
+                Map<Long, String> categoryIdToName = children.stream()
+                        .collect(Collectors.toMap(Category::getId, Category::getName));
+                categoryIdToName.put(category.getId(), category.getName());
+
+                String categoryName = postList.stream().map(post -> categoryIdToName.get(post.getCategoryId()))
+                        .distinct().collect(Collectors.joining(", "));
+                throw new BlogException("删除失败, 因为 \"" +categoryName +
+                        "\" 已经被使用, 请先删除相关文章及页面或更改它们的分类后再删除分类");
+            }
+        }
+
         int length = category.getRightValue() - category.getLeftValue() + 1;
         // 必须先执行删除, 在更新相关节点的左右值
-        if (categoryId != null) {
-            baseMapper.deleteById(category);
-        } else {
-            baseMapper.deleteByLeftAndRightValue(category.getLeftValue(), category.getRightValue());
-        }
-        baseMapper.deleteUpdateLeftValue(category.getLeftValue(), length);
-        baseMapper.deleteUpdateRightValue(category.getRightValue(), length);
+        baseMapper.deleteByLeftAndRightValue(category.getLeftValue(), category.getRightValue());
+        baseMapper.updateLeftValueAfterDelete(category.getLeftValue(), length);
+        baseMapper.updateRightValueAfterDelete(category.getRightValue(), length);
     }
 
     /**
@@ -128,6 +218,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      *
      * @param categoryId 要删除的分类ID
      */
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     @Override
     public void deleteCategoryById(long categoryId) {
         Category category = baseMapper.selectById(categoryId);
@@ -135,6 +226,18 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
             throw new BlogException("删除失败, 不存在此分类. ");
         }
         deleteCategory(category);
+    }
+
+    /**
+     * 通过分类主键获取分类树
+     *
+     * @param id 分类主键
+     * @return CategoryDTO
+     */
+    @Override
+    public CategoryDTO getCategoryDTOWithChildren(long id) {
+        Category category = getCategoryById(id);
+        return getCategoryDTOWithChildren(category);
     }
 
     /**
@@ -146,6 +249,16 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
     @Override
     public CategoryDTO getCategoryDTOWithChildren(String name) {
         Category category = getCategoryByName(name);
+        return getCategoryDTOWithChildren(category);
+    }
+
+    /**
+     * 通过分类获取其分类树
+     *
+     * @param category 分类
+     * @return CategoryDTO
+     */
+    private CategoryDTO getCategoryDTOWithChildren(Category category) {
         // 获取以category为顶点的树并带有深度信息的层序遍历结果集
         List<CategoryDTO> categoryDTOList = getCategoryDTOList(category);
         // 将层序遍历结果集还原成树
@@ -176,39 +289,6 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
             }
         }
         return categoryDTOList.get(0);
-        /*Map<Integer, List<CategoryDTO>> levelToCategoryDTOList = new LinkedHashMap<>();
-        for (int i = 0; i < categoryDTOList.size(); i++) {
-            CategoryDTO categoryDTO = categoryDTOList.get(i);
-            Integer level = categoryDTO.getLevel();
-            if (levelToCategoryDTOList.containsKey(level)) {
-                levelToCategoryDTOList.get(level).add(categoryDTO);
-            } else {
-                List<CategoryDTO> list = new ArrayList<>();
-                list.add(categoryDTO);
-                levelToCategoryDTOList.put(level, list);
-            }
-        }
-
-        // 构造父子结构
-        CategoryDTO returnCategoryDTO = categoryDTOList.get(0);
-        Integer level = returnCategoryDTO.getLevel();
-        while (levelToCategoryDTOList.containsKey(level + 1)) {
-            List<CategoryDTO> parents = levelToCategoryDTOList.get(level);
-            List<CategoryDTO> children = levelToCategoryDTOList.get(level + 1);
-            int cursor = 0;
-            for (CategoryDTO parent : parents) {
-                for (int i = cursor; i < children.size(); i++, cursor = i) {
-                    CategoryDTO child = children.get(i);
-                    // 判断该child是不是当前parent的子节点
-                    if (parent.getLeftValue() < child.getLeftValue()
-                            && parent.getRightValue() > child.getRightValue()) {
-                        parent.addChild(child);
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }*/
     }
 
     /**
@@ -219,7 +299,6 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      */
     @Override
     public Category getCategoryById(long id) {
-        Validate.notNull(id, "类别主键不能为空");
         return baseMapper.selectById(id);
     }
 
@@ -231,7 +310,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      */
     @Override
     public Category getCategoryByName(String name) {
-        Validate.notEmpty(name, "类别名称不能为空");
+        Validate.notEmpty(name, "分类名称不能为空");
         return baseMapper.selectOne(new QueryWrapper<Category>().eq("name", name));
     }
 
@@ -239,7 +318,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      * 获取category及其所有子节点的带有深度信息的CategoryDTO对象集合
      * 按照自上而下，自左至右的层序遍历方式构建集合
      *
-     * @param category 父分类
+     * @param category 父分类, 为 null 时查所有
      * @return 以category为顶点的树的层序遍历结果集
      */
     @Override
@@ -270,8 +349,19 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      *
      * @param category 更新内容
      */
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     @Override
     public void updateCategoryById(Category category) {
+        String name = category.getName();
+        if (name != null) {
+            QueryWrapper<Category> qw = new QueryWrapper<>();
+            qw.ne("id", category.getId());
+            qw.eq("name", name);
+            int count = baseMapper.selectCount(qw);
+            if (count > 0) {
+                throw new BlogException("更新失败, 已经存在 \"" + name + "\" 这个分类, 请换个分类名称");
+            }
+        }
         baseMapper.updateById(category);
     }
 }

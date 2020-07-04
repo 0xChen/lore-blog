@@ -4,15 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.developerchen.core.config.AppConfig;
-import com.developerchen.core.domain.entity.Attachment;
-import com.developerchen.core.exception.TipException;
-import com.developerchen.core.repository.FileMapper;
-import com.developerchen.core.service.IFileService;
-import com.developerchen.core.util.FileUtils;
 import com.developerchen.core.domain.RestPage;
+import com.developerchen.core.domain.entity.Attachment;
+import com.developerchen.core.exception.AlertException;
+import com.developerchen.core.repository.AttachmentMapper;
+import com.developerchen.core.service.IAttachmentService;
+import com.developerchen.core.util.FileUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,48 +40,39 @@ import java.util.stream.Stream;
  */
 
 @Service
-public class FileServiceImpl extends BaseServiceImpl<FileMapper, Attachment> implements IFileService {
+public class AttachmentServiceImpl extends BaseServiceImpl<AttachmentMapper, Attachment>
+        implements IAttachmentService {
 
     private final Path filePath;
 
-    public FileServiceImpl() {
+    public AttachmentServiceImpl() {
         this.filePath = Paths.get(AppConfig.fileLocation);
     }
 
 
-    /**
-     * 获取指定类型文件的数量, 如果没有指定类型则获取所有文件数量
-     *
-     * @return int 文件数量
-     */
     @Override
-    public int fileCount(String type) {
+    public int countAttachment(String type) {
         QueryWrapper<Attachment> qw = new QueryWrapper<>();
         qw.eq(type != null, "type", type);
         return baseMapper.selectCount(qw);
     }
 
-    /**
-     * 保存文件到本地磁盘, 并在数据库中记录文件信息
-     *
-     * @param file 待保存文件
-     * @return 保存后的文件路径
-     */
     @Override
-    public String saveFile(MultipartFile file) {
+    @Transactional(rollbackFor = {Exception.class, Error.class})
+    public Attachment saveAttachment(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
 
         try {
             if (originalFilename == null) {
-                throw new TipException("File upload error");
+                throw new AlertException("File upload error");
             }
             originalFilename = StringUtils.cleanPath(originalFilename);
             if (file.isEmpty()) {
-                throw new TipException("Failed to store empty file " + originalFilename);
+                throw new AlertException("Failed to store empty file " + originalFilename);
             }
             if (originalFilename.contains(FileUtils.TOP_PATH)) {
                 // security check
-                throw new TipException("Cannot store file with relative path outside current directory "
+                throw new AlertException("Cannot store file with relative path outside current directory "
                         + originalFilename);
             }
             // 存储文件基础信息到数据库
@@ -101,59 +93,45 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, Attachment> imp
                 Path path = this.filePath.resolve(newFilename);
                 Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
             }
-            return newFilename;
+            return attachment;
         } catch (Exception e) {
-            throw new TipException("Failed to store file " + originalFilename, e);
+            throw new AlertException("Failed to store file " + originalFilename, e);
         }
     }
 
-    /**
-     * 加载指定文件
-     *
-     * @param filename 文件名
-     * @return Resource资源形式的文件
-     */
     @Override
-    public Resource loadAsResource(String filename) {
+    public Resource loadAttachmentAsResource(String attachmentName) {
         try {
-            Path file = load(filename);
+            Path file = load(attachmentName);
             Resource resource = new UrlResource(file.toUri());
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
-                throw new TipException("读取文件失败: " + filename);
+                throw new AlertException("读取文件失败: " + attachmentName);
 
             }
         } catch (MalformedURLException e) {
-            throw new TipException("读取文件失败: " + filename, e);
+            throw new AlertException("读取文件失败: " + attachmentName, e);
         }
     }
 
-    /**
-     * 删除所有通过系统上传功能保存的文件,
-     * 包括磁盘文件及数据库的文件记录
-     */
     @Override
-    public void deleteAll() {
+    @Transactional(rollbackFor = {Exception.class, Error.class})
+    public void deleteAllAttachment() {
         // 清空附件表数据
         baseMapper.delete(null);
         // 清空磁盘文件
         if (!FileSystemUtils.deleteRecursively(filePath.toFile())) {
-            throw new TipException("删除文件失败");
+            throw new AlertException("删除文件失败");
         }
     }
 
-    /**
-     * 批量删除指定文件,
-     * 包括磁盘中的文件及对应的数据库文件记录
-     *
-     * @param fileIds 待删除文件ID集合
-     */
     @Override
-    public void delete(Set<Long> fileIds) {
-        List<Attachment> attachmentList = baseMapper.selectBatchIds(fileIds);
+    @Transactional(rollbackFor = {Exception.class, Error.class})
+    public void deleteAttachment(Set<Long> attachmentIds) {
+        List<Attachment> attachmentList = baseMapper.selectBatchIds(attachmentIds);
         // 删除数据库数据
-        baseMapper.deleteBatchIds(fileIds);
+        baseMapper.deleteBatchIds(attachmentIds);
         // 删除磁盘文件
         Set<String> deleteFailedFilenameSet = new HashSet<>();
         Set<String> deleteSuccessFilenameSet = new HashSet<>();
@@ -170,50 +148,35 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, Attachment> imp
             }
         }
         if (deleteFailedFilenameSet.size() > 0) {
-            throw new TipException("以下文件删除失败: " + deleteFailedFilenameSet.toString()
+            throw new AlertException("以下文件删除失败: " + deleteFailedFilenameSet.toString()
                     + ". 以下文件从磁盘成功删除, 但是数据库记录没有删除, 请重新删除: " + deleteSuccessFilenameSet.toString());
         }
     }
 
-    /**
-     * 获取分页形式附件信息
-     *
-     * @param name 附件名
-     * @param key  附件的唯一标识
-     * @param type 附件类型
-     * @param page 当前页码
-     * @param size 每页数量
-     * @return 带有分页信息的附件
-     */
     @Override
-    public IPage<Attachment> getFiles(String name,
-                                      String key,
-                                      String type,
-                                      long page,
-                                      long size) {
+    public IPage<Attachment> getAttachments(String name,
+                                            String originalName,
+                                            String key,
+                                            String type,
+                                            String description,
+                                            long page, long size) {
         QueryWrapper<Attachment> qw = new QueryWrapper<>();
-        qw.like(StringUtils.hasText(name), "original_name", name);
+        qw.like(StringUtils.hasText(name), "name", name);
+        qw.like(StringUtils.hasText(name), "original_name", originalName);
         qw.eq(StringUtils.hasText(key), "key", key);
-        qw.like(StringUtils.hasText(type), "type", type);
+        qw.eq(StringUtils.hasText(type), "type", type);
+        qw.like(StringUtils.hasText(description), "type", description);
         qw.orderByDesc("create_time");
         qw.orderByAsc("original_name");
 
         return baseMapper.selectPage(new RestPage<>(page, size), qw);
     }
 
-    /**
-     * 根据文件名加载上传目录下的单个文件
-     *
-     * @param filename 文件名
-     */
     @Override
-    public Path load(String filename) {
-        return filePath.resolve(filename);
+    public Path load(String attachmentName) {
+        return filePath.resolve(attachmentName);
     }
 
-    /**
-     * 加载上传目录下的所有文件
-     */
     @Override
     public Stream<Path> loadAll() {
         try {
@@ -221,7 +184,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, Attachment> imp
                     .filter(path -> !path.equals(this.filePath))
                     .map(this.filePath::relativize);
         } catch (IOException e) {
-            throw new TipException("读取文件失败", e);
+            throw new AlertException("读取文件失败", e);
         }
     }
 }

@@ -2,7 +2,7 @@ package com.developerchen.blog.module.site.service;
 
 import com.developerchen.blog.module.post.domain.entity.Post;
 import com.developerchen.blog.module.site.domain.dto.StatisticsDTO;
-import com.developerchen.core.domain.entity.User;
+import com.developerchen.core.domain.entity.Option;
 
 import java.util.List;
 import java.util.Map;
@@ -15,15 +15,14 @@ import java.util.Map;
  * @author syc
  */
 public interface ISiteService {
-    void installOption(Map<String, String> parameterMap);
 
-    User installAdminUser(User user);
+    void install(Map<String, String> parameterMap);
 
     StatisticsDTO getStatistics();
 
     void activeTheme(String themeName);
 
-    void saveThemeSetting(Map<String, String> parameterMap);
+    void saveThemeSetting(Option option);
 
     void saveSiteSetting(Map<String, String> parameterMap);
 

@@ -17,7 +17,7 @@ public class PostDTO extends Post {
     private String authorName;
 
     /**
-     * 类别名称
+     * 分类名称
      */
     private String categoryName;
 

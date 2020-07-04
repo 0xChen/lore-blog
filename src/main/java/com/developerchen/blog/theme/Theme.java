@@ -11,8 +11,12 @@ import com.developerchen.blog.module.post.domain.entity.Post;
 import com.developerchen.blog.module.post.service.IPostService;
 import com.developerchen.blog.util.BlogUtils;
 import com.developerchen.core.constant.Const;
+import com.developerchen.core.domain.entity.Option;
 import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.service.IUserService;
+import com.developerchen.core.util.JsonUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +25,10 @@ import org.thymeleaf.context.WebEngineContext;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -33,6 +40,8 @@ import java.util.List;
 @Component
 public final class Theme {
     private static final Logger logger = LoggerFactory.getLogger(Theme.class);
+
+    private static final Map<String, Map<String, String>> THEME_TO_OPTION = new HashMap<>();
 
     public static final String THEME_PATH = "/resources/themes/";
     public static final String THEME_LOGO_PATH = "/img/logo.png";
@@ -55,10 +64,46 @@ public final class Theme {
     }
 
     /**
+     * 获取主题自定义配置项值, 如果没有此配置项或者此配置项对应的值是 null 或者 ""
+     * 则返回默认值
+     */
+    public static String themeOption(String name, String defaultValue) {
+        Map<String, String> themeOption = themeOption();
+        if (themeOption != null) {
+            String value = themeOption.get(name);
+            return StringUtils.isEmpty(value) ? defaultValue : value;
+        }
+        return defaultValue;
+    }
+
+    /**
+     * 获取指定的主题的自定义配置
+     */
+    public static String themeOption(String name) {
+        Map<String, String> themeOption = themeOption();
+        if (themeOption != null) {
+            return themeOption.get(name);
+        }
+        return null;
+    }
+
+    private static Map<String, String> themeOption() {
+        String themeName = Common.blogTheme();
+        String valueJson = Common.getOption(BlogConst.OPTION_THEME_OPTION_PREFIC + themeName);
+        try {
+            List<Option> optionList = JsonUtils.getObjectMapper()
+                    .readValue(valueJson, new TypeReference<List<Option>>() {});
+            return optionList.stream().collect(Collectors.toMap(Option::getName, Option::getValue));
+        } catch (JsonProcessingException e) {
+            return null;
+        }
+    }
+
+    /**
      * 获取主题URL
      */
     public static String themeUrl() {
-        return Common.blogUrl(THEME_PATH) + Common.getBlogOption(BlogConst.OPTION_BLOG_THEME, "default");
+        return Common.blogUrl(THEME_PATH) + Common.blogTheme();
     }
 
     /**
@@ -68,6 +113,13 @@ public final class Theme {
      */
     public static String themeUrl(String sub) {
         return themeUrl() + sub;
+    }
+
+    /**
+     * 获取当前theme的logo地址
+     */
+    public static String themeLogo() {
+        return themeOption(BlogConst.OPTION_THEME_LOGO_URL, Theme.themeUrl(Theme.THEME_LOGO_PATH));
     }
 
     /**

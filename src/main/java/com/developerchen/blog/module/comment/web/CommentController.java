@@ -5,9 +5,9 @@ import com.developerchen.blog.module.comment.service.ICommentService;
 import com.developerchen.core.domain.RestResponse;
 import com.developerchen.core.util.UserUtils;
 import com.developerchen.core.web.BaseController;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author syc
  */
 @RestController
-@RequestMapping("/api")
 public class CommentController extends BaseController {
     private final ICommentService commentService;
 
@@ -31,8 +30,12 @@ public class CommentController extends BaseController {
      *
      * @param comment 评论内容
      */
-    @PostMapping("/comment")
-    public RestResponse reply(@Validated Comment comment) {
+    @PostMapping("/comments")
+    public RestResponse<?> reply(@Validated Comment comment,
+                                 BindingResult result) {
+        if (result.hasErrors()) {
+            return RestResponse.fail("回复失败！");
+        }
         Long userId = getUserId();
         Long authorId = comment.getAuthorId();
         if (authorId == null && userId != null) {

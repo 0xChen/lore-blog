@@ -46,7 +46,7 @@ public class Comment extends BaseEntity {
      * 评论者昵称
      */
     @NotBlank(message = "请填写昵称")
-    @Length(max = 20, message = "昵称不能超过20个字符")
+    @Length(max = 20, message = "昵称不能超过 20 个字符")
     private String authorName;
 
     /**
@@ -59,6 +59,7 @@ public class Comment extends BaseEntity {
      * 评论者网址
      */
     @URL
+    @Length(max = 200, message = "网址不能超过 200 个字符")
     private String url;
 
     /**
@@ -74,8 +75,8 @@ public class Comment extends BaseEntity {
     /**
      * 评论内容
      */
-    @Length(max = 2000, message = "评论内容不能超出2000个字符")
-    @Length(min = 3, message = "评论内容至少要3个字符")
+    @Length(max = 2000, message = "评论内容不能超出 2000 个字符")
+    @Length(min = 3, message = "评论内容至少要 3 个字符")
     private String content;
 
     /**

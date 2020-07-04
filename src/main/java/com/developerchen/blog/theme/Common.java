@@ -36,20 +36,10 @@ public final class Common {
     }
 
     /**
-     * 判断分页中是否有数据
-     *
-     * @param page 分页对象
-     * @return true 有, false 无
-     */
-    public static boolean isEmptyPage(IPage<?> page) {
-        return null == page || page.getTotal() == 0;
-    }
-
-    /**
      * 获取网站首页链接
      */
     public static String blogUrl() {
-        return getBlogOption(Const.OPTION_SCHEME) + "://" + getBlogOption(Const.OPTION_HOSTNAME);
+        return getOption(Const.OPTION_SCHEME) + "://" + getOption(Const.OPTION_HOSTNAME);
     }
 
     /**
@@ -62,59 +52,65 @@ public final class Common {
     }
 
     /**
-     * 获取当前主题名称
-     */
-    public static String blogTheme() {
-        return getBlogOption(BlogConst.OPTION_BLOG_THEME, "default");
-    }
-
-    /**
-     * 获取当前Blog的logo地址
-     */
-    public static String blogLogo() {
-        return getBlogOption(BlogConst.OPTION_BLOG_LOGO_URL, Theme.themeUrl(Theme.THEME_LOGO_PATH));
-    }
-
-    /**
      * 网站标题
      */
     public static String blogTitle() {
-        return getBlogOption(BlogConst.OPTION_BLOG_TITLE);
+        return getOption(BlogConst.OPTION_BLOG_TITLE);
     }
 
     /**
      * 获取网站关键字
      */
     public static String blogKeywords() {
-        return getBlogOption("blog_keywords");
+        return getOption("blog_keywords");
     }
 
     /**
      * 获取网站描述信息
      */
     public static String blogDescription() {
-        return getBlogOption(BlogConst.OPTION_BLOG_DESCRIPTION);
+        return getOption(BlogConst.OPTION_BLOG_DESCRIPTION);
+    }
+
+
+    /**
+     * 获取当前主题名称
+     */
+    public static String blogTheme() {
+        return getOption(BlogConst.OPTION_BLOG_THEME, "default");
     }
 
     /**
      * 获取网站指定的配置项值
      *
-     * @param key 配置项
+     * @param name 配置项名称
      * @return value 配置项值
      */
-    public static String getBlogOption(String key) {
-        return getBlogOption(key, "");
+    public static String getOption(String name) {
+        return AppConfig.getOption(name);
     }
 
     /**
-     * 获取网站指定的配置项值
+     * 获取网站指定的配置项值, 如果没有此配置项或者此配置项对应的值是 null 或者 ""
+     * 则返回默认值
      *
-     * @param key          配置项
+     * @param name         配置项名称
      * @param defaultValue 默认值
      * @return value 配置项值
      */
-    public static String getBlogOption(String key, String defaultValue) {
-        return StringUtils.isBlank(key) ? "" : AppConfig.getOption(key, defaultValue);
+    public static String getOption(String name, String defaultValue) {
+        String value = AppConfig.getOption(name);
+        return StringUtils.isEmpty(value) ? defaultValue : value;
+    }
+
+    /**
+     * 判断分页中是否有数据
+     *
+     * @param page 分页对象
+     * @return boolean
+     */
+    public static boolean isEmptyPage(IPage<?> page) {
+        return null == page || page.getTotal() == 0;
     }
 
     /**

@@ -2,6 +2,7 @@ package com.developerchen.blog.module.link.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.developerchen.blog.exception.BlogException;
 import com.developerchen.blog.module.link.domain.entity.Link;
 import com.developerchen.blog.module.link.repository.LinkMapper;
 import com.developerchen.core.constant.Const;
@@ -9,6 +10,7 @@ import com.developerchen.core.service.impl.BaseServiceImpl;
 import com.developerchen.core.domain.RestPage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -25,12 +27,9 @@ public class LinkServiceImpl extends BaseServiceImpl<LinkMapper, Link> implement
     public LinkServiceImpl() {
     }
 
-    /**
-     * 新增或更新链接
-     *
-     * @param link 链接
-     */
+
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void saveOrUpdateLink(Link link) {
         Long linkId = link.getId();
         if (linkId == null) {
@@ -47,28 +46,21 @@ public class LinkServiceImpl extends BaseServiceImpl<LinkMapper, Link> implement
         super.saveOrUpdate(link);
     }
 
-    /**
-     * 获取链接
-     *
-     * @param linkId 链接ID
-     * @return 链接
-     */
+    @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
+    public void updateLink(Link link) {
+        Link linkDb = baseMapper.selectById(link.getId());
+        if (linkDb == null) {
+            throw new BlogException("不存在此链接, 更新失败");
+        }
+        super.updateById(link);
+    }
+
     @Override
     public Link getLinkById(long linkId) {
         return baseMapper.selectById(linkId);
     }
 
-    /**
-     * 获取链接
-     *
-     * @param name        链接名称查询条件
-     * @param url         链接地址查询条件
-     * @param visible     是否可见查询条件
-     * @param description 描述查询条件
-     * @param page        当前页码
-     * @param size        每页数量
-     * @return 分页形式的链接
-     */
     @Override
     public IPage<Link> getLinkPage(String name,
                                    String url,
@@ -86,30 +78,20 @@ public class LinkServiceImpl extends BaseServiceImpl<LinkMapper, Link> implement
         return baseMapper.selectPage(new RestPage<>(page, size), qw);
     }
 
-    /**
-     * 删除链接
-     *
-     * @param linkId 链接主键
-     */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deleteLinkById(long linkId) {
         baseMapper.deleteById(linkId);
     }
 
-    /**
-     * 批量删除链接
-     *
-     * @param linkIds 需要删除的链接主键集合
-     */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deleteLinkByIds(Set<Long> linkIds) {
         baseMapper.deleteBatchIds(linkIds);
     }
 
-    /**
-     * 删除所有链接
-     */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deleteAll() {
         baseMapper.delete(null);
     }

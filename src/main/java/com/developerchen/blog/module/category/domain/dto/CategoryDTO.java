@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * <p>
- * 类别 数据传输对象
+ * 分类 数据传输对象
  * </p>
  *
  * @author syc
@@ -23,7 +23,7 @@ public class CategoryDTO extends Category {
     private Integer level;
 
     /**
-     * 父父类主键
+     * 父类主键
      */
     private Long parentId;
 

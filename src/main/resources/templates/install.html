@@ -2,56 +2,84 @@
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <link rel="shortcut icon" href="/resources/themes/default/img/favicon.png">
-    <link rel="apple-touch-icon" href="/resources/themes/default/img/favicon.png">
+    <link rel="shortcut icon" href="/resources/favicon.ico">
+    <link rel="apple-touch-icon" href="/resources/favicon.ico">
     <title>安装博客</title>
-    <link href="//cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
-    <link href="//cdn.staticfile.org/limonte-sweetalert2/7.28.2/sweetalert2.min.css" rel="stylesheet">
 
-    <link href="/resources/admin/plugins/jquery-steps/1.1.0/jquery.steps.css" rel="stylesheet" >
-    <link href="/resources/admin/plugins/vue-loading/vue-loading.min.css" rel="stylesheet">
-    <link href="/resources/admin/css/style.min.css" rel="stylesheet" type="text/css">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.13.2/lib/theme-chalk/index.css">
     <style>
-        body, html {
-            background: url('[[|/resources/admin/images/bg/${#blog.random(6)}.png|]]') no-repeat;
-            background-size: cover;
+        html, body, #app {
+            height: 100%;
         }
-        .home-text {
-            -webkit-box-sizing: content-box;
-            -moz-box-sizing: content-box;
-            box-sizing: content-box;
-            cursor: pointer;
-            border: none;
-            font: normal 36px/normal "Passero One", Helvetica, sans-serif;
-            color: rgba(255,255,255,1);
-            text-align: center;
-            -o-text-overflow: clip;
-            text-overflow: clip;
-            text-shadow: 0 1px 0 rgb(204,204,204) , 0 2px 0 rgb(201,201,201) , 0 3px 0 rgb(187,187,187) , 0 4px 0 rgb(185,185,185) , 0 5px 0 rgb(170,170,170) , 0 6px 1px rgba(0,0,0,0.0980392) , 0 0 5px rgba(0,0,0,0.0980392) , 0 1px 3px rgba(0,0,0,0.298039) , 0 3px 5px rgba(0,0,0,0.2) , 0 5px 10px rgba(0,0,0,0.247059) , 0 10px 10px rgba(0,0,0,0.2) , 0 20px 20px rgba(0,0,0,0.14902) ;
-            -webkit-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
-            -moz-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
-            -o-transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
-            transition: all 300ms cubic-bezier(0.42, 0, 0.58, 1);
+
+        html {
+            overflow: auto;
+            /*background: linear-gradient(-30deg, #4f38a4, #a244bc 45%, #4f38a4 45%) #4f38a4*/
+            /*background: linear-gradient(to left bottom, hsl(27, 67%, 79%) 0%, hsl(222, 100%, 86%) 100%);*/
+            /*background: linear-gradient(to left bottom, hsl(0, 30%, 90%) 30%, hsl(222, 100%, 86%) 60%);*/
+            /*background: linear-gradient(hsla(0,0%,100%,.6),hsla(0,0%,100%,.6)),linear-gradient(270deg,#77a1d3,#79cbca,#e684ae,#fd7536);*/
+            /*background: linear-gradient(180deg, hsla(0, 0%, 100%, 0.36) 60%, #fff), linear-gradient(70deg, hsl(208, 66%, 35%) 32%, hsl(0, 66%, 50%));*/
         }
-        .home-text:hover {
-            color: rgba(106,107,106,1);
-            text-shadow: 0 1px 0 rgba(255,255,255,1) , 0 2px 0 rgba(255,255,255,1) , 0 3px 0 rgba(255,255,255,1) , 0 4px 0 rgba(255,255,255,1) , 0 5px 0 rgba(255,255,255,1) , 0 6px 1px rgba(0,0,0,0.0980392) , 0 0 5px rgba(0,0,0,0.0980392) , 0 1px 3px rgba(0,0,0,0.298039) , 0 3px 5px rgba(0,0,0,0.2) , 0 -5px 10px rgba(0,0,0,0.247059) , 0 -7px 10px rgba(0,0,0,0.2) , 0 -15px 20px rgba(0,0,0,0.14902) ;
-            -webkit-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1) 10ms;
-            -moz-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1) 10ms;
-            -o-transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1) 10ms;
-            transition: all 200ms cubic-bezier(0.42, 0, 0.58, 1) 10ms;
+
+        #app {
+            display: flex;
+            flex-direction: column;
         }
-        #scheme {
-            width: 22%;
-            display: inline-block;
+
+        .hero-head {
+            position: relative;
+            z-index: 99;
+            background: linear-gradient(
+                    to left,
+                    #d53e4f,
+                    #fc8d59,
+                    #fee08b,
+                    #e6f598,
+                    #99d594,
+                    #3288bd
+            ) left bottom repeat-x;
+            background-size: 100% 1px;
+            background-color: #ffffff30;
+            padding: 0 20px;
+            height: 60px;
+            box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.05);
         }
-        #hostname {
-            width: 77%;
-            display: inline-block;
+
+        .hero-body {
+            flex-shrink: 1;
+            overflow: auto;
+            padding-top: 20px;
+            padding-bottom: 5px;
+        }
+
+        .form-container {
+            flex-grow: 1;
+            margin: 10px 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .scheme-select {
+            width: 110px;
+        }
+
+        /* reset element*/
+        .el-card {
+            background-color: unset;
+        }
+
+        .el-card__body {
+            height: 100%;
+            overflow: auto;
+        }
+
+        /* 修复 bulma.css 中 is-flex 有特殊样式导致 element 显示异常的问题 */
+        .el-step.is-horizontal {
+            display: inline-block !important;
         }
     </style>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -62,124 +90,425 @@
     <![endif]-->
 </head>
 <body>
-
-<div class="container" style="max-width: 680px;">
-    <section class="home bg-dark" style="margin-top: 20px; margin-bottom: 20px;">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12 text-center">
-                    <div class="home-wrapper">
-                        <h1 class="home-text"><span class="rotate">博客安装向导</span></h1>
+<section class="hero" style="height: 100%">
+    <div class="hero-head">
+        <div class="container has-text-centered">
+            <p class="title">
+                博客安装向导
+            </p>
+        </div>
+    </div>
+    <div class="hero-body">
+        <div class="container" style="height: 100%">
+            <div id="app">
+                <th:block th:unless="${#blog.hasInstalled()}">
+                    <el-row :gutter="16" type="flex" justify="center">
+                        <el-col :lg="14" :md="24">
+                            <el-steps :active="active" process-status="process" finish-status="success">
+                                <el-step title="步骤1" description="网站设置"></el-step>
+                                <el-step title="步骤2" description="添加管理账户"></el-step>
+                                <el-step title="步骤3" description="确认安装"></el-step>
+                            </el-steps>
+                        </el-col>
+                    </el-row>
+                    <div class="form-container">
+                        <el-row :gutter="16" type="flex" justify="center" style="height: 100%">
+                            <el-col :lg="14" :md="24" style="height: 100%">
+                                <el-card class="form-card" style="height: 100%">
+                                    <el-form
+                                            :style="optionFormStyle"
+                                            label-position="right"
+                                            label-width="80px"
+                                            :model="optionForm"
+                                            status-icon
+                                            :rules="optionRules"
+                                            ref="optionForm"
+                                    >
+                                        <el-form-item label="网站域名" prop="hostname">
+                                            <el-input
+                                                    placeholder="请和你当前访问的域名保持一致，否则会出现渲染错误。"
+                                                    v-model="optionForm.hostname">
+                                                <el-select
+                                                        v-model="optionForm.scheme"
+                                                        slot="prepend"
+                                                        placeholder="请选择"
+                                                        class="scheme-select"
+                                                >
+                                                    <el-option label="http://" value="http"></el-option>
+                                                    <el-option label="https://" value="https"></el-option>
+                                                </el-select>
+                                            </el-input>
+                                        </el-form-item>
+                                        <el-form-item label="博客标题" prop="blog_title">
+                                            <el-input v-model="optionForm.blog_title" placeholder="博客标题"></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="博客描述" prop="blog_description">
+                                            <el-input
+                                                    type="textarea"
+                                                    placeholder="博客描述"
+                                                    v-model="optionForm.blog_description"
+                                                    :autosize="{ minRows: 4 }"
+                                                    maxlength="500"
+                                                    show-word-limit
+                                            >
+                                            </el-input>
+                                        </el-form-item>
+                                    </el-form>
+                                    <el-form
+                                            :style="profileFormStyle"
+                                            label-position="right"
+                                            label-width="80px"
+                                            :model="profileForm"
+                                            status-icon
+                                            :rules="profileRules"
+                                            ref="profileForm"
+                                    >
+                                        <el-form-item label="昵称" prop="nickname">
+                                            <el-input
+                                                    v-model="profileForm.nickname"
+                                                    placeholder="输入一个你喜欢的昵称"
+                                            >
+                                            </el-input>
+                                        </el-form-item>
+                                        <el-form-item label="用户名" prop="username" ref="username">
+                                            <el-input
+                                                    v-model="profileForm.username"
+                                                    placeholder="请输入管理员用户名"
+                                            >
+                                            </el-input>
+                                        </el-form-item>
+                                        <el-form-item label="电子邮箱" prop="email">
+                                            <el-input
+                                                    type="email"
+                                                    v-model="profileForm.email"
+                                                    placeholder="例如: email@gmail.com"
+                                            >
+                                            </el-input>
+                                        </el-form-item>
+                                        <el-form-item label="密码" prop="password">
+                                            <el-input
+                                                    type="password"
+                                                    v-model="profileForm.password"
+                                                    autocomplete="off"
+                                                    placeholder="密码长度 6 到 255 个字符之间"
+                                            >
+                                            </el-input>
+                                        </el-form-item>
+                                        <el-form-item label="确认密码" prop="confirmPassword">
+                                            <el-input
+                                                    type="password"
+                                                    v-model="profileForm.confirmPassword"
+                                                    autocomplete="off"
+                                            >
+                                            </el-input>
+                                        </el-form-item>
+                                    </el-form>
+                                    <div :style="installButtonContainerStyle">
+                                        <el-button
+                                                @click="install"
+                                                type="primary"
+                                                :loading="loading"
+                                        >
+                                            确认安装
+                                        </el-button>
+                                    </div>
+                                </el-card>
+                            </el-col>
+                        </el-row>
                     </div>
-                </div>
+
+                    <el-row :gutter="16" type="flex" justify="center">
+                        <el-col :lg="14" :md="24">
+                            <el-button-group style="margin-bottom: 10px">
+                                <el-button
+                                        @click="prevStep"
+                                        :disabled="active <= 0"
+                                        size="medium"
+                                        icon="el-icon-arrow-left"
+                                >
+                                    上一步
+                                </el-button>
+                                <el-button
+                                        @click="nextStep"
+                                        :disabled="active >= 2"
+                                        size="medium"
+                                        type="primary"
+                                >
+                                    下一步
+                                    <i class="el-icon-arrow-right el-icon--right"></i>
+                                </el-button>
+                            </el-button-group>
+                        </el-col>
+                    </el-row>
+                </th:block>
+                <th:block th:if="${#blog.hasInstalled()}">
+                    <p>应用已经安装过了, 如需重新安装请提前做好备份, 删除应用所在目录下的
+                        <strong>lock/Installed</strong> 文件, 并重新启动应用再次访问当前页面. </p>
+                    <p class="has-text-danger"><em>注意: 重新安装将清空数据库</em></p>
+                </th:block>
             </div>
         </div>
-    </section>
-
-    <div class="row" th:unless="${#blog.hasInstalled()}">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">安装向导</h3>
-                </div>
-                <div class="panel-body">
-                    <form id="wizard-validation-form">
-                        <div>
-                            <h3>网站设置</h3>
-                            <section>
-                                <div class="form-group clearfix">
-                                    <label class="col-md-2 control-label">* 博客名称</label>
-                                    <div class="col-md-10">
-                                        <input class="form-control" id="blog_title" name="blog_title" type="text" placeholder="请输入博客名称"
-                                               required aria-required="true" maxlength="100">
-                                    </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-md-2 control-label">* 博客地址</label>
-                                    <div class="col-md-10">
-                                        <select class="form-control" id="scheme"><option value="https">https://</option><option value="http">http://</option></select>
-                                        <input class="form-control" id="hostname" name="hostname" type="text" placeholder="请输入博客地址，未绑定域名则输入ip:port"
-                                               required aria-required="true"/>
-                                    </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-md-2 control-label">&nbsp;&nbsp;博客简介</label>
-                                    <div class="col-md-10">
-                                        <textarea class="form-control" id="blog_description" name="blog_description" placeholder="请输入博客简介" rows="6"></textarea>
-                                    </div>
-                                </div>
-                            </section>
-                            <h3>添加账户</h3>
-                            <section>
-                                <div class="form-group clearfix">
-                                    <label class="col-md-3 control-label">&nbsp;&nbsp;昵称</label>
-                                    <div class="col-md-9">
-                                        <input class="form-control" id="nickname" name="nickname" type="text" placeholder="请输入管理员昵称"
-                                               required aria-required="true" rangelength="[2,20]"/>
-                                    </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-md-3 control-label">* 管理员用户名</label>
-                                    <div class="col-md-9">
-                                        <input class="form-control" id="username" name="username" type="text" placeholder="请输入管理员账号"
-                                               required aria-required="true" rangelength="[4,20]"/>
-                                    </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-md-3 control-label">&nbsp;&nbsp;管理员邮箱</label>
-                                    <div class="col-md-9">
-                                        <input class="form-control" id="email" name="email" type="email"
-                                               placeholder="请输入管理员邮箱"/>
-                                    </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-md-3 control-label">* 管理员密码</label>
-                                    <div class="col-md-9">
-                                        <input id="password" name="password" type="password" class="form-control"
-                                               required aria-required="true" rangelength="[6,14]" placeholder="请输入6-14位管理员密码"/>
-                                    </div>
-                                </div>
-                                <div class="form-group clearfix">
-                                    <label class="col-md-3 control-label">* 确认管理员密码</label>
-                                    <div class="col-md-9">
-                                        <input id="confirm" type="password" class="form-control" equalTo="#password"
-                                               placeholder="请确认管理员密码"/>
-                                    </div>
-                                </div>
-                            </section>
-                            <h3>安装完成</h3>
-                            <section>
-                                <div class="form-group clearfix">
-                                    <div class="col-lg-12 text-center">
-                                        <h3>安装完成！</h3>
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
-                    </form>
-                </div>  <!-- End panel-body -->
-            </div> <!-- End panel -->
-        </div> <!-- end col -->
-    </div> <!-- End row -->
-    <th:block th:if="${#blog.hasInstalled()}">
-        <p class="text-warning text-center">应用已经安装过了, 如需重新安装请提前做好备份, 删除应用所在目录下的
-        <strong>lock/Installed</strong> 文件, 并重新启动应用再次访问当前页面. </p>
-        <p class="text-danger text-center lead"><em>注意: 重新安装将清空数据库</em></p>
-    </th:block>
-</div>
-
-<script src="//cdn.staticfile.org/jquery/3.3.1/jquery.js"></script>
-<script src="//cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
-<script src="//cdn.staticfile.org/vue/2.5.17/vue.js"></script>
-<script src="//cdn.staticfile.org/limonte-sweetalert2/7.28.2/sweetalert2.js"></script>
-<script src="//cdn.staticfile.org/axios/0.18.0/axios.js"></script>
-<script src="//cdn.staticfile.org/jquery-validate/1.19.1/jquery.validate.min.js"></script>
-<script src="//cdn.staticfile.org/jquery-validate/1.19.1/localization/messages_zh.min.js"></script>
-
-<script src="/resources/admin/plugins/jquery-steps/1.1.0/jquery.steps.min.js"></script>
-<script src="/resources/admin/plugins/vue-loading/vue-loading.min.js"></script>
-<script src="/resources/admin/js/base.js"></script>
-<script src="/resources/admin/js/install.js"></script>
-<th:block th:replace="common/constant::constant"></th:block>
+    </div>
+    <div class="hero-foot">
+        <div class="container">
+            <div class="content is-small has-text-centered">
+                <p>
+                    Designed with ♥ by
+                    <a href="https://developerchen.com" rel="noopener" target="_blank" title="SYC's website">
+                        SYC
+                    </a>
+                    . Licensed under the
+                    <a href="https://www.mit-license.org" rel="noopener" target="_blank" title="MIT License">
+                        MIT License
+                    </a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<div id="background" style="height: 100%; position: absolute;top:0;left:0;z-index: -1;"></div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+<script src="https://cdn.jsdelivr.net/npm/element-ui@2.13.2/lib/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/trianglify@4.0.0/dist/trianglify.bundle.js"></script>
+<th:block th:replace="common/constant::constant"></th:block>
+<script>
+    const colors = [
+        [
+            'rgb(8, 29, 88)',
+            'rgb(37, 52, 148)',
+            'rgb(34, 94, 168)',
+            'rgb(29, 145, 192)',
+            'rgb(65, 182, 196)',
+            'rgb(255, 255, 217)',
+            'rgb(237, 248, 177)',
+            'rgb(199, 233, 180)',
+            'rgb(127, 205, 187)'
+        ],
+        [
+            'rgb(165, 0, 38)',
+            'rgb(215, 48, 39)',
+            'rgb(244, 109, 67)',
+            'rgb(253, 174, 97)',
+            'rgb(254, 224, 144)',
+            'rgb(255, 255, 191)',
+            'rgb(224, 243, 248)',
+            'rgb(171, 217, 233)',
+            'rgb(116, 173, 209)',
+            'rgb(69, 117, 180)',
+            'rgb(49, 54, 149)'
+        ],
+        [
+            '#1EB3A4',
+            '#3C8079',
+            '#10E657',
+            '#E94A8C',
+            '#B31EA5'
+        ]
+    ];
+    const pattern = trianglify({
+        width: window.innerWidth,
+        height: window.innerHeight,
+        xColors: 'random',
+        cellSize: 169,
+        palette: colors
+    })
+    document.getElementById('background').appendChild(pattern.toCanvas())
+
+    const baseRule = {
+        max: 500,
+        trigger: 'blur',
+        message: '长度不能超过 500 个字符'
+    };
+    const app = new Vue({
+        data: {
+            optionForm: {
+                scheme: document.location.protocol.replace(":", ""),
+                hostname: document.location.host,
+                blog_title: '',
+                blog_description: ''
+            },
+            profileForm: {
+                username: '',
+                nickname: '',
+                email: '',
+                password: '',
+                confirmPassword: ''
+            },
+            optionRules: {
+                hostname: [baseRule, {
+                    validator: (rule, value, callback) => {
+                        if (app.optionForm.scheme === '') {
+                            callback(new Error('请选择Http协议'));
+                        } else if (value === '' || app.optionForm.scheme === '') {
+                            callback(new Error('请输入网站域名'));
+                        } else {
+                            callback();
+                        }
+                    },
+                    trigger: ['blur', 'change']
+                }],
+                blog_title: [baseRule, {
+                    required: true,
+                    trigger: 'blur',
+                    message: '请输入博客标题'
+                }],
+                blog_description: [baseRule]
+            },
+            profileRules: {
+                nickname: [
+                    {
+                        max: 25,
+                        trigger: 'blur',
+                        message: '昵称长度不能超过 25 个字符'
+                    }
+                ],
+                username: [
+                    {
+                        required: true,
+                        trigger: 'blur',
+                        message: '请输入用户名'
+                    },
+                    {
+                        max: 25,
+                        trigger: 'blur',
+                        message: '用户名长度不能超过 25 个字符'
+                    }
+                ],
+                email: [
+                    {
+                        type: 'email',
+                        required: true,
+                        max: 100,
+                        trigger: ['blur'],
+                        message: '请输入正确的邮箱地址'
+                    }
+                ],
+                password: [
+                    {min: 6, max: 255, trigger: 'blur', message: '密码长度 6 到 255 个字符之间'},
+                    {
+                        validator: (rule, value, callback) => {
+                            if (value === '') {
+                                callback(new Error('请输入新密码'));
+                            } else {
+                                if (app.profileForm.confirmPassword !== '') {
+                                    app.$refs.profileForm.validateField('confirmPassword');
+                                }
+                                callback();
+                            }
+                        },
+                        trigger: 'blur'
+                    }
+                ],
+                confirmPassword: [
+                    {max: 255, trigger: 'blur', message: '密码长度不能超过 255 个字符'},
+                    {
+                        validator: (rule, value, callback) => {
+                            if (value === '') {
+                                callback(new Error('请再次输入新密码'));
+                            } else if (value !== app.profileForm.password) {
+                                callback(new Error('两次新密码不一致!'));
+                            } else {
+                                callback();
+                            }
+                        },
+                        trigger: 'blur'
+                    }
+                ]
+            },
+            active: 0,
+            loading: false,
+        },
+        computed: {
+            optionFormStyle: function () {
+                return {
+                    display: this.active === 0 ? 'block' : 'none'
+                }
+            },
+            profileFormStyle: function () {
+                return {
+                    display: this.active === 1 ? 'block' : 'none'
+                }
+            },
+            installButtonContainerStyle: function () {
+                return {
+                    display: this.active === 2 ? 'flex' : 'none',
+                    height: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }
+            },
+            adminUrl: function() {
+                return `${this.optionForm.scheme}://${this.optionForm.hostname}/admin`
+            }
+        },
+        methods: {
+            validateForm() {
+                let result = false;
+                const formName = this.active === 0 ? 'optionForm' : 'profileForm';
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        result = true;
+                    } else {
+                        return false;
+                    }
+                    return true;
+                });
+                return result;
+            },
+            prevStep() {
+                if (this.validateForm()) {
+                    this.active--;
+                }
+            },
+            nextStep() {
+                if (this.validateForm()) {
+                    this.active++;
+                }
+            },
+            install() {
+                const data = {};
+                Object.assign(data, this.optionForm);
+                Object.assign(data, this.profileForm);
+                this.loading = true;
+                axios({
+                    url: constant.INSTALL_URI,
+                    method: 'post',
+                    data
+                }).then((res) => {
+                    this.loading = false;
+                    if (res.data.success) {
+                        const h = this.$createElement;
+                        this.$msgbox({
+                            title: '安装成功',
+                            message: h('el-link', {
+                                    attrs: { target: "_blank" },
+                                    props: { href: this.adminUrl }
+                                },
+                                [`后台地址: ${this.adminUrl}`]
+                            ),
+                            showCancelButton: true,
+                            confirmButtonText: '访问后台',
+                            cancelButtonText: '访问主页'
+                        }).then(() => {
+                            window.location.href = "/admin";
+                        }).catch(() => {
+                            window.location.href = "/";
+                        });
+                    } else {
+                        this.$alert(res.data.message, '安装失败', {
+                            confirmButtonText: '确定'
+                        });
+                    }
+                }).catch(() => {
+                    this.loading = false;
+                    this.$alert('安装失败, 请稍后重新点击[确认安装]或手动刷新页面重新填写资料安装. ', '安装失败', {
+                        confirmButtonText: '确定'
+                    });
+                });
+            }
+        }
+    }).$mount('#app');
+</script>
 </html>

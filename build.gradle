@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.developerchen'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.1-SNAPSHOT'
 description = 'A Blog platform'
 sourceCompatibility = '1.8'
 
@@ -44,6 +44,7 @@ dependencies {
     implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation 'org.apache.commons:commons-lang3:3.10'
     implementation 'commons-codec:commons-codec:1.14'
+    implementation 'cn.hutool:hutool-core:5.3.7'
     implementation('com.vladsch.flexmark:flexmark-all:0.61.30') {
         exclude group: "com.vladsch.flexmark", module: "flexmark-youtrack-converter"
         exclude group: "com.vladsch.flexmark", module: "flexmark-pdf-converter"
@@ -68,6 +69,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
 
     compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
 tasks.withType(JavaCompile) {

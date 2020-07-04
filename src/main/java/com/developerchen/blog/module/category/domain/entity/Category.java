@@ -23,7 +23,7 @@ public class Category extends BaseEntity {
     /**
      * 分类名称
      */
-    @Length(max = 25, message = "分类名称不能超过25个字符")
+    @Length(max = 25, message = "分类名称不能超过 25 个字符")
     private String name;
 
     /**

@@ -2,18 +2,19 @@ package com.developerchen.core.exception;
 
 import com.developerchen.core.domain.RestResponse;
 import com.developerchen.core.util.RequestUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerMethod;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -23,6 +24,23 @@ import java.util.stream.Collectors;
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ResponseBody
+    @ExceptionHandler
+    public RestResponse<?> handleException(HttpServletRequest request,
+                                           ServletException ex) throws Exception {
+        if (RequestUtils.isAjaxRequest(request)) {
+            HttpStatus status = getStatus(request);
+            ex.printStackTrace();
+            return RestResponse.fail(status.value(), ex.getMessage());
+        } else {
+            /*
+             * Rethrow the given exception for further processing through the HandlerExceptionResolver chain.
+             * The default HandlerExceptionResolver {@link org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver}
+             */
+            throw ex;
+        }
+    }
 
     /**
      * 处理异常
@@ -35,24 +53,35 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler
     public RestResponse<?> handleException(HttpServletRequest request,
-                                           HandlerMethod method,
-                                           Exception ex) throws Exception {
-
-        if (isAjaxRequest(request, method)) {
+                                           Exception ex,
+                                           @Nullable HandlerMethod method) throws Exception {
+        boolean needPrintStackTrace = true;
+        if (RequestUtils.isAjaxRequest(request, method)) {
             HttpStatus status = getStatus(request);
             int code = status.value();
             String message = null;
-            if (ex instanceof TipException) {
+            if (ex instanceof AlertException) {
                 message = ex.getMessage();
+                needPrintStackTrace = false;
             } else if (ex instanceof RestException) {
                 code = ((RestException) ex).getCode();
                 message = ex.getMessage();
+                needPrintStackTrace = false;
             } else if (ex instanceof IllegalArgumentException) {
                 message = ex.getMessage();
             } else if (ex instanceof BindException) {
                 message = resolveBindException(ex);
+            } else if (ex instanceof HttpMessageNotReadableException) {
+                message = ex.getMessage();
+
+                //以下开始数据库相关异常
+            } else if (ex instanceof DuplicateKeyException) {
+                message = ex.getCause().getMessage();
             }
-            ex.printStackTrace();
+
+            if (needPrintStackTrace) {
+                ex.printStackTrace();
+            }
             return RestResponse.fail(code, message);
         } else {
             /*
@@ -70,12 +99,12 @@ public class GlobalExceptionHandler {
      * @return 异常的文本描述
      */
     private String resolveBindException(Exception ex) {
-        List<String> errorMessageList = ((BindException) ex).getBindingResult()
+        String errorMessage = ((BindException) ex).getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(x -> x.getDefaultMessage())
-                .collect(Collectors.toList());
-        return StringUtils.join(errorMessageList, ";");
+                .collect(Collectors.joining("; "));
+        return errorMessage;
     }
 
     /**
@@ -90,30 +119,4 @@ public class GlobalExceptionHandler {
         }
         return HttpStatus.valueOf(statusCode);
     }
-
-    /**
-     * 判断是否 ajax 调用
-     * 1. HttpServletRequest头信息中X-Requested-With是否等于XMLHttpRequest
-     * 2. 处理请求的方法是否有@ResponseBody注解
-     * 3. 方法所在类是否有@RestController注解
-     *
-     * @param method 抛出异常的方法
-     * @return true or not
-     */
-    @SuppressWarnings("unchecked")
-    private boolean isAjaxRequest(HttpServletRequest request, Object method) {
-        if (RequestUtils.isAjaxRequest(request)) {
-            return true;
-        }
-        if (method instanceof HandlerMethod) {
-            HandlerMethod handlerMethod = (HandlerMethod) method;
-            if (handlerMethod.hasMethodAnnotation(ResponseBody.class)) {
-                return true;
-            }
-            Class<?> methodClass = handlerMethod.getMethod().getDeclaringClass();
-            return methodClass.isAnnotationPresent(RestController.class);
-        }
-        return false;
-    }
-
 }

@@ -1,7 +1,6 @@
 package com.developerchen.core.service;
 
 import com.developerchen.core.domain.entity.Log;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -12,9 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface ILogService extends IBaseService<Log> {
 
-    @Transactional
     void saveLog(Log log);
 
-    @Transactional
     void asyncSaveLog(Log log);
 }

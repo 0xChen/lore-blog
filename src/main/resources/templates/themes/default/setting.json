@@ -1,0 +1,26 @@
+[
+  {
+    "label": "主题LOGO",
+    "name": "theme_logo_url",
+    "value": "",
+    "description": "主题LOGO链接, 不填则表示使用主题内默认LOGO"
+  },
+  {
+    "label": "微博账号",
+    "name": "social_weibo",
+    "value": "",
+    "description": "微博账号，不输入则不显示"
+  },
+  {
+    "label": "Github账号",
+    "name": "social_github",
+    "value": "",
+    "description": "Github账号，不输入则不显示"
+  },
+  {
+    "label": "Twitter账号",
+    "name": "social_twitter",
+    "value": "",
+    "description": "Twitter账号，不输入则不显示"
+  }
+]

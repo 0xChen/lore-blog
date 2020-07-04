@@ -8,6 +8,7 @@ import com.developerchen.core.domain.RestResponse;
 import com.developerchen.core.web.BaseController;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -29,7 +30,7 @@ public class PostAdminController extends BaseController {
      */
     @ResponseBody
     @PostMapping({"/api/post", "/api/page"})
-    public RestResponse create(@RequestBody Post post, BindingResult result) {
+    public RestResponse create(@Validated @RequestBody Post post, BindingResult result) {
         if (result.hasErrors()) {
             return RestResponse.fail("保存失败！");
         }
@@ -44,7 +45,7 @@ public class PostAdminController extends BaseController {
      */
     @ResponseBody
     @PutMapping({"/api/post", "/api/page"})
-    public RestResponse update(@RequestBody Post post, BindingResult result) {
+    public RestResponse update(@Validated @RequestBody Post post, BindingResult result) {
         if (result.hasErrors()) {
             return RestResponse.fail("更新失败！");
         }

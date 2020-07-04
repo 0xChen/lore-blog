@@ -1,7 +1,6 @@
 package com.developerchen.core.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +39,6 @@ public interface IBaseService<T> extends IService<T> {
      *
      * @param sql 需要执行的SQL
      */
-    @Transactional
     void updateBySql(String sql);
 
     /**
@@ -50,7 +48,6 @@ public interface IBaseService<T> extends IService<T> {
      *
      * @param sql 需要执行的SQL
      */
-    @Transactional
     void deleteBySql(String sql);
-    
+
 }

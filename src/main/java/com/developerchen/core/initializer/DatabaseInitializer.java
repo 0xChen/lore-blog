@@ -1,7 +1,7 @@
 package com.developerchen.core.initializer;
 
 import com.developerchen.blog.constant.BlogConst;
-import com.developerchen.core.exception.TipException;
+import com.developerchen.core.exception.AlertException;
 import com.developerchen.core.extension.DecryptJdbcPassword;
 import com.developerchen.core.util.CommonUtils;
 import com.developerchen.core.util.FileUtils;
@@ -65,7 +65,7 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationEnvir
                     Files.write(file.toPath(), sql.getBytes(StandardCharsets.UTF_8));
                 } catch (IOException e) {
                     e.printStackTrace();
-                    throw new TipException("无法创建" + changePasswdSchemaPath + "文件。");
+                    throw new AlertException("无法创建" + changePasswdSchemaPath + "文件。");
                 }
             } else {
                 propertyMap.put(initializationModeKey, DataSourceInitializationMode.NEVER);

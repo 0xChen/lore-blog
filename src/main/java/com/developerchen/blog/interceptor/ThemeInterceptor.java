@@ -24,9 +24,9 @@ public final class ThemeInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void postHandle(HttpServletRequest request,
-                           HttpServletResponse response,
-                           Object handler,
+    public void postHandle(@Nullable HttpServletRequest request,
+                           @Nullable HttpServletResponse response,
+                           @Nullable Object handler,
                            @Nullable ModelAndView modelAndView) throws Exception {
 
         if (modelAndView != null) {

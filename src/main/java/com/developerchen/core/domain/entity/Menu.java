@@ -23,7 +23,7 @@ public class Menu extends BaseEntity {
      * 菜单名称
      */
     @NotNull(message = "菜单名称不能为空")
-    @Length(max = 50, message = "菜单名称长度不能超过50个字符")
+    @Length(max = 50, message = "菜单名称长度不能超过 50 个字符")
     private String name;
     /**
      * 父级菜单ID
@@ -36,12 +36,12 @@ public class Menu extends BaseEntity {
     /**
      * 图标
      */
-    @Length(max = 255, message = "图标地址长度不能超过255个字符")
+    @Length(max = 255, message = "图标地址长度不能超过 255 个字符")
     private String icon;
     /**
      * 连接地址
      */
-    @Length(max = 255, message = "地址长度不能超过255个字符")
+    @Length(max = 255, message = "地址长度不能超过 255 个字符")
     private String url;
     /**
      * 排序

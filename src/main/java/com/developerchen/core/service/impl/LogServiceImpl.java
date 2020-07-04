@@ -6,6 +6,7 @@ import com.developerchen.core.service.ILogService;
 import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -22,12 +23,14 @@ public class LogServiceImpl extends BaseServiceImpl<LogMapper, Log> implements I
 
 
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void saveLog(Log log) {
         baseMapper.insert(log);
     }
 
-    @Async(TaskExecutionAutoConfiguration.APPLICATION_TASK_EXECUTOR_BEAN_NAME)
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
+    @Async(TaskExecutionAutoConfiguration.APPLICATION_TASK_EXECUTOR_BEAN_NAME)
     public void asyncSaveLog(Log log) {
         baseMapper.insert(log);
     }

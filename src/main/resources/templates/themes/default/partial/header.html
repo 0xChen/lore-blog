@@ -30,7 +30,7 @@
 <header id="header" class="header bg-white" th:fragment="header">
     <div class="navbar-container">
         <a th:href="${#blog.blogUrl()}" class="navbar-logo">
-            <img th:src="${#blog.blogLogo()}" th:alt="${#blog.blogTitle()}"/>
+            <img th:src="${#theme.themeLogo()}" th:alt="${#blog.blogTitle()}"/>
         </a>
         <div class="navbar-menu">
             <a href="/archives">归档</a>

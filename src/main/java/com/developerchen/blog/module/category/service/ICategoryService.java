@@ -19,7 +19,6 @@ public interface ICategoryService extends IBaseService<Category> {
     /**
      * 初始化构建根节点
      */
-    @Transactional
     void initRootCategory();
 
     /**
@@ -27,7 +26,7 @@ public interface ICategoryService extends IBaseService<Category> {
      *
      * @return int 分类数量
      */
-    int categoryCount();
+    int countCategory();
 
     /**
      * 获取所有分类
@@ -37,13 +36,20 @@ public interface ICategoryService extends IBaseService<Category> {
     List<Category> getAllCategory();
 
     /**
+     * 获取分类树
+     *
+     * @return 分类树
+     */
+    List<CategoryDTO> getCategoryTree();
+
+    /**
      * 新增分类并插入到指定父节点下
      *
      * @param name     分类名称
      * @param parentId 新增分类的父分类ID, 如果没有父ID, 则插入到默认分类下面
+     * @return 新增的分类
      */
-    @Transactional
-    void insertCategory(String name, Long parentId);
+    Category saveCategory(String name, Long parentId);
 
     /**
      * 获取指定分类的子分类
@@ -78,6 +84,14 @@ public interface ICategoryService extends IBaseService<Category> {
     List<CategoryDTO> getCategoryDTOList(Category category);
 
     /**
+     * 通过分类主键获取分类树
+     *
+     * @param id 分类主键
+     * @return CategoryDTO
+     */
+    CategoryDTO getCategoryDTOWithChildren(long id);
+
+    /**
      * 通过分类名称获取分类树
      *
      * @param name 分类名称
@@ -90,7 +104,6 @@ public interface ICategoryService extends IBaseService<Category> {
      *
      * @param category 更新内容
      */
-    @Transactional
     void updateCategoryById(Category category);
 
     /**
@@ -98,7 +111,6 @@ public interface ICategoryService extends IBaseService<Category> {
      *
      * @param category 待删除的分类
      */
-    @Transactional
     void deleteCategory(Category category);
 
     /**
@@ -106,7 +118,6 @@ public interface ICategoryService extends IBaseService<Category> {
      *
      * @param categoryId 待删除分类的主键
      */
-    @Transactional
     void deleteCategoryById(long categoryId);
 }
 

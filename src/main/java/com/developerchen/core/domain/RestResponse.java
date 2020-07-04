@@ -8,6 +8,7 @@ import java.util.Map;
  *
  * 自定义Http状态码从600开始
  * 600表示有需要alert的错误消息
+ * 611表示有表示博客没有执行过安装初始化步骤, 需要执行安装程序
  * @param <T>
  * @author syc
  */

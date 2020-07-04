@@ -1,32 +1,32 @@
 package com.developerchen.core.exception;
 
 /**
- * Thrown with tip message.
+ * Thrown with alert message.
  *
  * @author syc
  */
 public
-class TipException extends RuntimeException {
+class AlertException extends RuntimeException {
 
     private static final long serialVersionUID = 5041655746640791738L;
 
     private String message;
 
     /**
-     * Constructs an <code>TipException</code> with no
+     * Constructs an <code>AlertException</code> with no
      * detail message.
      */
-    public TipException() {
+    public AlertException() {
         super();
     }
 
     /**
-     * Constructs an <code>TipException</code> with the
+     * Constructs an <code>AlertException</code> with the
      * specified detail message.
      *
      * @param message the detail message.
      */
-    public TipException(String message) {
+    public AlertException(String message) {
         super(message);
         this.message = message;
     }
@@ -47,7 +47,7 @@ class TipException extends RuntimeException {
      *                unknown.)
      * @since 1.5
      */
-    public TipException(String message, Throwable cause) {
+    public AlertException(String message, Throwable cause) {
         super(message, cause);
         this.message = message;
     }
@@ -66,7 +66,7 @@ class TipException extends RuntimeException {
      *              unknown.)
      * @since 1.5
      */
-    public TipException(Throwable cause) {
+    public AlertException(Throwable cause) {
         super(cause);
     }
 

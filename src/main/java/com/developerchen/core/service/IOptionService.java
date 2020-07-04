@@ -1,7 +1,6 @@
 package com.developerchen.core.service;
 
 import com.developerchen.core.domain.entity.Option;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -22,13 +21,13 @@ public interface IOptionService extends IBaseService<Option> {
      * @param name  配置名称
      * @param value 配置值
      */
-    @Transactional
     void saveOrUpdateOptionByName(String name, String value);
 
     /**
-     * 保存或更新指定配置
+     * 保存配置
+     *
+     * @param option Option实例
      */
-    @Transactional
     void saveOrUpdateOption(Option option);
 
     /**
@@ -36,7 +35,6 @@ public interface IOptionService extends IBaseService<Option> {
      *
      * @param parameterMap key: 配置名称 -> value: 值
      */
-    @Transactional
     void saveOrUpdateOptions(Map<String, String> parameterMap);
 
     /**
@@ -47,9 +45,10 @@ public interface IOptionService extends IBaseService<Option> {
     Map<String, String> getAllOption();
 
     /**
-     * 根据条件获取系统配置
+     * 获取配置项
      *
-     * @param name 模糊查询条件
+     * @param name 名称查询条件
+     * @return Option集合
      */
     List<Option> getOptionList(String name);
 
@@ -57,6 +56,7 @@ public interface IOptionService extends IBaseService<Option> {
      * 根据名称获取指定配置项
      *
      * @param name 配置名称
+     * @return Option
      */
     Option getOption(String name);
 
@@ -65,7 +65,6 @@ public interface IOptionService extends IBaseService<Option> {
      *
      * @param name 配置名称
      */
-    @Transactional
     void deleteOptionByName(String name);
 
     /**
@@ -73,20 +72,17 @@ public interface IOptionService extends IBaseService<Option> {
      *
      * @param id option表主键
      */
-    @Transactional
-    void deleteOptionById(String id);
+    void deleteOptionById(long id);
 
     /**
      * 根据主键批量删除配置项
      *
      * @param ids option表主键集合
      */
-    @Transactional
     void deleteOptionByIds(Collection<? extends Serializable> ids);
 
     /**
      * 删除所有设置项
      */
-    @Transactional
     void deleteAllOption();
 }

@@ -110,7 +110,7 @@
         function submitComment() {
             $.ajax({
                 type: 'post',
-                url: '/api/comment',
+                url: '/comments',
                 data: $('#comment-form').serialize(),
                 async: false,
                 dataType: 'json',
@@ -118,7 +118,7 @@
                     if (status === 'error' && jqXHR.status === 400) {
                         alert('非法的请求');
                     } else {
-                        console.log('Request Error:', error)
+                        console.log('请求错误: ', error)
                     }
                 },
                 success: function (result) {

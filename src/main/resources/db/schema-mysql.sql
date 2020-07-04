@@ -22,7 +22,9 @@ CREATE TABLE `sys_user` (
   `last_login` datetime(3) COMMENT '最近一次登陆时间',
   `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
   `update_time` datetime(3) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `nickname` (`nickname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
 -- ----------------------------
@@ -31,9 +33,10 @@ CREATE TABLE `sys_user` (
 DROP TABLE IF EXISTS `sys_option`;
 CREATE TABLE `sys_option` (
   `id` bigint(20) unsigned NOT NULL,
-  `name` varchar(50) NOT NULL COMMENT '设置项名称',
-  `value` varchar(500) COMMENT '设置项值',
-  `description` varchar(200) DEFAULT NULL COMMENT '描述',
+  `name` varchar(50) NOT NULL COMMENT '设置项名称, 对应页面input的name属性',
+  `label` varchar(100) NOT NULL COMMENT '设置项显示名称, 可以作为input的标题',
+  `value` varchar(500) COMMENT '设置项值, input的value属性',
+  `description` varchar(200) DEFAULT NULL COMMENT '描述, 可以作为input的placeholder',
   `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
   `update_time` datetime(3) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
@@ -69,7 +72,7 @@ CREATE TABLE `sys_log` (
   `request_uri` varchar(255) DEFAULT NULL COMMENT '请求URI',
   `request_query` varchar(1000) DEFAULT NULL COMMENT '请求URL后的查询参数',
   `request_method` varchar(255) DEFAULT NULL COMMENT '请求方法(get, post, ...)',
-  `method` varchar(100) DEFAULT NULL COMMENT '调用方法',
+  `method` varchar(500) DEFAULT NULL COMMENT '调用方法',
   `arguments` text DEFAULT NULL  COMMENT '调用方法的入参',
   `elapsed_time` int(8) DEFAULT NULL COMMENT '调用方法耗时ms',
   `exception` text DEFAULT NULL COMMENT '异常信息',
@@ -102,7 +105,7 @@ CREATE TABLE `blog_post` (
   `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
   `update_time` datetime(3) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`slug`)
+  UNIQUE KEY `slug` (`slug`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文章与页面表';
 
 -- ----------------------------
@@ -154,7 +157,8 @@ CREATE TABLE `blog_category` (
   `visible` varchar(2) NOT NULL DEFAULT '1' COMMENT '是否可见[0]不可见, [1]可见',
   `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
   `update_time` datetime(3) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分类表';
 
 -- ----------------------------
@@ -163,12 +167,12 @@ CREATE TABLE `blog_category` (
 DROP TABLE IF EXISTS `sys_attachment`;
 CREATE TABLE `sys_attachment` (
   `id` bigint(20) unsigned NOT NULL,
-  `name` varchar(50) NOT NULL COMMENT '文件名',
+  `name` varchar(50) NOT NULL COMMENT '附件在磁盘中的文件名, 附件上传后会生成一个唯一的文件名并已这个名字保存到磁盘中',
   `original_name` varchar(100) NOT NULL DEFAULT '' COMMENT '原始文件名',
-  `type` varchar(50) COMMENT '文件类型',
-  `size` bigint(20) COMMENT '文件大小',
+  `type` varchar(50) COMMENT '附件类型',
+  `size` bigint(20) COMMENT '附件大小',
   `key` varchar(100) DEFAULT NULL COMMENT '文件的唯一标识',
-  `description` varchar(255) DEFAULT NULL COMMENT '资源描述',
+  `description` varchar(255) DEFAULT NULL COMMENT '附件描述',
   `height` smallint(5) unsigned COMMENT '如果是图片类型存放图片的高度',
   `width` smallint(5) unsigned COMMENT '如果是图片类型存放图片的宽度',
   `create_user_id` bigint(20) DEFAULT NULL COMMENT '创建人',
@@ -176,4 +180,4 @@ CREATE TABLE `sys_attachment` (
   `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
   `update_time` datetime(3) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(3) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件, 文件、图片等';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件表 保存文件、图片等';

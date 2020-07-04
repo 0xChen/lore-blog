@@ -63,16 +63,14 @@ public class AppConfig {
     }
 
     /**
-     * 获取配置项值, 如果此配置项没有值则返回传入的默认值
+     * 获取配置项值, 如果没有此配置则返回传入的默认值
      *
      * @param name        配置项名称
      * @param defaultVale 默认值
      * @return 配置值
      */
     public static String getOption(String name, String defaultVale) {
-        String value = OPTIONS.get(name);
-
-        return StringUtils.isNotEmpty(value) ? value : defaultVale;
+        return OPTIONS.getOrDefault(name ,defaultVale);
     }
 
     /**

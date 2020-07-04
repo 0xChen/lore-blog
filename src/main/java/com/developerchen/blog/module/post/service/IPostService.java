@@ -5,7 +5,6 @@ import com.developerchen.blog.module.post.domain.dto.Archive;
 import com.developerchen.blog.module.post.domain.dto.PostDTO;
 import com.developerchen.blog.module.post.domain.entity.Post;
 import com.developerchen.core.service.IBaseService;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -22,7 +21,7 @@ public interface IPostService extends IBaseService<Post> {
 
     List<Archive> getArchiveList();
 
-    int postCount(String status, String type);
+    int countPost(String status, String type);
 
     Post getPrevOrNextPost(String type, Date pubdate);
 
@@ -40,22 +39,16 @@ public interface IPostService extends IBaseService<Post> {
 
     Post getPostById(long postId);
 
-    @Transactional
     void updatePost(Post post);
 
-    @Transactional
     void increasePostReadCount(long postId, int count);
 
-    @Transactional
     void savePost(Post post);
 
-    @Transactional
     void deletePostById(long postId);
 
-    @Transactional
     void increasePostCommentCount(long postId);
 
-    @Transactional
     void reducePostCommentCount(long postId);
 
     List<Post> getPostForSitemap();

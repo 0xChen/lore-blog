@@ -24,13 +24,13 @@ public class Link extends BaseEntity {
     /**
      * 网站名称
      */
-    @Length(max = 100, message = "网站名称不能超过100个字符")
+    @Length(max = 100, message = "网站名称不能超过 100 个字符")
     private String name;
     /**
      * 网站链接
      */
     @URL
-    @Length(max = 255, message = "网址不能超过255个字符")
+    @Length(max = 255, message = "网址不能超过 255 个字符")
     private String url;
     /**
      * 排序
@@ -39,7 +39,7 @@ public class Link extends BaseEntity {
     /**
      * 网站描述
      */
-    @Length(max = 255, message = "网站描述不能超过255个字符")
+    @Length(max = 255, message = "网站描述不能超过 255 个字符")
     private String description;
     /**
      * 是否显示

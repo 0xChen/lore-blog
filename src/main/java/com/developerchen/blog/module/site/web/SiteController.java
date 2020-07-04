@@ -1,5 +1,6 @@
 package com.developerchen.blog.module.site.web;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.developerchen.blog.constant.BlogConst;
 import com.developerchen.blog.module.post.domain.entity.Post;
 import com.developerchen.blog.module.site.domain.Sitemap;
@@ -15,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -87,35 +89,15 @@ public class SiteController extends BaseController {
     }
 
     /**
-     * 保存安装页面的用户自定义配置
+     * 保存安装数据
      */
     @ResponseBody
-    @PostMapping(BlogConst.INSTALL_URI + "/option")
-    public RestResponse installOption(@RequestParam Map<String, String> parameterMap) {
-        this.siteService.installOption(parameterMap);
-        return RestResponse.ok();
-    }
+    @PostMapping(BlogConst.INSTALL_URI)
+    public RestResponse<?> install(@RequestBody Map<String, String> parameterMap) {
+/*        // 保存初始化数据
+        this.siteService.install(parameterMap);
 
-    /**
-     * 添加一个管理账户
-     */
-    @ResponseBody
-    @PostMapping(BlogConst.INSTALL_URI + "/user")
-    public RestResponse installAdminUser(@Validated User user) {
-        try {
-            this.siteService.installAdminUser(user);
-        } catch (Exception e) {
-            return RestResponse.fail("初始化站点失败, 无法新增系统管理员用户.");
-        }
-        return RestResponse.ok(user);
-    }
-
-    /**
-     * 锁定安装程序
-     */
-    @ResponseBody
-    @PostMapping(BlogConst.INSTALL_URI + "/lock")
-    public RestResponse installLock() {
+        // 生成锁定文件
         String errorMessage = null;
         try {
             File parent = BlogConst.INSTALLED.getParentFile();
@@ -136,6 +118,9 @@ public class SiteController extends BaseController {
         } else {
             BlogConst.HAS_INSTALLED = true;
             return RestResponse.ok();
-        }
+        }*/
+        return RestResponse.fail("Lore-Blog安装后自动生成的文件, 用于锁定重复安装. 删除此文件才可以重新执行安装程序.");
+
     }
+
 }

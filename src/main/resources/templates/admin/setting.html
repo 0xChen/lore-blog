@@ -70,7 +70,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label class="col-md-3 control-label">评论需要审核</label>
+                                                        <label class="col-md-3 control-label">评论需要审批</label>
                                                         <div class="col-md-9">
                                                             <input type="checkbox" id="allowCommentAudit"
                                                                    v-model="options.allow_comment_audit"
@@ -117,7 +117,7 @@
             load: function () {
                 var $vm = this;
                 blog.get({
-                    url: '/admin/api/options',
+                    url: '/admin/options',
                     success: function (data) {
                         Object.assign($vm.oldOptions, data.data);
                         Object.keys(data.data).forEach(name => {

@@ -25,6 +25,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.ibatis.jdbc.SQL;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -119,7 +120,7 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
      * @return post数量
      */
     @Override
-    public int postCount(String status, String type) {
+    public int countPost(String status, String type) {
         QueryWrapper<Post> qw = new QueryWrapper<>();
         qw.eq(status != null, "status", status);
         qw.eq(status != null, "type", type);
@@ -242,7 +243,7 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
     /**
      * 分页形式获取指定分类下post
      *
-     * @param categoryId 类别
+     * @param categoryId 分类
      * @param page       当前页码
      * @param size       每页数量
      */
@@ -296,6 +297,7 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
      * 如果post状态由[草稿] or [自动草稿] -> [发布]则同时更新post的发布日期
      */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void updatePost(Post post) {
         if (BlogConst.POST_STATUS_PUBLISH.equals(post.getStatus())) {
 
@@ -317,6 +319,7 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
      * @param count  新增加的阅读次数
      */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void increasePostReadCount(long postId, int count) {
         UpdateWrapper<Post> uw = new UpdateWrapper<>();
         uw.setSql("read_count = read_count + " + count).eq("id", postId);
@@ -327,6 +330,8 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
      * 新增post，并发布Post新增事件
      */
     @Override
+
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void savePost(Post post) {
         // 初始化评论数量
         post.setCommentCount(0);
@@ -350,6 +355,7 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
      * @param postId post主键
      */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deletePostById(long postId) {
         Post post = baseMapper.selectById(postId);
         // 发布Post删除事件
@@ -363,6 +369,7 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
      * @param postId 增加评论数量的post主键
      */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void increasePostCommentCount(long postId) {
         baseMapper.update(null, new UpdateWrapper<Post>()
                 .setSql("comment_count = comment_count + 1")
@@ -375,6 +382,7 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
      * @param postId 减少评论数量的post主键
      */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void reducePostCommentCount(long postId) {
         baseMapper.update(null, new UpdateWrapper<Post>()
                 .setSql("comment_count = comment_count - 1")

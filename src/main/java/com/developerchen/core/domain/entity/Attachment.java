@@ -15,22 +15,27 @@ public class Attachment extends DataEntity {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 附件在磁盘中的文件名, 附件上传后会生成一个唯一的文件名并已这个名字保存到磁盘中
+     */
     private String name;
     /**
      * 原始文件名
      */
     private String originalName;
     /**
-     * 类型
+     * 附件类型
      */
     private String type;
-
+    /**
+     * 附件大小
+     */
     private Long size;
 
     @TableField("`key`")
     private String key;
     /**
-     * 资源描述
+     * 附件描述
      */
     private String description;
     /**

@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -23,10 +24,10 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/admin")
-public class UserController extends BaseController {
+public class UserAdminController extends BaseController {
     private final IUserService userService;
 
-    public UserController(IUserService userService) {
+    public UserAdminController(IUserService userService) {
         this.userService = userService;
     }
 
@@ -37,7 +38,7 @@ public class UserController extends BaseController {
      * @return 用户信息
      */
     @ResponseBody
-    @PostMapping("/user")
+    @PostMapping("/users")
     public RestResponse<User> saveOrUpdate(User user) {
         userService.saveOrUpdateUser(user);
         return RestResponse.ok(user);
@@ -50,7 +51,7 @@ public class UserController extends BaseController {
      * @return 用户信息
      */
     @ResponseBody
-    @GetMapping("/user/{userId}")
+    @GetMapping("/users/{userId}")
     public RestResponse<User> getById(@PathVariable("userId") Long userId) {
         User user = userService.getUserById(userId);
         if (user != null) {
@@ -68,8 +69,8 @@ public class UserController extends BaseController {
      * @return 用户信息
      */
     @ResponseBody
-    @GetMapping("/api/user")
-    public RestResponse<User> getByUsername(@RequestParam String username) {
+    @GetMapping("/users")
+    public RestResponse<User> getByUsername(@RequestParam("username") String username) {
         User user = userService.getUserByUsername(username);
         if (user != null) {
             user.setPassword(null);
@@ -85,26 +86,10 @@ public class UserController extends BaseController {
      * @param userId 用户ID
      */
     @ResponseBody
-    @DeleteMapping("/user/{userId}")
+    @DeleteMapping("/users/{userId}")
     public RestResponse<String> deleteById(@PathVariable("userId") Long userId) {
         userService.deleteUserById(userId);
         return RestResponse.ok();
-    }
-
-    /**
-     * 管理权限的用户更新其他用户的密码
-     *
-     * @param userId      被更新的用户ID
-     * @param newPassword 新密码
-     */
-    @ResponseBody
-    @PutMapping("/user/password")
-    public RestResponse<String> updateUserPassword(@RequestParam Long userId,
-                                                   @RequestParam String newPassword) {
-        User user = userService.getUserById(userId);
-        user.setPassword(newPassword);
-        userService.saveOrUpdateUser(user);
-        return RestResponse.ok("密码修改成功");
     }
 
     /**
@@ -116,7 +101,7 @@ public class UserController extends BaseController {
      */
     @RefreshToken
     @ResponseBody
-    @PutMapping(path = "/password", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PutMapping(path = "/user/password", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public RestResponse<String> updatePassword(@RequestParam String oldPassword,
                                                @RequestParam String newPassword) {
         User user = userService.getUserById(getUserId());
@@ -130,7 +115,7 @@ public class UserController extends BaseController {
 
     @RefreshToken
     @ResponseBody
-    @PutMapping(path = "/password", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/user/password", consumes = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<String> updatePassword(@RequestBody Map<String, String> parameterMap) {
         String oldPassword = parameterMap.get("oldPassword");
         String newPassword = parameterMap.get("newPassword");
@@ -144,8 +129,8 @@ public class UserController extends BaseController {
      */
     @RefreshToken
     @ResponseBody
-    @PutMapping("/profile")
-    public RestResponse<String> updateProfile(@ModelAttribute User user, BindingResult result) {
+    @PutMapping("/user/profile")
+    public RestResponse<String> updateProfile(@Validated @ModelAttribute User user, BindingResult result) {
         if (result.hasErrors()) {
             return RestResponse.fail();
         }
@@ -162,7 +147,7 @@ public class UserController extends BaseController {
      */
     @RefreshToken
     @ResponseBody
-    @PutMapping(path = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/user/profile", consumes = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<String> updateProfile(@RequestBody User user) {
         user.setId(getUserId());
         // 防御前端构造表单修改用户名
@@ -174,7 +159,7 @@ public class UserController extends BaseController {
     /**
      * 显示当前登陆用户的信息
      */
-    @GetMapping("/profile")
+    @GetMapping("/user/profile")
     public String getProfile(Model model) {
         User user = userService.getUserById(getUserId());
         user.setPassword(null);
@@ -186,7 +171,7 @@ public class UserController extends BaseController {
      * 获取当前登陆用户的信息
      */
     @ResponseBody
-    @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/user/profile", produces = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<User> getProfile() {
         User user = userService.getUserById(getUserId());
         user.setPassword(null);

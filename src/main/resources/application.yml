@@ -5,8 +5,7 @@ spring:
     name: lore-blog
   mvc:
     static-path-pattern: ${my-app.static-path-pattern}
-    favicon:
-      enabled: false
+
   resources:
     static-locations:
       - classpath:/META-INF/resources/
@@ -36,8 +35,8 @@ spring.jackson:
 
 ########## multipart ##########
 spring.servlet.multipart:
-  max-file-size: 15MB
-  max-request-size: 150MB
+  max-file-size: 20MB
+  max-request-size: 200MB
 
 ########## task ##########
 spring.task:

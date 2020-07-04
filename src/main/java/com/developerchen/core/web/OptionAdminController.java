@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
@@ -20,12 +21,12 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/admin")
-public class OptionController extends BaseController {
+public class OptionAdminController extends BaseController {
 
     private final IOptionService optionService;
 
 
-    public OptionController(IOptionService optionService) {
+    public OptionAdminController(IOptionService optionService) {
         this.optionService = optionService;
     }
 
@@ -33,7 +34,7 @@ public class OptionController extends BaseController {
      * 保存配置项, 有则更新, 无则新增
      */
     @ResponseBody
-    @PostMapping(path = "/options", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT}, path = "/options", consumes = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<?> saveOrUpdateOptions(@RequestBody Map<String, String> parameterMap) {
         optionService.saveOrUpdateOptions(parameterMap);
         return RestResponse.ok();

@@ -9,6 +9,6 @@ import com.developerchen.core.domain.entity.Attachment;
  *
  * @author syc
  */
-public interface FileMapper extends CoreMapper<Attachment> {
+public interface AttachmentMapper extends CoreMapper<Attachment> {
 
 }

@@ -8,6 +8,7 @@ import com.developerchen.core.service.IOptionService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -35,6 +36,7 @@ public class OptionServiceImpl extends BaseServiceImpl<OptionMapper, Option> imp
      * @param value 配置值
      */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void saveOrUpdateOptionByName(String name, String value) {
         Validate.notBlank(name, "没有指定配置项");
         Option option = baseMapper.selectOne(new QueryWrapper<Option>().eq("name", name));
@@ -51,12 +53,21 @@ public class OptionServiceImpl extends BaseServiceImpl<OptionMapper, Option> imp
      * @param option Option实例
      */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void saveOrUpdateOption(Option option) {
+        if (option.getId() == null) {
+            Option oldOption = baseMapper.selectOne(new QueryWrapper<Option>()
+                    .eq("name", option.getName()));
+            if (oldOption != null) {
+                option.setId(oldOption.getId());
+            }
+        }
         super.saveOrUpdate(option);
         updateAppConfigOptions();
     }
 
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void saveOrUpdateOptions(Map<String, String> parameterMap) {
         QueryWrapper<Option> qw = new QueryWrapper<>();
         qw.in("name", parameterMap.keySet());
@@ -122,6 +133,7 @@ public class OptionServiceImpl extends BaseServiceImpl<OptionMapper, Option> imp
      * @param name 配置名称
      */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deleteOptionByName(String name) {
         Validate.notBlank(name, "没有指定配置项");
         baseMapper.delete(new QueryWrapper<Option>().eq("name", name));
@@ -134,8 +146,8 @@ public class OptionServiceImpl extends BaseServiceImpl<OptionMapper, Option> imp
      * @param id Option表主键
      */
     @Override
-    public void deleteOptionById(String id) {
-        Validate.notBlank(id, "没有指定配置项主键");
+    @Transactional(rollbackFor = {Exception.class, Error.class})
+    public void deleteOptionById(long id) {
         baseMapper.delete(new QueryWrapper<Option>().eq("id", id));
         updateAppConfigOptions();
     }
@@ -146,6 +158,7 @@ public class OptionServiceImpl extends BaseServiceImpl<OptionMapper, Option> imp
      * @param ids option表主键集合
      */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deleteOptionByIds(Collection<? extends Serializable> ids) {
         Validate.notEmpty(ids, "没有指定配置项主键");
         baseMapper.deleteBatchIds(ids);
@@ -164,6 +177,7 @@ public class OptionServiceImpl extends BaseServiceImpl<OptionMapper, Option> imp
      * 删除所有设置项
      */
     @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deleteAllOption() {
         baseMapper.deleteBySql("truncate table sys_option");
     }

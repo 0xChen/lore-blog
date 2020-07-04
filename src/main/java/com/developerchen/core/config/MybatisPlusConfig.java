@@ -17,6 +17,13 @@ import java.util.Date;
  * mybatis-plus 配置文件。
  * 相关文档：http://mp.baomidou.com
  *
+ * Spring 官方关于事务注解的说明:
+ * The Spring team recommends that you annotate only concrete classes (and methods of concrete classes)
+ * with the @Transactional annotation, as opposed to annotating interfaces.
+ *
+ * Spring 事务注解文档:
+ * https://docs.spring.io/spring/docs/5.2.7.RELEASE/spring-framework-reference/data-access.html#transaction-declarative-annotations
+ *
  * @author syc
  */
 @EnableTransactionManagement
