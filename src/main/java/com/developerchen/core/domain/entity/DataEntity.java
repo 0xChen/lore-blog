@@ -17,10 +17,12 @@ public abstract class DataEntity extends BaseEntity {
     /**
      * 创建人
      */
+    @TableField(fill = FieldFill.INSERT)
     private Long createUserId;
     /**
      * 修改人
      */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUserId;
     /**
      * 创建时间
