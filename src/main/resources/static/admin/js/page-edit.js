@@ -79,7 +79,7 @@ var vm = new Vue({
             var pos = window.location.toString().lastIndexOf("/");
             var id = window.location.toString().substring(pos + 1)
             blog.get({
-                url: '/admin/api/page/' + id,
+                url: '/admin/pages/' + id,
                 success: function (result) {
                     $vm.post = result.data;
                     if ($vm.post.pubdate) {
@@ -130,7 +130,7 @@ var vm = new Vue({
                 }
                 post.pubdate = moment($('#pubdate').val()).valueOf();
                 blog.put({
-                    url: '/admin/api/page',
+                    url: '/admin/pages',
                     data: post,
                     success: function (result) {
                         if (result && result.success) {

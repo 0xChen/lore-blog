@@ -90,7 +90,7 @@ var vm = new Vue({
                 }
             });
             blog.get({
-                url: '/admin/api/post/' + postId,
+                url: '/admin/posts/' + postId,
                 success: function (result) {
                     $vm.post = result.data;
                     if ($vm.post.pubdate) {
@@ -134,7 +134,7 @@ var vm = new Vue({
                     post.status = '1';
                 }
                 blog.put({
-                    url: '/admin/api/post',
+                    url: '/admin/posts',
                     data: post,
                     success: function (result) {
                         if (result && result.success) {

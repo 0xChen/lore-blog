@@ -56,7 +56,7 @@ public final class BlogConst {
     /**
      * 每个主题自定义配置项, 以 'theme_' + "themeName" 作为 name 保存在 option 表中
      */
-    public static final String OPTION_THEME_OPTION_PREFIC = "theme_";
+    public static final String OPTION_THEME_OPTION_PREFIX = "theme_";
 
     /* =================== post 相关常量 ====================*/
     /**
@@ -120,7 +120,7 @@ public final class BlogConst {
     /**
      * 一次获取最近评论的数量
      */
-    public static final long COMMENT_RECENT_SIZE = 5;
+    public static final long COMMENT_RECENT_SIZE = 50;
 
     /* =================== category 相关常量 ====================*/
     /**

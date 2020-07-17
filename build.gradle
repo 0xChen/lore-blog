@@ -45,16 +45,13 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.10'
     implementation 'commons-codec:commons-codec:1.14'
     implementation 'cn.hutool:hutool-core:5.3.7'
-    implementation('com.vladsch.flexmark:flexmark-all:0.61.30') {
+    implementation('com.vladsch.flexmark:flexmark-all:0.62.2') {
         exclude group: "com.vladsch.flexmark", module: "flexmark-youtrack-converter"
         exclude group: "com.vladsch.flexmark", module: "flexmark-pdf-converter"
         exclude group: "com.vladsch.flexmark", module: "flexmark-jira-converter"
         exclude group: "com.vladsch.flexmark", module: "flexmark-ext-youtube-embedded"
-        exclude group: "com.vladsch.flexmark", module: "flexmark-ext-gfm-tables"
     }
-    implementation('com.vdurmont:emoji-java:5.1.1') {
-        exclude group: "org.json", module: "json"
-    }
+    implementation 'com.vdurmont:emoji-java:5.1.1'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.1'
 
     runtimeOnly 'mysql:mysql-connector-java:8.0.15'

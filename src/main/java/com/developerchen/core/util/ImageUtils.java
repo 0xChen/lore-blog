@@ -4,6 +4,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 图片工具类
@@ -40,7 +41,9 @@ public class ImageUtils {
      * @return {@code true} 是图片, {@code false} 不是图片
      */
     public static boolean isImage(String fileName) {
-        String ext = FileUtils.getFilenameExtension(fileName);
-        return ext != null && Arrays.asList("jpg", "jpeg", "png", "bmp", "gif").contains(ext.toLowerCase());
+        String fileExtension = FileUtils.getFilenameExtension(fileName);
+        List<String> imageExtension = Arrays.asList("jpg", "jpeg", "png", "bmp", "gif",
+                "tif", "exif", "svg", "heic");
+        return fileExtension != null && imageExtension.contains(fileExtension.toLowerCase());
     }
 }

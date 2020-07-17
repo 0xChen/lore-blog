@@ -12,7 +12,6 @@ import com.developerchen.blog.theme.Common;
 import com.developerchen.core.config.AppConfig;
 import com.developerchen.core.domain.RestResponse;
 import com.developerchen.core.domain.entity.Option;
-import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.exception.RestException;
 import com.developerchen.core.util.FileUtils;
 import com.developerchen.core.util.JsonUtils;
@@ -21,8 +20,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,17 +28,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -50,7 +44,7 @@ import java.util.stream.Collectors;
  *
  * @author syc
  */
-@Controller
+@RestController
 @RequestMapping("/admin")
 public class SiteAdminController extends BaseController {
 
@@ -69,16 +63,17 @@ public class SiteAdminController extends BaseController {
     /**
      * 获取最近评论, 随机文章及后台统计数据
      */
-    @ResponseBody
     @GetMapping(value = {"", "/index", "/dashboard"})
     public RestResponse<Map<String, Object>> dashboard() {
         List<Comment> commentList = commentService.recentComments(BlogConst.COMMENT_RECENT_SIZE);
-        List<Post> postList = postService.getPostList(BlogConst.POST_RANDOM, BlogConst.POST_RANDOM_SIZE);
+        List<Post> postList = postService.getPostList(BlogConst.POST_RECENT, 10);
+        Set<String> tagSet = postService.getTags();
         StatisticsDTO statistics = siteService.getStatistics();
 
         Map<String, Object> resMap = new HashMap<>(16);
         resMap.put("commentList", commentList);
         resMap.put("postList", postList);
+        resMap.put("tagSet", tagSet);
         resMap.put("statistics", statistics);
         return RestResponse.ok(resMap);
     }
@@ -86,7 +81,6 @@ public class SiteAdminController extends BaseController {
     /**
      * 获取所有主题
      */
-    @ResponseBody
     @GetMapping("/themes")
     public RestResponse<List<ThemeDTO>> getThemes() {
         List<ThemeDTO> themeList = new ArrayList<>(6);
@@ -115,19 +109,20 @@ public class SiteAdminController extends BaseController {
     /**
      * 获取主题的参数设置
      */
-    @ResponseBody
     @GetMapping("/themes/{themeName}/setting")
-    public RestResponse<List<Option>> getThemeSetting(@PathVariable("themeName")  String themeName)
+    public RestResponse<List<Option>> getThemeSetting(@PathVariable("themeName") String themeName)
             throws IOException {
         String settingJsonPath = "classpath:templates/themes/" + themeName + "/setting.json";
         Resource resource = FileUtils.getResource(settingJsonPath);
         List<Option> optionList = JsonUtils.getObjectMapper()
-                .readValue(resource.getInputStream(), new TypeReference<List<Option>>(){});
+                .readValue(resource.getInputStream(), new TypeReference<List<Option>>() {
+                });
 
-        String optionJson = AppConfig.getOption(BlogConst.OPTION_THEME_OPTION_PREFIC + themeName);
+        String optionJson = AppConfig.getOption(BlogConst.OPTION_THEME_OPTION_PREFIX + themeName);
         if (optionJson != null) {
             Map<String, Option> nameToOption = JsonUtils.getObjectMapper().
-                    readValue(optionJson, new TypeReference<List<Option>>(){})
+                    readValue(optionJson, new TypeReference<List<Option>>() {
+                    })
                     .stream().collect(Collectors.toMap(Option::getName, Function.identity()));
 
             optionList.forEach(option -> {
@@ -146,7 +141,6 @@ public class SiteAdminController extends BaseController {
      * Api 命名规则参考来源:
      * https://developer.github.com/v3/activity/starring/#list-repositories-starred-by-the-authenticated-user
      */
-    @ResponseBody
     @GetMapping("/theme/active")
     public RestResponse<String> getActiveTheme() {
         RestResponse<String> response = new RestResponse<>(true, HttpStatus.OK.value());
@@ -157,7 +151,6 @@ public class SiteAdminController extends BaseController {
     /**
      * 激活指定主题
      */
-    @ResponseBody
     @PutMapping("/themes/{themeName}/active")
     public RestResponse<?> activateTheme(@PathVariable("themeName") String themeName) {
         siteService.activeTheme(themeName);
@@ -168,10 +161,9 @@ public class SiteAdminController extends BaseController {
      * 设置主题参数
      * TODO: @Validated加在集合参数上无效的问题
      */
-    @ResponseBody
     @PostMapping(path = "/themes/{themeName}/setting", consumes = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<?> saveThemeSetting(@PathVariable("themeName") String themeName,
-                                            @Validated @RequestBody  List<Option> optionList,
+                                            @Validated @RequestBody List<Option> optionList,
                                             BindingResult result) {
         if (result.hasErrors()) {
             return RestResponse.fail("参数不合法, 保存失败！");
@@ -188,7 +180,6 @@ public class SiteAdminController extends BaseController {
     /**
      * 站点参数设置
      */
-    @ResponseBody
     @PostMapping(path = "/site/setting", consumes = MediaType.APPLICATION_JSON_VALUE)
     public RestResponse<?> saveSiteSetting(@RequestBody Map<String, String> parameterMap) {
         siteService.saveSiteSetting(parameterMap);

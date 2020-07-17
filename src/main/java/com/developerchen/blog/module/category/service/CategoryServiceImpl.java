@@ -10,6 +10,7 @@ import com.developerchen.blog.module.post.domain.entity.Post;
 import com.developerchen.blog.module.post.service.IPostService;
 import com.developerchen.core.constant.Const;
 import com.developerchen.core.service.impl.BaseServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.ibatis.jdbc.SQL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,21 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
     }
 
     /**
+     * 根据条件获取所有符合的分类
+     *
+     * @param name 分类名称
+     * @return 分类集合
+     */
+    @Override
+    public List<Category> getCategory(String name) {
+        QueryWrapper<Category> qw = new QueryWrapper<>();
+        qw.like(StringUtils.isNotBlank(name), "name", name);
+        qw.orderByAsc("left_value");
+
+        return baseMapper.selectList(qw);
+    }
+
+    /**
      * 获取所有分类
      *
      * @return 分类集合
@@ -74,7 +90,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
 
     /**
      * 获取分类树
-     * 采用与 getCategoryDTOWithChildren 方法不同的思路遍历构造树
+     * 采用与 getCategoryDtoWithChildren 方法不同的思路遍历构造树
      *
      * @return 分类树
      */
@@ -117,7 +133,6 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
             }
 
         }
-
 
         return topNodeList;
     }
@@ -188,7 +203,6 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
             categoryIdList.add(categoryId);
 
 
-
             QueryWrapper<Post> qw = new QueryWrapper<>();
             qw.select("category_id");
             qw.in("category_id", categoryIdList);
@@ -201,7 +215,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
 
                 String categoryName = postList.stream().map(post -> categoryIdToName.get(post.getCategoryId()))
                         .distinct().collect(Collectors.joining(", "));
-                throw new BlogException("删除失败, 因为 \"" +categoryName +
+                throw new BlogException("删除失败, 因为 \"" + categoryName +
                         "\" 已经被使用, 请先删除相关文章及页面或更改它们的分类后再删除分类");
             }
         }
@@ -235,9 +249,9 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      * @return CategoryDTO
      */
     @Override
-    public CategoryDTO getCategoryDTOWithChildren(long id) {
+    public CategoryDTO getCategoryDtoWithChildren(long id) {
         Category category = getCategoryById(id);
-        return getCategoryDTOWithChildren(category);
+        return getCategoryDtoWithChildren(category);
     }
 
     /**
@@ -247,9 +261,9 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      * @return CategoryDTO
      */
     @Override
-    public CategoryDTO getCategoryDTOWithChildren(String name) {
+    public CategoryDTO getCategoryDtoWithChildren(String name) {
         Category category = getCategoryByName(name);
-        return getCategoryDTOWithChildren(category);
+        return getCategoryDtoWithChildren(category);
     }
 
     /**
@@ -258,18 +272,18 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      * @param category 分类
      * @return CategoryDTO
      */
-    private CategoryDTO getCategoryDTOWithChildren(Category category) {
+    private CategoryDTO getCategoryDtoWithChildren(Category category) {
         // 获取以category为顶点的树并带有深度信息的层序遍历结果集
-        List<CategoryDTO> categoryDTOList = getCategoryDTOList(category);
+        List<CategoryDTO> categoryDtoList = getCategoryDTOList(category);
         // 将层序遍历结果集还原成树
         int cursor = 1;
-        for (int i = 0; i < categoryDTOList.size() - 1; i++) {
-            if (cursor == categoryDTOList.size()) {
+        for (int i = 0; i < categoryDtoList.size() - 1; i++) {
+            if (cursor == categoryDtoList.size()) {
                 break;
             }
-            CategoryDTO parent = categoryDTOList.get(i);
-            for (int j = cursor; j < categoryDTOList.size(); j++, cursor = j) {
-                CategoryDTO child = categoryDTOList.get(j);
+            CategoryDTO parent = categoryDtoList.get(i);
+            for (int j = cursor; j < categoryDtoList.size(); j++, cursor = j) {
+                CategoryDTO child = categoryDtoList.get(j);
                 if (parent.getLevel().equals(child.getLevel())) {
                     // 跳过同级节点
                     continue;
@@ -288,7 +302,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
                 }
             }
         }
-        return categoryDTOList.get(0);
+        return categoryDtoList.get(0);
     }
 
     /**

@@ -89,7 +89,7 @@ public final class Theme {
 
     private static Map<String, String> themeOption() {
         String themeName = Common.blogTheme();
-        String valueJson = Common.getOption(BlogConst.OPTION_THEME_OPTION_PREFIC + themeName);
+        String valueJson = Common.getOption(BlogConst.OPTION_THEME_OPTION_PREFIX + themeName);
         try {
             List<Option> optionList = JsonUtils.getObjectMapper()
                     .readValue(valueJson, new TypeReference<List<Option>>() {});

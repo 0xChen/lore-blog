@@ -36,9 +36,9 @@ public class StatisticsDTO implements Serializable {
     private Integer tags;
 
     /**
-     * 文件数量
+     * 附件数量
      */
-    private Integer files;
+    private Integer attachments;
 
 
     public Integer getPosts() {
@@ -73,12 +73,12 @@ public class StatisticsDTO implements Serializable {
         this.tags = tags;
     }
 
-    public Integer getFiles() {
-        return files;
+    public Integer getAttachments() {
+        return attachments;
     }
 
-    public void setFiles(Integer files) {
-        this.files = files;
+    public void setAttachments(Integer attachments) {
+        this.attachments = attachments;
     }
 
     @Override

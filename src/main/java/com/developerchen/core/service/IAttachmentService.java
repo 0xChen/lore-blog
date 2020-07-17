@@ -29,9 +29,10 @@ public interface IAttachmentService extends IBaseService<Attachment> {
      * 保存附件到本地磁盘, 并在数据库中记录附件信息
      *
      * @param file 待保存附件
+     * @param attachment 附件参数
      * @return 保存后的文件数据包括文件路径等
      */
-    Attachment saveAttachment(MultipartFile file);
+    Attachment saveAttachment(MultipartFile file, Attachment attachment);
 
     /**
      * 加载指定附件

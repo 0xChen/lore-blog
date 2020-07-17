@@ -1,6 +1,7 @@
 package com.developerchen.blog.util;
 
 import com.developerchen.blog.constant.BlogConst;
+import com.vdurmont.emoji.EmojiParser;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.definition.DefinitionExtension;
 import com.vladsch.flexmark.ext.emoji.EmojiExtension;
@@ -34,7 +35,9 @@ public class BlogUtils {
                     AutolinkExtension.create(),
                     EmojiExtension.create(),
                     DefinitionExtension.create()
-            ));
+            ))
+            // 表分隔符列中的 - 或个 : 字符的最小数目
+            .set(TablesExtension.MIN_SEPARATOR_DASHES, 1);
 
     /**
      * markdown parser.
@@ -46,6 +49,19 @@ public class BlogUtils {
      */
     private static final HtmlRenderer RENDERER = HtmlRenderer.builder(OPTIONS).build();
 
+    /**
+     * 字符转换为emoji表情
+     * Examples:<br>
+     * <code>:smile:</code> will be replaced by <code>😄</code><br>
+     * <code>&amp;#128516;</code> will be replaced by <code>😄</code><br>
+     * <code>:boy|type_6:</code> will be replaced by <code>👦🏿</code>
+     *
+     * @param value the string to parse
+     * @return emoji表情unicode字符串
+     */
+    public static String emoji(String value) {
+        return EmojiParser.parseToUnicode(value);
+    }
 
     /**
      * markdown转换为html
@@ -57,6 +73,8 @@ public class BlogUtils {
         if (StringUtils.isBlank(markdown)) {
             return StringUtils.EMPTY;
         }
+
+        markdown = emoji(markdown);
 
         Node document = PARSER.parse(markdown);
         String html = RENDERER.render(document);

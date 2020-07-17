@@ -1,6 +1,5 @@
 package com.developerchen.blog.module.site.web;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.developerchen.blog.constant.BlogConst;
 import com.developerchen.blog.module.post.domain.entity.Post;
 import com.developerchen.blog.module.site.domain.Sitemap;
@@ -8,12 +7,10 @@ import com.developerchen.blog.module.site.service.ISiteService;
 import com.developerchen.core.config.AppConfig;
 import com.developerchen.core.constant.Const;
 import com.developerchen.core.domain.RestResponse;
-import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.web.BaseController;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -93,8 +90,8 @@ public class SiteController extends BaseController {
      */
     @ResponseBody
     @PostMapping(BlogConst.INSTALL_URI)
-    public RestResponse<?> install(@RequestBody Map<String, String> parameterMap) {
-/*        // 保存初始化数据
+    public RestResponse<String> install(@RequestBody Map<String, String> parameterMap) {
+        // 保存初始化数据
         this.siteService.install(parameterMap);
 
         // 生成锁定文件
@@ -118,9 +115,7 @@ public class SiteController extends BaseController {
         } else {
             BlogConst.HAS_INSTALLED = true;
             return RestResponse.ok();
-        }*/
-        return RestResponse.fail("Lore-Blog安装后自动生成的文件, 用于锁定重复安装. 删除此文件才可以重新执行安装程序.");
-
+        }
     }
 
 }

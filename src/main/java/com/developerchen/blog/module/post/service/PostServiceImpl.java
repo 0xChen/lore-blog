@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.developerchen.blog.constant.BlogConst;
+import com.developerchen.blog.exception.BlogException;
 import com.developerchen.blog.module.category.domain.entity.Category;
 import com.developerchen.blog.module.category.service.ICategoryService;
 import com.developerchen.blog.module.post.common.PostReadEvent;
@@ -13,12 +14,12 @@ import com.developerchen.blog.module.post.domain.dto.PostDTO;
 import com.developerchen.blog.module.post.domain.entity.Post;
 import com.developerchen.blog.module.post.repository.PostMapper;
 import com.developerchen.core.constant.Const;
+import com.developerchen.core.domain.RestPage;
 import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.event.EntityCreateEvent;
 import com.developerchen.core.event.EntityDeleteEvent;
 import com.developerchen.core.service.IUserService;
 import com.developerchen.core.service.impl.BaseServiceImpl;
-import com.developerchen.core.domain.RestPage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -30,7 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -53,12 +56,7 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
         this.userService = userService;
     }
 
-    /**
-     * 根据类型获取文章列表
-     *
-     * @param mode 最新,随机
-     * @param size 获取条数
-     */
+
     @Override
     public List<Post> getPostList(String mode, long size) {
         // 查询条件
@@ -75,9 +73,7 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
         return posts.getRecords();
     }
 
-    /**
-     * 查询文章归档
-     */
+
     @Override
     public List<Archive> getArchiveList() {
         // 取所有发布状态的POST
@@ -112,13 +108,6 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
         return archiveList;
     }
 
-    /**
-     * 获取指定状态和类型的文章数量
-     *
-     * @param status post状态
-     * @param type   post类型
-     * @return post数量
-     */
     @Override
     public int countPost(String status, String type) {
         QueryWrapper<Post> qw = new QueryWrapper<>();
@@ -127,12 +116,34 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
         return super.count(qw);
     }
 
-    /**
-     * 获取相邻的已发布状态的文章
-     *
-     * @param type    上一篇:prev | 下一篇:next
-     * @param pubdate 当前文章发布时间
-     */
+    @Override
+    public int countTag() {
+        QueryWrapper<Post> qw = new QueryWrapper<>();
+        qw.select("tags").isNotNull("tags").ne("tags", "");
+
+        List<Post> postList = baseMapper.selectList(qw);
+
+        long count = postList.stream().filter(post -> StringUtils.isNotEmpty(post.getTags()))
+                .flatMap(post -> Stream.of(post.getTags().split(",")))
+                .map(String::trim).distinct().count();
+
+        return Long.valueOf(count).intValue();
+    }
+
+    @Override
+    public Set<String> getTags() {
+        QueryWrapper<Post> qw = new QueryWrapper<>();
+        //  如果数据库 tags 为 null 时,
+        //  将导致集合中放入 null 而不是一个没有任何值的 post 实例 ,
+        //  所以一定要加入排空条件或者加入 id 这种一定有值的字段一起 select
+        //  否则查询后代码中一定要做 null 验证
+        qw.select("tags").isNotNull("tags").ne("tags", "");
+        List<Post> postList = baseMapper.selectList(qw);
+        return postList.stream().filter(post -> StringUtils.isNotEmpty(post.getTags()))
+                .flatMap(post -> Stream.of(post.getTags().split(",")))
+                .map(String::trim).collect(Collectors.toSet());
+    }
+
     @Override
     public Post getPrevOrNextPost(String type, Date pubdate) {
         QueryWrapper<Post> qw = new QueryWrapper<>();
@@ -155,39 +166,42 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
         return post;
     }
 
-    /**
-     * 分页形式获取文章
-     *
-     * @param title      文章标题查询条件
-     * @param status     文章状态查询条件
-     * @param type       内容类型查询条件
-     * @param categoryId 当文章分类查询条件
-     * @param page       当前页码
-     * @param size       每页数量
-     */
     @Override
-    public IPage<Post> getPostPage(String title, String status, String type,
-                                   Long categoryId, long page, long size) {
+    public IPage<PostDTO> getPostPage(String title, String status, String type, String tags,
+                                      Long categoryId, long page, long size) {
         type = StringUtils.isBlank(type) ? BlogConst.POST_TYPE_POST : type;
         QueryWrapper<Post> qw = new QueryWrapper<>();
         qw.like(StringUtils.isNotBlank(title), "title", title);
         qw.eq(StringUtils.isNotBlank(status), "status", status);
         qw.eq("type", type);
+        qw.like(StringUtils.isNotBlank(tags), "tags", tags);
         qw.eq(categoryId != null, "categoryId", categoryId);
         qw.orderByDesc(BlogConst.POST_STATUS_PUBLISH.equals(status), "pubdate");
         qw.orderByDesc("create_time");
         IPage<Post> postPage = baseMapper.selectPage(new RestPage<>(page, size), qw);
 
+        // 分类数据量不会很大, 直接获取全部
+        List<Category> categoryList = categoryService.getAllCategory();
+        Map<Long, String> categoryIdToName = categoryList.stream()
+                .collect(Collectors.toMap(Category::getId, Category::getName));
+
+        List<PostDTO> postDtoList = postPage.getRecords().stream().map(post -> {
+            PostDTO postDto = new PostDTO();
+            BeanUtils.copyProperties(post, postDto);
+            postDto.setCategoryName(categoryIdToName.get(post.getCategoryId()));
+            return postDto;
+        }).collect(Collectors.toList());
+
+        RestPage<PostDTO> postDtoPage = new RestPage<>(
+                postPage.getCurrent(),
+                postPage.getSize());
+        postDtoPage.setTotal(postPage.getTotal());
+        postDtoPage.setRecords(postDtoList);
+
         eventPublisher.publishEvent(new PostReadEvent<>(postPage));
-        return postPage;
+        return postDtoPage;
     }
 
-    /**
-     * 分页形式获取已发布状态文章
-     *
-     * @param page 当前页码
-     * @param size 每页数量
-     */
     @Override
     public IPage<Post> getPublishedPostPage(long page, long size) {
         QueryWrapper<Post> qw = new QueryWrapper<>();
@@ -201,13 +215,8 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
         return postPage;
     }
 
-    /**
-     * 根据主键ID获取post
-     *
-     * @param postId post主键
-     */
     @Override
-    public PostDTO getPostDTObyId(long postId) {
+    public PostDTO getPostDtoById(long postId) {
         Post post = baseMapper.selectById(postId);
         Long userId = post.getAuthorId();
         Long categoryId = post.getCategoryId();
@@ -215,19 +224,14 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
         User user = userService.getUserById(userId);
         Category category = categoryService.getCategoryById(categoryId);
 
-        PostDTO postDTO = new PostDTO();
-        BeanUtils.copyProperties(post, postDTO);
-        postDTO.setAuthorName(user.getNickname());
-        postDTO.setCategoryName(category.getName());
+        PostDTO postDto = new PostDTO();
+        BeanUtils.copyProperties(post, postDto);
+        postDto.setAuthorName(user.getNickname());
+        postDto.setCategoryName(category.getName());
 
-        return postDTO;
+        return postDto;
     }
 
-    /**
-     * 通过post的slug标识获取post
-     *
-     * @param slug slug标识
-     */
     @Override
     public Post getPageBySlug(String slug) {
         Validate.notEmpty(slug, "slug不能为空");
@@ -240,13 +244,6 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
 
     }
 
-    /**
-     * 分页形式获取指定分类下post
-     *
-     * @param categoryId 分类
-     * @param page       当前页码
-     * @param size       每页数量
-     */
     @Override
     public IPage<Post> getPostPageByCategoryId(Long categoryId, long page, long size) {
         categoryId = categoryId == null ? BlogConst.CATEGORY_ROOT_ID : categoryId;
@@ -259,11 +256,6 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
         return baseMapper.selectPage(new RestPage<>(page, size), qw);
     }
 
-    /**
-     * 通过post的唯一name标识获取post, 并发布post被阅读的事件
-     *
-     * @param postIdOrSlug 主键ID或者name标识
-     */
     @Override
     public Post getPostByIdOrSlug(String postIdOrSlug) {
         Validate.notEmpty(postIdOrSlug, "主键或者名称不能为空");
@@ -282,20 +274,11 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
         return post;
     }
 
-    /**
-     * 获取指定post
-     *
-     * @param postId post主键
-     */
     @Override
     public Post getPostById(long postId) {
         return baseMapper.selectById(postId);
     }
 
-    /**
-     * 更新post
-     * 如果post状态由[草稿] or [自动草稿] -> [发布]则同时更新post的发布日期
-     */
     @Override
     @Transactional(rollbackFor = {Exception.class, Error.class})
     public void updatePost(Post post) {
@@ -312,12 +295,15 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
         baseMapper.updateById(post);
     }
 
-    /**
-     * 更新post的阅读次数
-     *
-     * @param postId post主键
-     * @param count  新增加的阅读次数
-     */
+    @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
+    public void updateStatusByPostId(long id, String status) {
+        Post post = new Post();
+        post.setId(id);
+        post.setStatus(status);
+        updatePost(post);
+    }
+
     @Override
     @Transactional(rollbackFor = {Exception.class, Error.class})
     public void increasePostReadCount(long postId, int count) {
@@ -326,11 +312,8 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
         baseMapper.update(null, uw);
     }
 
-    /**
-     * 新增post，并发布Post新增事件
-     */
-    @Override
 
+    @Override
     @Transactional(rollbackFor = {Exception.class, Error.class})
     public void savePost(Post post) {
         // 初始化评论数量
@@ -349,11 +332,6 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
         eventPublisher.publishEvent(new EntityCreateEvent<>(post));
     }
 
-    /**
-     * 删除指定post, 并发布Post删除事件
-     *
-     * @param postId post主键
-     */
     @Override
     @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deletePostById(long postId) {
@@ -363,11 +341,19 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
         baseMapper.deleteById(postId);
     }
 
-    /**
-     * 增加Post的评论数量
-     *
-     * @param postId 增加评论数量的post主键
-     */
+    @Override
+    @Transactional(rollbackFor = {Exception.class, Error.class})
+    public void deletePostByIds(Set<Long> postIds) {
+        List<Post> postList = baseMapper.selectBatchIds(postIds);
+        if (postList.size() != postIds.size()) {
+            throw new BlogException("删除失败, 因某些文章或页面已不存在, 请刷新页面后重试. ");
+        }
+        if (postList.size() > 0) {
+            baseMapper.deleteBatchIds(postIds);
+            eventPublisher.publishEvent(new EntityDeleteEvent<>(postList));
+        }
+    }
+
     @Override
     @Transactional(rollbackFor = {Exception.class, Error.class})
     public void increasePostCommentCount(long postId) {
@@ -376,11 +362,6 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
                 .eq("id", postId));
     }
 
-    /**
-     * 减少Post的评论数量
-     *
-     * @param postId 减少评论数量的post主键
-     */
     @Override
     @Transactional(rollbackFor = {Exception.class, Error.class})
     public void reducePostCommentCount(long postId) {
@@ -389,11 +370,6 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
                 .eq("id", postId));
     }
 
-    /**
-     * 获取用于构建站点地图的Post
-     *
-     * @return Post集合
-     */
     @Override
     public List<Post> getPostForSitemap() {
         // 查询条件

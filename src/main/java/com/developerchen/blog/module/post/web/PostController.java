@@ -58,7 +58,7 @@ public class PostController extends BaseController {
      * @param id post主键
      * @param cp 当前post评论的页码
      */
-    @GetMapping("/page/{id}")
+    @GetMapping("/page/{id:\\d{19}}")
     public String page(@PathVariable long id,
                        @RequestParam(name = "cp", defaultValue = "1") long cp,
                        Model model) {

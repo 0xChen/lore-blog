@@ -8,7 +8,6 @@ import com.developerchen.core.config.AppConfig;
 import com.developerchen.core.constant.Const;
 import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.util.UserUtils;
-import com.vdurmont.emoji.EmojiParser;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -136,20 +135,6 @@ public final class Common {
     public static String random(int max) {
         int r = new Random().nextInt(max) + 1;
         return String.valueOf(r);
-    }
-
-    /**
-     * 字符转换为emoji表情
-     * Examples:<br>
-     * <code>:smile:</code> will be replaced by <code>😄</code><br>
-     * <code>&amp;#128516;</code> will be replaced by <code>😄</code><br>
-     * <code>:boy|type_6:</code> will be replaced by <code>👦🏿</code>
-     *
-     * @param value the string to parse
-     * @return emoji表情unicode字符串
-     */
-    public static String emoji(String value) {
-        return EmojiParser.parseToUnicode(value);
     }
 
     private static final Pattern SRC_PATTERN = Pattern.compile("src\\s*=\\s*\'?\"?(.*?)(\'|\"|>|\\s+)");

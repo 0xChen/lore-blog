@@ -1,15 +1,12 @@
 package com.developerchen.core.web;
 
-import cn.hutool.core.lang.hash.Hash128;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.developerchen.core.constant.Const;
 import com.developerchen.core.domain.RestResponse;
 import com.developerchen.core.domain.entity.Attachment;
 import com.developerchen.core.service.IAttachmentService;
-import com.sun.crypto.provider.HmacSHA1;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.MessageDigest;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -62,13 +57,15 @@ public class AttachmentAdminController extends BaseController {
      */
     @ResponseBody
     @PostMapping("/attachments")
-    public RestResponse<Attachment> upload(@RequestParam("file") MultipartFile multipartFile) {
-        Attachment attachment = attachmentService.saveAttachment(multipartFile);
-        return RestResponse.ok(attachment);
+    public RestResponse<Attachment> upload(@RequestParam("file") MultipartFile multipartFile,
+                                           Attachment attachment) {
+        Attachment returnAttachment = attachmentService.saveAttachment(multipartFile, attachment);
+        return RestResponse.ok(returnAttachment);
     }
 
     /**
      * 保存上传的一组附件到本地磁盘, 并在数据库中记录附件信息
+     * 使用 MultiValueMap 所以前端上传文件时可以一个 key 对应多个文件
      *
      * @param multipartFileMap 附件
      * @return 保存后的附件数据
@@ -76,10 +73,11 @@ public class AttachmentAdminController extends BaseController {
     @ResponseBody
     @PostMapping("/attachment/batch")
     public RestResponse<List<Attachment>> uploadBatch(
-            @RequestParam LinkedHashMap<String, MultipartFile> multipartFileMap) {
+            @RequestParam MultiValueMap<String, MultipartFile> multipartFileMap) {
         List<Attachment> attachmentList = multipartFileMap.values().stream()
-                .map(attachmentService::saveAttachment).collect(Collectors.toList());
-
+                .flatMap(fileList -> fileList.stream()
+                        .map(file -> attachmentService.saveAttachment(file, new Attachment())))
+                .collect(Collectors.toList());
         return RestResponse.ok(attachmentList);
     }
 

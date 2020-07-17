@@ -47,7 +47,7 @@ const vm = new Vue({
                 }
                 let requestMethod = $vm.post.id ? "put" : "post";
                 blog[requestMethod]({
-                    url: '/admin/api/page',
+                    url: '/admin/pages',
                     data: post,
                     success: function (result) {
                         if (result && result.success) {

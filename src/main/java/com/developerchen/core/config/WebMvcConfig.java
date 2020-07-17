@@ -6,9 +6,12 @@ import org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorView
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 /**
  * Spring MVC 配置类
@@ -34,10 +37,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public DefaultErrorViewResolver conventionErrorViewResolver(
-            ApplicationContext applicationContext,
-            ResourceProperties resourceProperties) {
+    public DefaultErrorViewResolver conventionErrorViewResolver(ApplicationContext applicationContext,
+                                                                ResourceProperties resourceProperties) {
         return new ErrorViewResolver(applicationContext, resourceProperties);
     }
 
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new RequestParamMapMethodArgumentResolver());
+    }
 }

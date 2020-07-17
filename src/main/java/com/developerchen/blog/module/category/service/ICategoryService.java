@@ -29,6 +29,13 @@ public interface ICategoryService extends IBaseService<Category> {
     int countCategory();
 
     /**
+     * 根据条件获取所有符合的分类
+     * @param name 分类名称
+     * @return 分类集合
+     */
+    List<Category> getCategory(String name);
+
+    /**
      * 获取所有分类
      *
      * @return 分类集合
@@ -78,7 +85,7 @@ public interface ICategoryService extends IBaseService<Category> {
     /**
      * 获取category及其所有子节点的带有深度信息的CategoryDTO对象集合
      *
-     * @param category
+     * @param category 分类
      * @return CategoryDTO对象集合
      */
     List<CategoryDTO> getCategoryDTOList(Category category);
@@ -89,7 +96,7 @@ public interface ICategoryService extends IBaseService<Category> {
      * @param id 分类主键
      * @return CategoryDTO
      */
-    CategoryDTO getCategoryDTOWithChildren(long id);
+    CategoryDTO getCategoryDtoWithChildren(long id);
 
     /**
      * 通过分类名称获取分类树
@@ -97,7 +104,7 @@ public interface ICategoryService extends IBaseService<Category> {
      * @param name 分类名称
      * @return CategoryDTO
      */
-    CategoryDTO getCategoryDTOWithChildren(String name);
+    CategoryDTO getCategoryDtoWithChildren(String name);
 
     /**
      * 更新指定分类

@@ -45,7 +45,7 @@ public class MyBatisResultTypeInterceptor implements Interceptor {
         final Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
         Object parameterObject = args[1];
-        Class resultType = getResultType(parameterObject);
+        Class<?> resultType = getResultType(parameterObject);
         if (resultType == null) {
             return invocation.proceed();
         }
@@ -60,7 +60,7 @@ public class MyBatisResultTypeInterceptor implements Interceptor {
      * @param ms
      * @return
      */
-    public MappedStatement newMappedStatement(MappedStatement ms, Class resultType) {
+    public MappedStatement newMappedStatement(MappedStatement ms, Class<?> resultType) {
         //下面是新建的过程，考虑效率和复用对象的情况下，这里最后生成的ms可以缓存起来，下次根据 ms.getId() + "_" + getShortName(resultType) 直接返回 ms,省去反复创建的过程
         MappedStatement.Builder builder = new MappedStatement.Builder(ms.getConfiguration(), ms.getId() + "_" + getShortName(resultType), ms.getSqlSource(), ms.getSqlCommandType());
         builder.resource(ms.getResource());
@@ -89,7 +89,7 @@ public class MyBatisResultTypeInterceptor implements Interceptor {
         return builder.build();
     }
 
-    private String getShortName(Class clazz) {
+    private String getShortName(Class<?> clazz) {
         String className = clazz.getCanonicalName();
         return className.substring(className.lastIndexOf(".") + 1);
     }
@@ -100,11 +100,11 @@ public class MyBatisResultTypeInterceptor implements Interceptor {
      * @param parameterObject
      * @return
      */
-    private Class getResultType(Object parameterObject) {
+    private Class<?> getResultType(Object parameterObject) {
         if (parameterObject == null) {
             return null;
         } else if (parameterObject instanceof Class) {
-            return (Class) parameterObject;
+            return (Class<?>) parameterObject;
         } else if (parameterObject instanceof Map) {
             //解决不可变Map的情况
             if (((Map) (parameterObject)).containsKey(resultType)) {
@@ -129,11 +129,11 @@ public class MyBatisResultTypeInterceptor implements Interceptor {
      * @param object
      * @return
      */
-    private Class objectToClass(Object object) {
+    private Class<?> objectToClass(Object object) {
         if (object == null) {
             return null;
         } else if (object instanceof Class) {
-            return (Class) object;
+            return (Class<?>) object;
         } else if (object instanceof String) {
             try {
                 return Class.forName((String) object);

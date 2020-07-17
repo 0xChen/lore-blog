@@ -19,6 +19,8 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +31,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -60,9 +63,8 @@ public class AttachmentServiceImpl extends BaseServiceImpl<AttachmentMapper, Att
 
     @Override
     @Transactional(rollbackFor = {Exception.class, Error.class})
-    public Attachment saveAttachment(MultipartFile file) {
+    public Attachment saveAttachment(MultipartFile file, Attachment attachment) {
         String originalFilename = file.getOriginalFilename();
-
         try {
             if (originalFilename == null) {
                 throw new AlertException("File upload error");
@@ -77,6 +79,22 @@ public class AttachmentServiceImpl extends BaseServiceImpl<AttachmentMapper, Att
                         + originalFilename);
             }
             // 存储文件基础信息到数据库
+            if (attachment.getWidth() == null || attachment.getHeight() == null) {
+                try (InputStream inputStream = file.getInputStream()) {
+                    try {
+                        BufferedImage image = ImageIO.read(inputStream);
+                        int width = image.getWidth();
+                        int height = image.getHeight();
+                        if (width > 0 && height > 0) {
+                            attachment.setWidth(width);
+                            attachment.setHeight(height);
+                        }
+                    } catch (IOException e) {
+                        // ignore
+                    }
+                }
+            }
+
             Long size = file.getSize();
             String sha1 = DigestUtils.sha1Hex(file.getBytes());
             String type = file.getContentType();
@@ -84,7 +102,6 @@ public class AttachmentServiceImpl extends BaseServiceImpl<AttachmentMapper, Att
             // 避免文件名称重复，生成新的具有唯一性的文件名
             String newFilename = IdWorker.getId() + suffix;
 
-            Attachment attachment = new Attachment();
             attachment.setName(newFilename);
             attachment.setOriginalName(originalFilename);
             attachment.setSize(size);
@@ -165,10 +182,10 @@ public class AttachmentServiceImpl extends BaseServiceImpl<AttachmentMapper, Att
                                             long page, long size) {
         QueryWrapper<Attachment> qw = new QueryWrapper<>();
         qw.like(StringUtils.hasText(name), "name", name);
-        qw.like(StringUtils.hasText(name), "original_name", originalName);
+        qw.like(StringUtils.hasText(originalName), "original_name", originalName);
         qw.eq(StringUtils.hasText(key), "key", key);
-        qw.eq(StringUtils.hasText(type), "type", type);
-        qw.like(StringUtils.hasText(description), "type", description);
+        qw.like(StringUtils.hasText(type), "type", type);
+        qw.like(StringUtils.hasText(description), "description", description);
         qw.orderByDesc("create_time");
         qw.orderByAsc("original_name");
 

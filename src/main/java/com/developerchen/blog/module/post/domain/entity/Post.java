@@ -24,6 +24,7 @@ import java.util.Date;
 public class Post extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
+    private Long id;
 
     /**
      * 标题
@@ -109,6 +110,16 @@ public class Post extends BaseEntity {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

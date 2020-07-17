@@ -147,7 +147,7 @@
                 $vm.search.page = page;
 
                 blog.get({
-                    url: '/admin/api/pages',
+                    url: '/admin/pages',
                     data: $vm.search,
                     success: function (result) {
                         $vm.pagePage = result.data
@@ -164,7 +164,7 @@
                     title: '确定删除该页面吗?',
                     then: function () {
                         blog.delete({
-                            url: '/admin/api/page/' + id,
+                            url: '/admin/pages/' + id,
                             success: function (result) {
                                 if (result && result.success) {
                                     blog.alertOk('删除成功');

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -64,11 +65,13 @@ public class CategoryAdminController extends BaseController {
     }
 
     /**
-     * 扁平的方式获取所有分类
+     * 根据条件获取所有符合的分类
+     *
+     * @param name 分类名称查询条件
      */
     @GetMapping("/categories")
-    public RestResponse<List<Category>> getAllCategory() {
-        List<Category> categoryList = categoryService.getAllCategory();
+    public RestResponse<List<Category>> getCategory(@RequestParam(required = false) String name) {
+        List<Category> categoryList = categoryService.getCategory(name);
         return RestResponse.ok(categoryList);
     }
 

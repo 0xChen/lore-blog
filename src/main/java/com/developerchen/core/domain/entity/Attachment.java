@@ -43,13 +43,13 @@ public class Attachment extends DataEntity {
      */
     private String description;
     /**
-     * 如果是图片类型存放图片的高度
-     */
-    private Integer height;
-    /**
      * 如果是图片类型存放图片的宽度
      */
     private Integer width;
+    /**
+     * 如果是图片类型存放图片的高度
+     */
+    private Integer height;
 
 
     public String getName() {

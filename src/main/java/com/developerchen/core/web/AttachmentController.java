@@ -32,7 +32,6 @@ public class AttachmentController extends BaseController {
     @ResponseBody
     @GetMapping("/files/{filename:.+}")
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
-
         Resource file = attachmentService.loadAttachmentAsResource(filename);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
