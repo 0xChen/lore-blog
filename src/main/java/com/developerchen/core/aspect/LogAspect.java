@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 @Component
 public class LogAspect {
 
-    private ILogService logService;
+    private final ILogService logService;
 
 
     public LogAspect(ILogService logService) {

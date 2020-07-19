@@ -9,8 +9,11 @@ spring:
   resources:
     static-locations:
       - classpath:/META-INF/resources/
+      - classpath:/templates/themes/**/static/
       - classpath:/resources/
       - classpath:/static/
+      - classpath:/admin/
+
 server:
   max-http-header-size: 16KB
 

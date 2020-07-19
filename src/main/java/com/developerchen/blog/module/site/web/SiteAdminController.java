@@ -63,7 +63,7 @@ public class SiteAdminController extends BaseController {
     /**
      * 获取最近评论, 随机文章及后台统计数据
      */
-    @GetMapping(value = {"", "/index", "/dashboard"})
+    @GetMapping("/dashboard")
     public RestResponse<Map<String, Object>> dashboard() {
         List<Comment> commentList = commentService.recentComments(BlogConst.COMMENT_RECENT_SIZE);
         List<Post> postList = postService.getPostList(BlogConst.POST_RECENT, 10);

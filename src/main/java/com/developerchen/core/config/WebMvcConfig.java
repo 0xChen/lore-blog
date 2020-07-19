@@ -6,12 +6,8 @@ import org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorView
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.util.List;
 
 /**
  * Spring MVC 配置类
@@ -22,18 +18,15 @@ import java.util.List;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/admin/index").setViewName("admin/index");
-        registry.addViewController("/admin/files").setViewName("admin/file/index");
-    }
-
-    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/robots.txt")
                 .addResourceLocations("classpath:/static/robots.txt");
 
         registry.addResourceHandler("/favicon.ico")
                 .addResourceLocations("classpath:/static/favicon.ico");
+
+        registry.addResourceHandler("/css/style.css")
+                .addResourceLocations("classpath:/templates/themes/*/static/");
     }
 
     @Bean
@@ -42,8 +35,4 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return new ErrorViewResolver(applicationContext, resourceProperties);
     }
 
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new RequestParamMapMethodArgumentResolver());
-    }
 }

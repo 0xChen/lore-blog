@@ -95,18 +95,11 @@ mybatis-plus:
       update-strategy: not_null
       select-strategy: not_null
 
-########## resources ##########
-spring.resources:
-  chain:
-    strategy:
-      content:
-        enabled: true
-        paths: /resources/**
-
 ########## thymeleaf ##########
 spring.thymeleaf:
   # development环境下关闭缓存
   cache: false
+  excluded-view-names: admin/index
 
 ########## JMX ##########
 spring:

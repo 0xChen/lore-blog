@@ -52,7 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
             .addFilterAfter(new JwtAuthorizationFilter(userDetailsServiceImpl), UsernamePasswordAuthenticationFilter.class)
             .apply(new JwtLoginConfigurer<>())
-                .loginPage("/admin/login").permitAll()
+                .loginPage("/admin/index").permitAll()
                 .loginProcessingUrl("/admin/login")
                 .successHandler(new JwtAuthenticationSuccessHandler("/admin/index"))
                 .failureHandler(new JwtAuthenticationFailureHandler())
@@ -61,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutUrl("/admin/logout").permitAll()
                     .defaultLogoutSuccessHandlerFor(new HttpStatusReturningLogoutSuccessHandler(),
                             new AntPathRequestMatcher("/admin/logout", "POST"))
-                    .logoutSuccessUrl("/admin/login")
+                    .logoutSuccessUrl("/admin/index")
                 .deleteCookies(Const.COOKIE_ACCESS_TOKEN)
             )
             .authorizeRequests(authorizeRequests -> authorizeRequests

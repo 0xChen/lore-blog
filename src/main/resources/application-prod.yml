@@ -11,9 +11,12 @@ my-app:
 server:
   forward-headers-strategy: native
   port: 8080
+  http2:
+    enabled: true
+  compression:
+    enabled: true
   tomcat:
     basedir: ./tomcat/
-    uri-encoding: UTF-8
     remoteip:
       remote-ip-header: X-Forwarded-For
       protocol-header: X-Forwarded-Proto
@@ -83,10 +86,6 @@ mybatis-plus:
       update-strategy: not_null
       select-strategy: not_null
 
-########## resources ##########
-spring.resources:
-  chain:
-    strategy:
-      content:
-        enabled: true
-        paths: /resources/**
+########## thymeleaf ##########
+spring.thymeleaf:
+  excluded-view-names: admin/index
