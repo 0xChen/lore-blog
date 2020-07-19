@@ -9,6 +9,12 @@ version = '2.0.0-RELEASE'
 description = 'A Java Blog platform'
 sourceCompatibility = '1.8'
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -65,7 +71,7 @@ dependencies {
     }
     testImplementation 'org.springframework.security:spring-security-test'
 
-    compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
