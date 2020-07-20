@@ -25,8 +25,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/favicon.ico")
                 .addResourceLocations("classpath:/static/favicon.ico");
 
-        registry.addResourceHandler("/css/style.css")
-                .addResourceLocations("classpath:/templates/themes/*/static/");
     }
 
     @Bean
