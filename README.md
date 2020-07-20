@@ -26,6 +26,8 @@
 + Spring Framework
 + Mybatis-plus
 + Thymeleaf
++ element-ui
++ vue
 
 ## 部分页面预览
 
@@ -34,16 +36,25 @@
 ### 文章正文
 ![文章正文](https://i.loli.net/2019/06/06/5cf8b02e3e66822364.png)
 ### 安装页面
-![安装页面](https://i.loli.net/2019/08/21/QwEJbxjM1RpOnlZ.jpg)
+![安装页面](https://www.developerchen.com/files/1285198331735183361.jpg)
 ### 防止重复安装
-![防止重复安装](https://i.loli.net/2019/08/21/IdMlxYv8w73fceu.jpg)
+![防止重复安装](https://www.developerchen.com/files/1285199758339608577.png)
+### Dashboard
+![Dashboard](https://www.developerchen.com/files/1285198332154613762.jpg)
 ### 文章编辑页面
-![文章编辑页面](https://i.loli.net/2019/08/23/EzncHbGxgTY6ADM.png)
+![编辑文章](https://www.developerchen.com/files/1285199757932761089.jpg)
 ### 编辑关于页面
-![关于页面](https://i.loli.net/2019/08/23/F5qvuphyJYdeEsP.png)
+![文章管理](https://www.developerchen.com/files/1285199758540935169.jpg)
+### 主题管理
+![主题管理](https://www.developerchen.com/files/1285199757198757890.jpg)
+### 附件管理
+![附件管理](https://www.developerchen.com/files/1285198332578238465.jpg)
 
 ## 说明
-系统还不是很完善, 还有很多我个人不满意的地方在逐步完善中, 暂时关闭 Issues 功能. 作者联系方式Email: sunyuchen1990@gmail.com
+次博客是前后台分离项目, 后台管理的前端部分已经 build 好, 打包到了此项目, 不过你
+依然可以选择分别部署.
+管理端项目:
+* [https://github.com/0xChen/lore-blog-admin](https://github.com/0xChen/lore-blog-admin)
 
 ## 简要安装说明
 ### 使用idea编译器远程连接服务器Docker安装
@@ -58,7 +69,8 @@
 位置. 
 3. 分别执行install.sh, Dockerfile及docker-compose.yml
 
-## 致谢
+## 作者联系方式
+* Email: sunyuchen1990@gmail.com
 
-* [tale](https://github.com/otale/tale) 后台管理主题来源
+## 致谢
 * [pinghsu](https://github.com/chakhsu/pinghsu) 博客默认主题来源
