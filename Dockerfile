@@ -1,5 +1,5 @@
 # https://docs.docker.com/engine/reference/builder/
-FROM adoptopenjdk:8-jre-hotspot
+FROM adoptopenjdk/openjdk8:alpine-jre
 LABEL maintainer="sunyuchen1990@gmail.com"
 
 WORKDIR /opt/lore-blog/webapp/
