@@ -55,7 +55,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime
       - /etc/timezone:/etc/timezone
-      - /opt/lore-blog/nginx/conf/:/etc/nginx/conf.d
+      - /opt/lore-blog/nginx/conf/:/etc/nginx/conf.d/
       - /opt/lore-blog/nginx/ssl/:/etc/nginx/ssl/
       - /opt/lore-blog/nginx/log/:/var/log/nginx/
     ports:
