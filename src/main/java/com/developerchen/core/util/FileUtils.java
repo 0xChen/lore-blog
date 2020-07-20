@@ -76,7 +76,7 @@ public class FileUtils {
      * @return 文件
      */
     public static File getFile(String location) throws IOException {
-        return RESOURCE_RESOLVER.getResource(location).getFile();
+        return getFiles(location)[0];
     }
 
     /**
