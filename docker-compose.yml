@@ -40,6 +40,8 @@ services:
       - /opt/lore-blog/webapp/file/:/opt/lore-blog/webapp/file/
       - /opt/lore-blog/webapp/log/:/opt/lore-blog/webapp/log/
       - /opt/lore-blog/webapp/lock/:/opt/lore-blog/webapp/lock/
+    ports:
+      - "8080:8080"
     networks:
       - webapp-db
       - nginx-webapp
