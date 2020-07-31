@@ -93,6 +93,16 @@ public interface IPostService extends IBaseService<Post> {
     IPage<Post> getPostPageByCategoryId(Long categoryId, long page, long size);
 
     /**
+     * 分页形式获取指定标签下post
+     *
+     * @param tagName    标签名
+     * @param page       当前页码
+     * @param size       每页数量
+     * @return IPage<Post>
+     */
+    IPage<Post> getPostPageByTag(String tagName, long page, long size);
+
+    /**
      * 分页形式获取已发布状态文章
      *
      * @param page 当前页码

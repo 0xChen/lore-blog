@@ -103,6 +103,21 @@ public class PostController extends BaseController {
     }
 
     /**
+     * 分页形式指定标签下的所有文章
+     */
+    @GetMapping("/post/tag/{tagName}")
+    public String tag(@PathVariable String tagName,
+                             @RequestParam(defaultValue = "1") long page,
+                             @RequestParam(required = false) Long size,
+                             Model model) {
+        size = size == null ? Const.PAGE_DEFAULT_SIZE : size;
+        IPage<Post> postPage = postService.getPostPageByTag(tagName, page, size);
+        model.addAttribute("tagName", tagName);
+        model.addAttribute("postPage", postPage);
+        return "themes/{theme}/page-tag";
+    }
+
+    /**
      * 获取自定义页面
      */
     @GetMapping("/{name:[^.]+}")

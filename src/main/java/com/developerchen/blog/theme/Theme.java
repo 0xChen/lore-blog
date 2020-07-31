@@ -1,5 +1,6 @@
 package com.developerchen.blog.theme;
 
+import cn.hutool.core.util.EscapeUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.developerchen.blog.constant.BlogConst;
 import com.developerchen.blog.module.category.domain.entity.Category;
@@ -23,8 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.WebEngineContext;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -383,17 +382,12 @@ public final class Theme {
         if (StringUtils.isBlank(tags)) {
             return "";
         }
-        try {
-            String[] arr = tags.split(",");
-            StringBuilder sb = new StringBuilder();
-            for (String tag : arr) {
-                sb.append(split).append("<a href=\"/tag/" + URLEncoder.encode(tag, "UTF-8") + "\">" + tag + "</a>");
-            }
-            return split.length() > 0 ? sb.substring(split.length() - 1) : sb.toString();
-        } catch (UnsupportedEncodingException e) {
-            logger.error("标签转换失败", e);
-            return "";
+        String[] arr = tags.split(",");
+        StringBuilder sb = new StringBuilder();
+        for (String tag : arr) {
+            sb.append(split).append("<a href=\"/post/tag/" + EscapeUtil.escape(tag) + "\">" + tag + "</a>");
         }
+        return split.length() > 0 ? sb.substring(split.length() - 1) : sb.toString();
     }
 
     /**
