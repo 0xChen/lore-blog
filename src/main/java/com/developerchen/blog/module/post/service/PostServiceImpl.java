@@ -269,7 +269,9 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
             post = baseMapper.selectOne(new QueryWrapper<Post>().eq("slug", postIdOrSlug));
         }
 
-        eventPublisher.publishEvent(new PostReadEvent<>(post));
+        if (post != null) {
+            eventPublisher.publishEvent(new PostReadEvent<>(post));
+        }
 
         return post;
     }
