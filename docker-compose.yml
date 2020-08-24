@@ -8,7 +8,7 @@ services:
 
   db:
     container_name: mysql
-    image: mysql:8.0.20
+    image: mysql:8.0.21
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: lore_blog
@@ -51,7 +51,7 @@ services:
     container_name: nginx
     depends_on:
       - webapp
-    image: nginx:1.17.3
+    image: nginx:1.19.2
     environment:
       NGINX_HOST: developerchen.com
     volumes:
