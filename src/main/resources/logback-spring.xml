@@ -12,6 +12,10 @@
         <property name="LOG_PATH" value="./log/"/>
     </springProfile>
 
+    <springProfile name="wsl">
+        <property name="LOG_PATH" value="./log/"/>
+    </springProfile>
+
     <!-- 简化配置直接引入spring基础设置 -->
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
@@ -33,5 +37,9 @@
 
     <springProfile name="prod">
         <root level="INFO"/>
+    </springProfile>
+
+    <springProfile name="wsl">
+        <root level="DEBUG"/>
     </springProfile>
 </configuration>

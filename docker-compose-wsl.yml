@@ -1,0 +1,68 @@
+version: "3.7"
+
+services:
+
+  db:
+    container_name: mysql
+    image: mysql:8.0.21
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: lore_blog
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /etc/timezone:/etc/timezone
+      - /opt/lore-blog/mysql/data/:/var/lib/mysql/
+      - /opt/lore-blog/mysql/conf/:/etc/mysql/conf.d/
+      - /opt/lore-blog/mysql/log/:/var/log/mysql/
+      - /opt/lore-blog/mysql/log/bin/:/var/log/mysql/bin/
+      - /opt/lore-blog/init.sh/:/docker-entrypoint-initdb.d/
+    ports:
+      - "6612:3306"
+    networks:
+      - webapp-db
+    restart: always
+
+  webapp:
+    container_name: lore-blog
+    depends_on:
+      - db
+    environment:
+      SPRING_PROFILES_ACTIVE: wsl
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: lore-blog:latest
+    volumes:
+      - /opt/lore-blog/webapp/file/:/opt/lore-blog/webapp/file/
+      - /opt/lore-blog/webapp/log/:/opt/lore-blog/webapp/log/
+      - /opt/lore-blog/webapp/lock/:/opt/lore-blog/webapp/lock/
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    networks:
+      - webapp-db
+      - nginx-webapp
+
+  nginx:
+    container_name: nginx
+    depends_on:
+      - webapp
+    image: nginx:1.19.2
+    environment:
+      NGINX_HOST: localhost
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /etc/timezone:/etc/timezone
+      - /opt/lore-blog/nginx/conf/:/etc/nginx/conf.d/
+      - /opt/lore-blog/nginx/ssl/:/etc/nginx/ssl/
+      - /opt/lore-blog/nginx/log/:/var/log/nginx/
+    ports:
+      - "80:80"
+    networks:
+      - nginx-webapp
+    command: /bin/bash -c "envsubst '$$NGINX_HOST' < /etc/nginx/conf.d/nginx-localhost.conf >
+      /etc/nginx/nginx.conf && exec nginx -g 'daemon off;'"
+
+networks:
+  webapp-db:
+  nginx-webapp:
