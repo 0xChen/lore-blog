@@ -87,15 +87,21 @@ public final class Theme {
     }
 
     private static Map<String, String> themeOption() {
+        Map<String, String> themeOptionMap = new HashMap<>(16);
         String themeName = Common.blogTheme();
         String valueJson = Common.getOption(BlogConst.OPTION_THEME_OPTION_PREFIX + themeName);
-        try {
-            List<Option> optionList = JsonUtils.getObjectMapper()
-                    .readValue(valueJson, new TypeReference<List<Option>>() {});
-            return optionList.stream().collect(Collectors.toMap(Option::getName, Option::getValue));
-        } catch (JsonProcessingException e) {
-            return null;
+
+        if (StringUtils.isNotEmpty(valueJson)) {
+            try {
+                List<Option> optionList = JsonUtils.getObjectMapper()
+                        .readValue(valueJson, new TypeReference<List<Option>>() {});
+                themeOptionMap.putAll(optionList.stream().collect(Collectors.toMap(Option::getName, Option::getValue)));
+            } catch (Exception e) {
+                logger.error("private static Map<String, String> themeOption() exception: ", e);
+            }
         }
+
+        return themeOptionMap;
     }
 
     /**
