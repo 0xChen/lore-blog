@@ -23,4 +23,4 @@ EXPOSE 8080
 CMD [ "sh", "-c", "java -XX:+UnlockExperimentalVMOptions \
 -XX:+UseCGroupMemoryLimitForHeap \
 -Djava.security.egd=file:/dev/./urandom \
--jar lore-blog.jar" ]
+-jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 lore-blog.jar" ]
