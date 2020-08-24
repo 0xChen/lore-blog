@@ -3,6 +3,7 @@ package com.developerchen.blog.module.post.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.developerchen.blog.constant.BlogConst;
 import com.developerchen.blog.exception.BlogException;
@@ -257,6 +258,21 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
     }
 
     @Override
+    public IPage<Post> getPostPageByTag(String tagName, long page, long size) {
+        QueryWrapper<Post> qw = new QueryWrapper<>();
+        qw.eq("type", BlogConst.POST_TYPE_POST);
+        qw.and(c -> c.eq("tags", tagName)
+                .or().like("tags", "," + tagName + ",")
+                .or().likeLeft("tags", "," + tagName)
+                .or().likeRight("tags", tagName + ","));
+
+        qw.orderByDesc("pubdate");
+        qw.orderByDesc("create_time");
+
+        return baseMapper.selectPage(new RestPage<>(page, size), qw);
+    }
+
+    @Override
     public Post getPostByIdOrSlug(String postIdOrSlug) {
         Validate.notEmpty(postIdOrSlug, "主键或者名称不能为空");
         Post post = null;
@@ -269,7 +285,9 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
             post = baseMapper.selectOne(new QueryWrapper<Post>().eq("slug", postIdOrSlug));
         }
 
-        eventPublisher.publishEvent(new PostReadEvent<>(post));
+        if (post != null) {
+            eventPublisher.publishEvent(new PostReadEvent<>(post));
+        }
 
         return post;
     }

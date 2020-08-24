@@ -2,15 +2,15 @@
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
 <!--/*@thymesVar id="#theme" type="com.developerchen.blog.theme.Theme"*/-->
-<head th:replace="themes/default/partial/header :: head(${categoryName})"></head>
+<head th:replace="themes/default/partial/header :: head(${tagName})"></head>
 <body th:classappend="${#theme.is(#ctx, 'post')}? 'bg-grey'" gtools_scp_screen_capture_injected="true">
 <!--[if lt IE 8]>
 <div th:replace="themes/default/partial/header :: browsehappy"></div>
 <![endif]-->
 <header th:replace="themes/default/partial/header :: header"></header>
 <div class="main-content common-page clearfix">
-    <div class="category-item">
-        <div class="common-title" th:text="|类别: ${categoryName}|"></div>
+    <div class="tag-item">
+        <div class="common-title" th:text="|标签: ${tagName}|"></div>
         <div th:if="${#blog.isEmptyPage(postPage)}">
             <p>抱歉，还没有相关文章.</p>
         </div>
