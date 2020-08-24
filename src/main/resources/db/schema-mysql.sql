@@ -34,7 +34,7 @@ DROP TABLE IF EXISTS `sys_option`;
 CREATE TABLE `sys_option` (
   `id` bigint(20) unsigned NOT NULL,
   `name` varchar(50) NOT NULL COMMENT '设置项名称, 对应页面input的name属性',
-  `label` varchar(100) NOT NULL COMMENT '设置项显示名称, 可以作为input的标题',
+  `label` varchar(100) COMMENT '设置项显示名称, 可以作为input的标题',
   `value` varchar(500) COMMENT '设置项值, input的value属性',
   `description` varchar(200) DEFAULT NULL COMMENT '描述, 可以作为input的placeholder',
   `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
