@@ -77,7 +77,7 @@ public class RequestUtils {
         boolean result = false;
         for (MediaType targetMediaType : targetMediaTypes) {
             for (MediaType mediaType : mediaTypes) {
-                if (targetMediaType.isCompatibleWith(mediaType)) {
+                if (targetMediaType.includes(mediaType)) {
                     result = true;
                     break;
                 }
