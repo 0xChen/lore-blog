@@ -5,14 +5,14 @@ spring:
     name: lore-blog
   mvc:
     static-path-pattern: ${my-app.static-path-pattern}
-
-  resources:
-    static-locations:
-      - classpath:/META-INF/resources/
-      - classpath:/templates/themes/**/static/
-      - classpath:/resources/
-      - classpath:/static/
-      - classpath:/admin/
+  web:
+    resources:
+      static-locations:
+        - classpath:/META-INF/resources/
+        - classpath:/templates/themes/**/static/
+        - classpath:/resources/
+        - classpath:/static/
+        - classpath:/admin/
 
 server:
   max-http-header-size: 16KB

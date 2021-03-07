@@ -1,7 +1,7 @@
 package com.developerchen.core.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.repository.CoreMapper;
 import com.developerchen.core.util.UserUtils;
@@ -16,11 +16,11 @@ import java.util.Date;
 /**
  * mybatis-plus 配置文件。
  * 相关文档：http://mp.baomidou.com
- *
+ * <p>
  * Spring 官方关于事务注解的说明:
  * The Spring team recommends that you annotate only concrete classes (and methods of concrete classes)
  * with the @Transactional annotation, as opposed to annotating interfaces.
- *
+ * <p>
  * Spring 事务注解文档:
  * https://docs.spring.io/spring/docs/5.2.7.RELEASE/spring-framework-reference/data-access.html#transaction-declarative-annotations
  *
@@ -35,8 +35,8 @@ public class MybatisPlusConfig {
      * mybatis-plus分页插件，自动识别数据库类型
      */
     @Bean
-    public PaginationInterceptor paginationInterceptor() {
-        return new PaginationInterceptor();
+    public PaginationInnerInterceptor paginationInnerInterceptor() {
+        return new PaginationInnerInterceptor();
     }
 
     /**

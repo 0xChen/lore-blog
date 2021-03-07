@@ -1,6 +1,6 @@
 package com.developerchen.core.exception;
 
-import org.springframework.boot.autoconfigure.web.ResourceProperties;
+import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorViewResolver;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
@@ -25,10 +25,10 @@ public class ErrorViewResolver extends DefaultErrorViewResolver {
      * Create a new {@link DefaultErrorViewResolver} instance.
      *
      * @param applicationContext the source application context
-     * @param resourceProperties resource properties
+     * @param resources          resource properties
      */
-    public ErrorViewResolver(ApplicationContext applicationContext, ResourceProperties resourceProperties) {
-        super(applicationContext, resourceProperties);
+    public ErrorViewResolver(ApplicationContext applicationContext, WebProperties.Resources resources) {
+        super(applicationContext, resources);
     }
 
     @Override

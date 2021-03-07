@@ -54,7 +54,7 @@ public class SiteServiceImpl implements ISiteService {
     @Override
     @Transactional(rollbackFor = {Exception.class, Error.class})
     public void install(Map<String, String> parameterMap) {
-        User user = BeanUtil.mapToBean(parameterMap, User.class, false);
+        User user = BeanUtil.toBean(parameterMap, User.class);
         user.setStatus(Const.USER_STATUS_ENABLED);
         user.setRole(Const.ROLE_ADMIN);
         user.setDescription("由博客安装页面添加的系统管理员");
@@ -83,7 +83,7 @@ public class SiteServiceImpl implements ISiteService {
         int attachments = this.attachmentService.countAttachment(null);
         int categories = this.categoryService.countCategory();
         int tags = this.postService.countTag();
-        
+
         statistics.setPosts(posts);
         statistics.setComments(comments);
         statistics.setAttachments(attachments);
