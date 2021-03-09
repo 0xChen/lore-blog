@@ -182,7 +182,6 @@ public final class Theme {
      * @param size 评论数量
      */
     public static List<Comment> recentComments(long size) {
-        System.out.println("Execute method asynchronously. " + Thread.currentThread().getName());
         return commentService.recentComments(size);
     }
 

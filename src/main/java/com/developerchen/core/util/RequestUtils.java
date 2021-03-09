@@ -28,7 +28,6 @@ public class RequestUtils {
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, String> jsonMap = objectMapper.readValue(request.getInputStream(),
                     new TypeReference<Map<String, String>>(){});
-            System.out.println(jsonMap);
         } catch (IOException e) {
             e.printStackTrace();
         }
