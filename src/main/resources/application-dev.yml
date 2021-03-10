@@ -38,7 +38,7 @@ spring.datasource:
     pool-prepared-statements: false
     # max-pool-prepared-statement-per-connection-size: 50 #如果使用PSCache则去掉此行注释
     # Destroy线程检测连接的间隔时间，如果连接空闲时间大于等于minEvictableIdleTimeMillis则关闭物理连接。
-    time-between-eviction-runs-millis: 60000
+    time-between-eviction-runs-millis: 86400000
     # 连接保持空闲而不被驱逐的最小时间
     min-evictable-idle-time-millis: 30000
     # 用来检测连接是否有效

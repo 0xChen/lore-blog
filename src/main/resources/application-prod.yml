@@ -45,8 +45,8 @@ spring.datasource:
     max-active: 150
     max-wait: 60000
     pool-prepared-statements: false
-    time-between-eviction-runs-millis: 60000
-    min-evictable-idle-time-millis: 30000
+    time-between-eviction-runs-millis: 86400000
+    min-evictable-idle-time-millis: 60000
     validation-query: select now()
     test-while-idle: true
     test-on-borrow: false
