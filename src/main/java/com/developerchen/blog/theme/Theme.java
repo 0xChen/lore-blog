@@ -16,7 +16,6 @@ import com.developerchen.core.domain.entity.Option;
 import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.service.IUserService;
 import com.developerchen.core.util.JsonUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -68,11 +67,8 @@ public final class Theme {
      */
     public static String themeOption(String name, String defaultValue) {
         Map<String, String> themeOption = themeOption();
-        if (themeOption != null) {
-            String value = themeOption.get(name);
-            return StringUtils.isEmpty(value) ? defaultValue : value;
-        }
-        return defaultValue;
+        String value = themeOption.get(name);
+        return StringUtils.isEmpty(value) ? defaultValue : value;
     }
 
     /**
@@ -80,10 +76,7 @@ public final class Theme {
      */
     public static String themeOption(String name) {
         Map<String, String> themeOption = themeOption();
-        if (themeOption != null) {
-            return themeOption.get(name);
-        }
-        return null;
+        return themeOption.get(name);
     }
 
     private static Map<String, String> themeOption() {
@@ -94,7 +87,8 @@ public final class Theme {
         if (StringUtils.isNotEmpty(valueJson)) {
             try {
                 List<Option> optionList = JsonUtils.getObjectMapper()
-                        .readValue(valueJson, new TypeReference<List<Option>>() {});
+                        .readValue(valueJson, new TypeReference<>() {
+                        });
                 themeOptionMap.putAll(optionList.stream().collect(Collectors.toMap(Option::getName, Option::getValue)));
             } catch (Exception e) {
                 logger.error("private static Map<String, String> themeOption() exception: ", e);
@@ -390,7 +384,7 @@ public final class Theme {
         String[] arr = tags.split(",");
         StringBuilder sb = new StringBuilder();
         for (String tag : arr) {
-            sb.append(split).append("<a href=\"/post/tag/" + EscapeUtil.escape(tag) + "\">" + tag + "</a>");
+            sb.append(split).append("<a href=\"/post/tag/").append(EscapeUtil.escape(tag)).append("\">").append(tag).append("</a>");
         }
         return split.length() > 0 ? sb.substring(split.length() - 1) : sb.toString();
     }

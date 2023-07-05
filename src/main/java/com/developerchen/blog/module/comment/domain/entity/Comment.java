@@ -10,8 +10,9 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import java.io.Serial;
 import java.util.Date;
 
 /**
@@ -25,6 +26,7 @@ import java.util.Date;
 @TableName("blog_comment")
 public class Comment extends BaseEntity {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

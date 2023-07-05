@@ -2,6 +2,10 @@ package com.developerchen.core.exception;
 
 import com.developerchen.core.domain.RestResponse;
 import com.developerchen.core.util.RequestUtils;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -12,9 +16,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.HandlerMethod;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
 
 /**
@@ -99,12 +100,11 @@ public class GlobalExceptionHandler {
      * @return 异常的文本描述
      */
     private String resolveBindException(Exception ex) {
-        String errorMessage = ((BindException) ex).getBindingResult()
+        return ((BindException) ex).getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(x -> x.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining("; "));
-        return errorMessage;
     }
 
     /**

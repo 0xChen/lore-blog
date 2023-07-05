@@ -51,9 +51,10 @@ public final class JwtTokenUtil {
                     .getBytes(StandardCharsets.UTF_8));
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
             // 随机一个
             tempSecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+            logger.error(e.toString());
+            logger.info("使用随机密钥");
         }
         JwtTokenUtil.SECRET_KEY = tempSecretKey;
     }
@@ -255,8 +256,8 @@ public final class JwtTokenUtil {
             Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
             return true;
         } catch (UnsupportedJwtException
-                | MalformedJwtException
-                | IllegalArgumentException e) {
+                 | MalformedJwtException
+                 | IllegalArgumentException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Invalid JWT Token: {}", token);
             }

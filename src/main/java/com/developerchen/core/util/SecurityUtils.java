@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * 安全相关工具类, 加密解密等.
  * <p>
- * http://ctf.ssleye.com/caes.html https://tool.lami.fun/jiami/aes
+ * <a href="http://ctf.ssleye.com/caes.html">...</a> <a href="https://tool.lami.fun/jiami/aes">...</a>
  * 可以用以上两个在线工具生成加密密码.
  * 参考设置:
  * AES加密模式: CBC

@@ -3,12 +3,12 @@
 <!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
 <!--/*@thymesVar id="#theme" type="com.developerchen.blog.theme.Theme"*/-->
 <!--/*@thymesVar id="post" type="com.developerchen.blog.module.post.domain.entity.Post"*/-->
-<head th:replace="themes/default/partial/header :: head(${post.title})"></head>
+<head th:replace="~{themes/default/partial/header :: head(${post.title})}"></head>
 <body th:classappend="${#theme.is(#ctx, 'post')}? 'bg-grey'" gtools_scp_screen_capture_injected="true">
 <!--[if lt IE 8]>
-<div th:replace="themes/default/partial/header :: browsehappy"></div>
+<div th:replace="~{themes/default/partial/header :: browsehappy}"></div>
 <![endif]-->
-<header th:replace="themes/default/partial/header :: header"></header>
+<header th:replace="~{themes/default/partial/header :: header}"></header>
 <article class="main-content page-page" itemscope itemtype="http://schema.org/Article">
     <div class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -38,7 +38,7 @@
         </div>
     </div>
 </div>
-<div th:replace="themes/default/partial/comments :: comment(${post})"></div>
-<footer th:replace="themes/default/partial/footer :: footer"></footer>
+<div th:replace="~{themes/default/partial/comments :: comment(${post})}"></div>
+<footer th:replace="~{themes/default/partial/footer :: footer}"></footer>
 </body>
 </html>

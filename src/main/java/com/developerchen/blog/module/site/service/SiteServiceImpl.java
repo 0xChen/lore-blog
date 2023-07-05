@@ -30,12 +30,12 @@ import java.util.Map;
 @Service
 public class SiteServiceImpl implements ISiteService {
 
-    private IUserService userService;
-    private IOptionService optionService;
-    private IAttachmentService attachmentService;
-    private IPostService postService;
-    private ICommentService commentService;
-    private ICategoryService categoryService;
+    private final IUserService userService;
+    private final IOptionService optionService;
+    private final IAttachmentService attachmentService;
+    private final IPostService postService;
+    private final ICommentService commentService;
+    private final ICategoryService categoryService;
 
     public SiteServiceImpl(IUserService userService,
                            IOptionService optionService,
@@ -78,11 +78,11 @@ public class SiteServiceImpl implements ISiteService {
 
         StatisticsDTO statistics = new StatisticsDTO();
 
-        int posts = this.postService.countPost(BlogConst.POST_STATUS_PUBLISH, BlogConst.POST_TYPE_POST);
-        int comments = this.commentService.countComment(BlogConst.COMMENT_STATUS_APPROVED);
-        int attachments = this.attachmentService.countAttachment(null);
-        int categories = this.categoryService.countCategory();
-        int tags = this.postService.countTag();
+        Long posts = this.postService.countPost(BlogConst.POST_STATUS_PUBLISH, BlogConst.POST_TYPE_POST);
+        Long comments = this.commentService.countComment(BlogConst.COMMENT_STATUS_APPROVED);
+        Long attachments = this.attachmentService.countAttachment(null);
+        Long categories = this.categoryService.countCategory();
+        Long tags = this.postService.countTag();
 
         statistics.setPosts(posts);
         statistics.setComments(comments);

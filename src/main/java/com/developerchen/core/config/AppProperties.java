@@ -47,7 +47,7 @@ public class AppProperties {
      */
     private String jdbcSecretKeyPath;
 
-
+    
     public String getFileLocation() {
         return fileLocation;
     }

@@ -7,8 +7,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import java.io.Serial;
 import java.util.Date;
 
 /**
@@ -22,6 +23,7 @@ import java.util.Date;
 @TableName("sys_user")
 public class User extends BaseEntity {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

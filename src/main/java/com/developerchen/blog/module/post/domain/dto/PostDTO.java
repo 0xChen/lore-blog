@@ -2,6 +2,8 @@ package com.developerchen.blog.module.post.domain.dto;
 
 import com.developerchen.blog.module.post.domain.entity.Post;
 
+import java.io.Serial;
+
 /**
  * Post数据传输对象
  *
@@ -9,6 +11,7 @@ import com.developerchen.blog.module.post.domain.entity.Post;
  */
 public class PostDTO extends Post {
 
+    @Serial
     private static final long serialVersionUID = -9028464940628426300L;
 
     /**

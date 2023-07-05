@@ -2,10 +2,6 @@
 -- mysql init schema
 --
 
-CREATE DATABASE IF NOT EXISTS lore_blog DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
-
-USE lore_blog;
-
 -- ----------------------------
 -- Table structure for `sys_user`
 -- ----------------------------

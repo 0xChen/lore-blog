@@ -7,6 +7,7 @@ import com.developerchen.core.domain.entity.BaseEntity;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 
+import java.io.Serial;
 import java.util.Date;
 
 /**
@@ -19,6 +20,7 @@ import java.util.Date;
 @TableName("blog_link")
 public class Link extends BaseEntity {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
@@ -35,7 +37,7 @@ public class Link extends BaseEntity {
     /**
      * 排序
      */
-    private Integer sort;
+    private Long sort;
     /**
      * 网站描述
      */
@@ -71,11 +73,11 @@ public class Link extends BaseEntity {
         return this;
     }
 
-    public Integer getSort() {
+    public Long getSort() {
         return sort;
     }
 
-    public Link setSort(Integer sort) {
+    public Link setSort(Long sort) {
         this.sort = sort;
         return this;
     }

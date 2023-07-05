@@ -7,13 +7,7 @@ import com.developerchen.core.domain.entity.Attachment;
 import com.developerchen.core.service.IAttachmentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
@@ -44,9 +38,9 @@ public class AttachmentAdminController extends BaseController {
      */
     @ResponseBody
     @GetMapping("/attachment/count")
-    public RestResponse<Integer> count(@RequestParam(value = "type", required = false) String type) {
-        int total = attachmentService.countAttachment(type);
-        return RestResponse.ok(Integer.valueOf(total));
+    public RestResponse<Long> count(@RequestParam(value = "type", required = false) String type) {
+        Long total = attachmentService.countAttachment(type);
+        return RestResponse.ok(total);
     }
 
     /**

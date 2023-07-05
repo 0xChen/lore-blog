@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.developerchen.core.constant.Const;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,7 +21,7 @@ import java.util.function.Predicate;
  * @author syc
  */
 public class RestPage<T> implements IPage<T> {
-
+    @Serial
     private static final long serialVersionUID = -7711850453638062509L;
 
     /**
@@ -391,14 +392,6 @@ public class RestPage<T> implements IPage<T> {
     public RestPage<T> setOptimizeCountSql(boolean optimizeCountSql) {
         this.optimizeCountSql = optimizeCountSql;
         return this;
-    }
-
-    @Override
-    public boolean isSearchCount() {
-        if (total < 0) {
-            return false;
-        }
-        return isSearchCount;
     }
 
     RestPage<T> setSearchCount(boolean isSearchCount) {

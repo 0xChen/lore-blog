@@ -1,14 +1,13 @@
 package com.developerchen.core.config;
 
 import com.developerchen.core.security.JwtTokenUtil;
-import org.apache.commons.lang3.StringUtils;
+import jakarta.annotation.PostConstruct;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import javax.annotation.PostConstruct;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -70,7 +69,7 @@ public class AppConfig {
      * @return 配置值
      */
     public static String getOption(String name, String defaultVale) {
-        return OPTIONS.getOrDefault(name ,defaultVale);
+        return OPTIONS.getOrDefault(name, defaultVale);
     }
 
     /**

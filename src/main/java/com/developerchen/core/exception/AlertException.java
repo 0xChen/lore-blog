@@ -1,5 +1,7 @@
 package com.developerchen.core.exception;
 
+import java.io.Serial;
+
 /**
  * Thrown with alert message.
  *
@@ -8,6 +10,7 @@ package com.developerchen.core.exception;
 public
 class AlertException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 5041655746640791738L;
 
     private String message;

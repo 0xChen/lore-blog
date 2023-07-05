@@ -3,6 +3,7 @@ package com.developerchen.core.security;
 import com.developerchen.core.constant.Const;
 import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.service.IUserService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -13,9 +14,9 @@ import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 判定是否需要刷新客户端Cookie中的access_token.
@@ -44,7 +45,7 @@ public class AuthorizationAdvice implements ResponseBodyAdvice<Object> {
      */
     @Override
     public boolean supports(MethodParameter returnType,
-                            Class<? extends HttpMessageConverter<?>> converterType) {
+                            @NotNull Class<? extends HttpMessageConverter<?>> converterType) {
         return returnType.hasMethodAnnotation(RefreshToken.class);
     }
 
@@ -61,11 +62,11 @@ public class AuthorizationAdvice implements ResponseBodyAdvice<Object> {
      * @return the body that was passed in or a modified (possibly new) instance
      */
     @Override
-    public Object beforeBodyWrite(Object body, MethodParameter returnType,
-                                  MediaType selectedContentType,
-                                  Class<? extends HttpMessageConverter<?>> selectedConverterType,
-                                  ServerHttpRequest request,
-                                  ServerHttpResponse response) {
+    public Object beforeBodyWrite(Object body, @NotNull MethodParameter returnType,
+                                  @NotNull MediaType selectedContentType,
+                                  @NotNull Class<? extends HttpMessageConverter<?>> selectedConverterType,
+                                  @NotNull ServerHttpRequest request,
+                                  @NotNull ServerHttpResponse response) {
 
         HttpServletRequest httpRequest = ((ServletServerHttpRequest) request).getServletRequest();
         HttpServletResponse httpResponse = ((ServletServerHttpResponse) response).getServletResponse();

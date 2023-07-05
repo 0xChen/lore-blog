@@ -13,9 +13,10 @@ spring:
         - classpath:/resources/
         - classpath:/static/
         - classpath:/admin/
-
+  main:
+    allow-circular-references: true
 server:
-  max-http-header-size: 16KB
+  max-http-request-header-size: 16KB
 
 ######### 应用自定义配置 #########
 my-app:

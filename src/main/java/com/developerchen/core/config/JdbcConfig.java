@@ -1,25 +1,24 @@
 package com.developerchen.core.config;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
+import org.springframework.boot.autoconfigure.sql.init.SqlInitializationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.core.Ordered;
-import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.jdbc.datasource.AbstractDataSource;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.lang.Nullable;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -28,94 +27,85 @@ import java.sql.SQLException;
  * @author syc
  */
 @Configuration
-@Import(JdbcConfig.Registrar.class)
-@AutoConfigureBefore(DruidDataSourceAutoConfigure.class)
-@ConditionalOnProperty(name = "spring.datasource.initialization-mode")
+@ConditionalOnProperty(name = "spring.sql.init.mode")
 public class JdbcConfig {
 
-    static class Registrar implements ImportBeanDefinitionRegistrar {
-
-        @Override
-        public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata,
-                                            BeanDefinitionRegistry registry) {
-            GenericBeanDefinition beanDefinition = new GenericBeanDefinition();
-            beanDefinition.setBeanClass(LazyDataSourceInitPostProcessor.class);
-            beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-            beanDefinition.setSynthetic(true);
-            registry.registerBeanDefinition("lazyDataSourceInitPostProcessor", beanDefinition);
-        }
+    @Bean
+    @ConditionalOnBean(SqlInitializationProperties.class)
+    CreateDatabasePostProcessor createDatabasePostProcessor(DataSource dataSource,
+                                                            SqlInitializationProperties properties) {
+        return new CreateDatabasePostProcessor(dataSource, properties);
     }
 
     /**
-     * 推迟{@link DruidDataSource#init()}方法的执行, 以确保数据库被初始化后再初始化连接池.
+     * 初始化数据库之前创建数据库。
      */
-    static class LazyDataSourceInitPostProcessor implements BeanPostProcessor, Ordered {
+    static class CreateDatabasePostProcessor implements BeanPostProcessor {
 
-        @Override
-        public int getOrder() {
-            // 比 Spring 的 DataSourceInitializerPostProcessor.java 低一个优先级
-            return Ordered.HIGHEST_PRECEDENCE + 2;
+        private final DataSource dataSource;
+        private final SqlInitializationProperties properties;
+
+        public CreateDatabasePostProcessor(DataSource dataSource, SqlInitializationProperties properties) {
+            this.dataSource = dataSource;
+            this.properties = properties;
         }
 
+
         @Override
-        public Object postProcessBeforeInitialization(@Nullable Object bean, String beanName)
+        public Object postProcessBeforeInitialization(@Nullable Object bean, @NotNull String beanName)
                 throws BeansException {
-            if (bean instanceof DruidDataSource) {
-                return new FakeDataSource(bean);
+            if (bean instanceof SqlDataSourceScriptDatabaseInitializer) {
+                // 创建数据库
+                createDatabase();
             }
             return bean;
         }
 
         @Override
-        public Object postProcessAfterInitialization(@Nullable Object bean, String beanName)
+        public Object postProcessAfterInitialization(@Nullable Object bean, @NotNull String beanName)
                 throws BeansException {
-            if (bean instanceof FakeDataSource) {
-                FakeDataSource fakeDataSource = (FakeDataSource) bean;
-                Object object = fakeDataSource.getObject();
-                if (object instanceof DruidDataSource) {
-                    DruidDataSource druidDataSource = (DruidDataSource) object;
-                    try {
-                        // Spring 的 DataSourceInitializerInvoker.java 已经完成好了数据库的初始化
-                        // 工作, 可以真正的初始化连接池了
-                        druidDataSource.init();
-                    } catch (SQLException e) {
-                        throw new BeanInitializationException("Druid initialization exception.", e);
+            return bean;
+        }
+
+        private void createDatabase() {
+            // 创建连接池
+            SimpleDriverDataSource simpleDriverDataSource = DataSourceBuilder.derivedFrom(dataSource)
+                    .username(properties.getUsername())
+                    .password(properties.getPassword())
+                    .type(SimpleDriverDataSource.class)
+                    .build();
+            String url = simpleDriverDataSource.getUrl();
+            Pattern p = Pattern.compile("jdbc:[^/]+://[^/]+:\\d+");
+            Matcher m = p.matcher(Objects.requireNonNull(url));
+            String newUrl = url;
+            if (m.find()) {
+                newUrl = m.group();
+            }
+            simpleDriverDataSource.setUrl(newUrl);
+
+            // 创建数据库
+            String schema = url.replace(newUrl + "/", "");
+            if (schema.contains("?")) {
+                schema = schema.substring(0, schema.indexOf("?"));
+            }
+
+            String sql = "CREATE DATABASE IF NOT EXISTS " + schema + " DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_0900_ai_ci;";
+            try {
+                Connection connection = DataSourceUtils.getConnection(simpleDriverDataSource);
+                try {
+                    connection.createStatement().execute(sql);
+                    if (!connection.getAutoCommit() && !DataSourceUtils.isConnectionTransactional(connection, dataSource)) {
+                        connection.commit();
                     }
+                } finally {
+                    DataSourceUtils.releaseConnection(connection, dataSource);
                 }
-                return object;
+            } catch (Throwable ex) {
+                throw new RuntimeException("无法创建数据库。", ex);
             }
 
-            return bean;
         }
+
+
     }
-
-    static class FakeDataSource extends AbstractDataSource {
-
-        // 存放原连接池对象
-        private Object object;
-
-        private FakeDataSource(Object object) {
-            this.object = object;
-        }
-
-        public void init() {
-            // 什么也不做, 就是为了代替原连接池的init方法被调用
-        }
-
-        public Object getObject() {
-            return object;
-        }
-
-
-        @Override
-        public Connection getConnection() {
-            return null;
-        }
-
-        @Override
-        public Connection getConnection(String username, String password) {
-            return null;
-        }
-    }
-
 }

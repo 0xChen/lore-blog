@@ -3,7 +3,6 @@ package com.developerchen.blog.module.category.service;
 import com.developerchen.blog.module.category.domain.dto.CategoryDTO;
 import com.developerchen.blog.module.category.domain.entity.Category;
 import com.developerchen.core.service.IBaseService;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,10 +25,11 @@ public interface ICategoryService extends IBaseService<Category> {
      *
      * @return int 分类数量
      */
-    int countCategory();
+    Long countCategory();
 
     /**
      * 根据条件获取所有符合的分类
+     *
      * @param name 分类名称
      * @return 分类集合
      */

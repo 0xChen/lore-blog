@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
+import java.io.Serial;
 import java.util.Date;
 
 /**
@@ -18,6 +19,7 @@ import java.util.Date;
 @TableName("sys_log")
 public class Log extends BaseEntity {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
@@ -178,7 +180,7 @@ public class Log extends BaseEntity {
         return arguments;
     }
 
-    public Log setArguments(String params) {
+    public Log setArguments(String arguments) {
         this.arguments = arguments;
         return this;
     }

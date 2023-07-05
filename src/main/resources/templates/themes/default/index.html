@@ -2,12 +2,12 @@
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <!--/*@thymesVar id="#blog" type="com.developerchen.blog.theme.Common"*/-->
 <!--/*@thymesVar id="#theme" type="com.developerchen.blog.theme.Theme"*/-->
-<head th:replace="themes/default/partial/header :: head('首页')"></head>
+<head th:replace="~{themes/default/partial/header :: head('首页')}"></head>
 <body gtools_scp_screen_capture_injected="true">
 <!--[if lt IE 8]>
-<div th:replace="themes/default/partial/header :: browsehappy"></div>
+<div th:replace="~{themes/default/partial/header :: browsehappy}"></div>
 <![endif]-->
-<header th:replace="themes/default/partial/header :: header"></header>
+<header th:replace="~{themes/default/partial/header :: header}"></header>
 <div class="main-content index-page onelist-page clearfix" th:with="postPage = ${#theme.postPage(#ctx)}">
     <div class="post-lists">
         <div class="post-lists-body">
@@ -38,9 +38,9 @@
         </div>
     </div>
     <div class="lists-navigator clearfix">
-        <div th:replace="common/macros::pageNav(${postPage},'←','→','page')"></div>
+        <div th:replace="~{common/macros::pageNav(${postPage},'←','→','page')}"></div>
     </div>
 </div>
-<footer th:replace="themes/default/partial/footer :: footer"></footer>
+<footer th:replace="~{themes/default/partial/footer :: footer}"></footer>
 </body>
 </html>

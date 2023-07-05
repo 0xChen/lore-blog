@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class EntityEventListener {
 
-    private ICommentService commentService;
-    private IPostService postService;
+    private final ICommentService commentService;
+    private final IPostService postService;
 
     public EntityEventListener(ICommentService commentService,
                                IPostService postService) {

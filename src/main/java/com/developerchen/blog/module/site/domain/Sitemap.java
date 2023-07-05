@@ -33,7 +33,7 @@ public class Sitemap implements Serializable {
     /**
      * Url set.
      */
-    private List<Url> urlSetList;
+    private final List<Url> urlSetList;
 
 
     public Sitemap() {

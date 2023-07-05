@@ -4,6 +4,7 @@ import com.developerchen.blog.module.post.domain.entity.Post;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 public class Archive implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 6295126004938279284L;
 
     /**

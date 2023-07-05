@@ -3,7 +3,6 @@ package com.developerchen.blog.module.post.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.developerchen.blog.constant.BlogConst;
 import com.developerchen.blog.exception.BlogException;
@@ -110,7 +109,7 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
     }
 
     @Override
-    public int countPost(String status, String type) {
+    public Long countPost(String status, String type) {
         QueryWrapper<Post> qw = new QueryWrapper<>();
         qw.eq(status != null, "status", status);
         qw.eq(status != null, "type", type);
@@ -118,17 +117,15 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
     }
 
     @Override
-    public int countTag() {
+    public Long countTag() {
         QueryWrapper<Post> qw = new QueryWrapper<>();
         qw.select("tags").isNotNull("tags").ne("tags", "");
 
         List<Post> postList = baseMapper.selectList(qw);
 
-        long count = postList.stream().filter(post -> StringUtils.isNotEmpty(post.getTags()))
+        return postList.stream().filter(post -> StringUtils.isNotEmpty(post.getTags()))
                 .flatMap(post -> Stream.of(post.getTags().split(",")))
                 .map(String::trim).distinct().count();
-
-        return Long.valueOf(count).intValue();
     }
 
     @Override

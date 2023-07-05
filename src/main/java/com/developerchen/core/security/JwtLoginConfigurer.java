@@ -2,7 +2,7 @@ package com.developerchen.core.security;
 
 import org.springframework.security.config.annotation.web.HttpSecurityBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
 import org.springframework.security.web.authentication.ForwardAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.ForwardAuthenticationSuccessHandler;
@@ -20,8 +20,6 @@ public final class JwtLoginConfigurer<H extends HttpSecurityBuilder<H>> extends
 
     /**
      * Creates a new instance
-     *
-     * @see HttpSecurity#formLogin()
      */
     public JwtLoginConfigurer() {
         super(new JwtAuthenticationFilter(), null);
@@ -32,15 +30,15 @@ public final class JwtLoginConfigurer<H extends HttpSecurityBuilder<H>> extends
     /**
      * <p>
      * Specifies the URL to send users to if login is required. If used with
-     * {@link WebSecurityConfigurerAdapter} a default login page will be generated when
-     * this attribute is not specified.
+     * {@link EnableWebSecurity} a default login page will be generated when this
+     * attribute is not specified.
      * </p>
      *
      * <p>
-     * If a URL is specified or this is not being used in conjuction with
-     * {@link WebSecurityConfigurerAdapter}, users are required to process the specified
-     * URL to generate a login page. In general, the login page should create a form that
-     * submits a request with the following requirements to work with
+     * If a URL is specified or this is not being used in conjunction with
+     * {@link EnableWebSecurity}, users are required to process the specified URL to
+     * generate a login page. In general, the login page should create a form that submits
+     * a request with the following requirements to work with
      * {@link UsernamePasswordAuthenticationFilter}:
      * </p>
      *
@@ -226,4 +224,5 @@ public final class JwtLoginConfigurer<H extends HttpSecurityBuilder<H>> extends
             loginPageGeneratingFilter.setAuthenticationUrl(getLoginProcessingUrl());
         }
     }
+
 }

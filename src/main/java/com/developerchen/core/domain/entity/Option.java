@@ -6,7 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
+import java.io.Serial;
 import java.util.Date;
 
 /**
@@ -20,6 +21,7 @@ import java.util.Date;
 @TableName("sys_option")
 public class Option extends BaseEntity {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @NotNull(message = "配置名称不能为空")
@@ -34,7 +36,7 @@ public class Option extends BaseEntity {
 
     @Length(max = 200, message = "描述长度不能超过 200 个字符")
     private String description;
-    
+
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
     @TableField(fill = FieldFill.INSERT_UPDATE)

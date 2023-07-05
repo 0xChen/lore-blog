@@ -1,3 +1,4 @@
 # PropertySource Loaders
 org.springframework.boot.env.PropertySourceLoader=\
 com.developerchen.core.extension.MyYamlPropertySourceLoader
+org.springframework.context.ApplicationListener=com.developerchen.core.initializer.AppInitializer.InitApp

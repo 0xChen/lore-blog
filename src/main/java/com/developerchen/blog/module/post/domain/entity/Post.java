@@ -6,10 +6,11 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.developerchen.core.domain.entity.BaseEntity;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotNull;
+import java.io.Serial;
 import java.util.Date;
 
 /**
@@ -23,7 +24,9 @@ import java.util.Date;
 @TableName("blog_post")
 public class Post extends BaseEntity {
 
+    @Serial
     private static final long serialVersionUID = 1L;
+
     private Long id;
 
     /**

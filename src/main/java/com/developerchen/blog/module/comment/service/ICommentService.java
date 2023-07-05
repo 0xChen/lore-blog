@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.developerchen.blog.module.comment.domain.dto.CommentDTO;
 import com.developerchen.blog.module.comment.domain.entity.Comment;
 import com.developerchen.core.service.IBaseService;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Set;
@@ -83,7 +82,7 @@ public interface ICommentService extends IBaseService<Comment> {
      * @param status 评论状态
      * @return int 评论数量
      */
-    int countComment(String status);
+    Long countComment(String status);
 
     /**
      * 查询一条评论

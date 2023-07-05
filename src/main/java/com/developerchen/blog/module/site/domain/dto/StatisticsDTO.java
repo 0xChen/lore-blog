@@ -3,6 +3,7 @@ package com.developerchen.blog.module.site.domain.dto;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -12,72 +13,72 @@ import java.io.Serializable;
  * @author syc
  */
 public class StatisticsDTO implements Serializable {
-
+    @Serial
     private static final long serialVersionUID = 4765338351529564703L;
 
     /**
      * 文章数量
      */
-    private Integer posts;
+    private Long posts;
 
     /**
      * 评论数量
      */
-    private Integer comments;
+    private Long comments;
 
     /**
      * 分类数量
      */
-    private Integer categories;
+    private Long categories;
 
     /**
      * 标签数量
      */
-    private Integer tags;
+    private Long tags;
 
     /**
      * 附件数量
      */
-    private Integer attachments;
+    private Long attachments;
 
 
-    public Integer getPosts() {
+    public Long getPosts() {
         return posts;
     }
 
-    public void setPosts(Integer posts) {
+    public void setPosts(Long posts) {
         this.posts = posts;
     }
 
-    public Integer getComments() {
+    public Long getComments() {
         return comments;
     }
 
-    public void setComments(Integer comments) {
+    public void setComments(Long comments) {
         this.comments = comments;
     }
 
-    public Integer getCategories() {
+    public Long getCategories() {
         return categories;
     }
 
-    public void setCategories(Integer categories) {
+    public void setCategories(Long categories) {
         this.categories = categories;
     }
 
-    public Integer getTags() {
+    public Long getTags() {
         return tags;
     }
 
-    public void setTags(Integer tags) {
+    public void setTags(Long tags) {
         this.tags = tags;
     }
 
-    public Integer getAttachments() {
+    public Long getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(Integer attachments) {
+    public void setAttachments(Long attachments) {
         this.attachments = attachments;
     }
 

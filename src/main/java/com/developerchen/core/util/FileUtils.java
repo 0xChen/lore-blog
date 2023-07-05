@@ -132,4 +132,31 @@ public class FileUtils {
     public static Resource[] getResources(String locationPattern) throws IOException {
         return RESOURCE_RESOLVER.getResources(locationPattern);
     }
+
+    /**
+     * 创建文件并且连同父目录一起创建
+     *
+     * @param locationPattern 文件位置, 可使用通配符等
+     * @return 创建后的文件
+     */
+    public static File createFile(String locationPattern) throws IOException {
+        Resource resource = RESOURCE_RESOLVER.getResource(locationPattern);
+        // 如果resource文件不存在则创建并且连同父目录一起创建
+        if (!resource.exists()) {
+            File file = resource.getFile();
+            File parentFile = file.getParentFile();
+            if (!parentFile.exists()) {
+                // 如果创建失败则抛出异常
+                if (!parentFile.mkdirs()) {
+                    throw new IOException("创建文件夹失败: " + parentFile.getAbsolutePath());
+                }
+            }
+            // 如果创建失败则抛出异常
+            if (!file.createNewFile()) {
+                throw new IOException("创建文件失败: " + file.getAbsolutePath());
+            }
+            return file;
+        }
+        return resource.getFile();
+    }
 }

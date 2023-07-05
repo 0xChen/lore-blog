@@ -3,6 +3,7 @@ package com.developerchen.blog.module.comment.domain.dto;
 import com.developerchen.blog.module.comment.domain.entity.Comment;
 import org.springframework.beans.BeanUtils;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
  */
 public class CommentDTO extends Comment {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

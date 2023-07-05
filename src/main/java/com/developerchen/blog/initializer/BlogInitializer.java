@@ -1,9 +1,9 @@
 package com.developerchen.blog.initializer;
 
 import com.developerchen.blog.constant.BlogConst;
+import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 
 /**
  * Blog初始化工作
@@ -21,13 +21,9 @@ public class BlogInitializer {
      */
     @PostConstruct
     private void initialize() {
-        
+
         // 初始化应用的安装状态
-        if (BlogConst.INSTALLED.exists()) {
-            BlogConst.HAS_INSTALLED = true;
-        } else {
-            BlogConst.HAS_INSTALLED = false;
-        }
+        BlogConst.HAS_INSTALLED = BlogConst.INSTALLED.exists();
 
         // 初始化Blog中的静态常量Map
         try {

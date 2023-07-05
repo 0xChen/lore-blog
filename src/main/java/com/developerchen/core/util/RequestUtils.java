@@ -2,6 +2,7 @@ package com.developerchen.core.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,7 +10,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.method.HandlerMethod;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +27,8 @@ public class RequestUtils {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, String> jsonMap = objectMapper.readValue(request.getInputStream(),
-                    new TypeReference<Map<String, String>>(){});
+                    new TypeReference<>() {
+                    });
         } catch (IOException e) {
             e.printStackTrace();
         }

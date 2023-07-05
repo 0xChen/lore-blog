@@ -9,14 +9,18 @@ import com.developerchen.core.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -36,58 +40,63 @@ import static org.springframework.security.config.Customizer.withDefaults;
  *
  * @author syc
  */
+@Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig {
 
     @Autowired
     private UserDetailsService userDetailsServiceImpl;
 
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> {
+            // do something
+        };
+    }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        // @formatter:off
-        http
-            .cors(withDefaults())
-            .csrf().disable()
-            .exceptionHandling()
-                .defaultAuthenticationEntryPointFor(new LoginUrlAuthenticationEntryPoint("/admin/index"),
-                        new RequestHeaderRequestMatcher("X-Requested-With", ""))
-                .defaultAuthenticationEntryPointFor(new Http403ForbiddenEntryPoint(),
-                        new RequestHeaderRequestMatcher("X-Requested-With","XMLHttpRequest"))
-                .and()
-            .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-            .addFilterAfter(new JwtAuthorizationFilter(userDetailsServiceImpl), UsernamePasswordAuthenticationFilter.class)
-            .apply(new JwtLoginConfigurer<>())
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http.cors(withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling((exceptionHandling) ->
+                        exceptionHandling.defaultAuthenticationEntryPointFor(
+                                        new LoginUrlAuthenticationEntryPoint("/admin/index"),
+                                        new RequestHeaderRequestMatcher("X-Requested-With", ""))
+                                .defaultAuthenticationEntryPointFor(
+                                        new Http403ForbiddenEntryPoint(),
+                                        new RequestHeaderRequestMatcher("X-Requested-With", "XMLHttpRequest"))
+                )
+                .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterAfter(new JwtAuthorizationFilter(userDetailsServiceImpl), UsernamePasswordAuthenticationFilter.class)
+                .apply(new JwtLoginConfigurer<>())
                 .loginPage("/admin/index").permitAll()
                 .loginProcessingUrl("/admin/login")
                 .successHandler(new JwtAuthenticationSuccessHandler("/admin/index"))
-                .failureHandler(new JwtAuthenticationFailureHandler())
-                .and()
-            .logout(logout -> logout
-                    .logoutUrl("/admin/logout").permitAll()
-                    .defaultLogoutSuccessHandlerFor(new HttpStatusReturningLogoutSuccessHandler(),
-                            new AntPathRequestMatcher("/admin/logout", "POST"))
-                    .logoutSuccessUrl("/admin/index")
-                .deleteCookies(Const.COOKIE_ACCESS_TOKEN)
-            )
-            .authorizeRequests(authorizeRequests -> authorizeRequests
-                // actuator endpoint
-                .requestMatchers(EndpointRequest.toAnyEndpoint()).hasAuthority(Const.ROLE_ADMIN)
-                .antMatchers("/admin/**").hasAuthority(Const.ROLE_ADMIN)
-                .antMatchers("/druid/**").hasAuthority(Const.ROLE_ADMIN)
-                // 静态资源
-                .antMatchers(AppConfig.staticPathPattern).permitAll()
-                .anyRequest().permitAll()
-            )
-            .headers(headers -> headers
-                .frameOptions()
-                .sameOrigin()
-            )
-            .servletApi()
-                .disable();
-        // @formatter:on
+                .failureHandler(new JwtAuthenticationFailureHandler());
+
+        http.logout(logout -> logout.logoutUrl("/admin/logout").permitAll()
+                        .defaultLogoutSuccessHandlerFor(new HttpStatusReturningLogoutSuccessHandler(),
+                                new AntPathRequestMatcher("/admin/logout", "POST"))
+                        .logoutSuccessUrl("/admin/index")
+                        .deleteCookies(Const.COOKIE_ACCESS_TOKEN)
+                )
+                .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
+                        // actuator endpoint
+                        .requestMatchers(EndpointRequest.toAnyEndpoint()).hasAuthority(Const.ROLE_ADMIN)
+                        .requestMatchers("/admin/**").hasAuthority(Const.ROLE_ADMIN)
+                        .requestMatchers("/druid/**").hasAuthority(Const.ROLE_ADMIN)
+                        // 静态资源
+                        .requestMatchers(AppConfig.staticPathPattern).permitAll()
+                        .anyRequest().permitAll()
+                )
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                );
+
+        http.servletApi(AbstractHttpConfigurer::disable);
+
+        return http.build();
     }
 
     @Bean
@@ -125,7 +134,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * 通过阅读源码分析出此设置方式，官方文档（当前5.0.4.RELEASE）没有提到
      * <p>
      * {@link org.springframework.security.core.authority.SimpleGrantedAuthority}
-     * {@link org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer}
+     * {@link org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer}
      *
      * @see <A HREF="https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#appendix-faq-role-prefix">What does "ROLE_" mean</A>
      */

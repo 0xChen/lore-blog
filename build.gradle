@@ -1,13 +1,17 @@
 plugins {
-    id 'org.springframework.boot' version '2.4.3'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'org.springframework.boot' version '3.1.1'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'com.developerchen'
-version = '2.0.0-RELEASE'
+version = '2.1.0'
 description = 'A Java Blog platform'
-sourceCompatibility = '1.8'
+
+java {
+    sourceCompatibility = '17'
+}
 
 configurations {
     compileOnly {
@@ -20,7 +24,7 @@ repositories {
     mavenCentral()
 
     maven {
-        url = 'http://maven.aliyun.com/nexus/content/groups/public/'
+        url = 'https://maven.aliyun.com/repository/public'
     }
 
     maven {
@@ -28,54 +32,62 @@ repositories {
     }
 }
 
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'com.alibaba:druid-spring-boot-starter:1.2.5'
-    implementation('com.baomidou:mybatis-plus-boot-starter:3.4.2') {
-        exclude group: "com.zaxxer", module: "HikariCP"
-    }
-    implementation 'com.zaxxer:HikariCP:4.0.3'
+    implementation 'com.baomidou:mybatis-plus-boot-starter:3.5.3.1'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'commons-codec:commons-codec:1.15'
-    implementation 'cn.hutool:hutool-core:5.5.9'
-    implementation('com.vladsch.flexmark:flexmark-all:0.62.2') {
+    implementation 'cn.hutool:hutool-core:5.8.11'
+    implementation('com.vladsch.flexmark:flexmark-all:0.64.8') {
         exclude group: "com.vladsch.flexmark", module: "flexmark-youtrack-converter"
         exclude group: "com.vladsch.flexmark", module: "flexmark-pdf-converter"
         exclude group: "com.vladsch.flexmark", module: "flexmark-jira-converter"
         exclude group: "com.vladsch.flexmark", module: "flexmark-ext-youtube-embedded"
     }
     implementation 'com.vdurmont:emoji-java:5.1.1'
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 
-    runtimeOnly 'mysql:mysql-connector-java'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
-    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         exclude group: "org.skyscreamer", module: "jsonassert"
     }
     testImplementation 'org.springframework.security:spring-security-test'
-
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:unchecked"
 }
 
-test {
-    useJUnitPlatform()
+tasks.named('test') {
+    outputs.dir snippetsDir
+}
+
+tasks.named('asciidoctor') {
+    inputs.dir snippetsDir
+    dependsOn test
 }

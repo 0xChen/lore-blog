@@ -6,8 +6,8 @@ import com.developerchen.blog.exception.BlogException;
 import com.developerchen.blog.module.link.domain.entity.Link;
 import com.developerchen.blog.module.link.repository.LinkMapper;
 import com.developerchen.core.constant.Const;
-import com.developerchen.core.service.impl.BaseServiceImpl;
 import com.developerchen.core.domain.RestPage;
+import com.developerchen.core.service.impl.BaseServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,9 +37,9 @@ public class LinkServiceImpl extends BaseServiceImpl<LinkMapper, Link> implement
             if (StringUtils.isBlank(visible)) {
                 link.setVisible(Const.YES);
             }
-            Integer sort = link.getSort();
+            Long sort = link.getSort();
             if (sort == null) {
-                int count = super.count(null);
+                long count = super.count(null);
                 link.setSort(++count);
             }
         }

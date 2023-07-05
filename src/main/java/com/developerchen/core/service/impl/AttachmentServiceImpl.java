@@ -31,7 +31,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -55,7 +54,7 @@ public class AttachmentServiceImpl extends BaseServiceImpl<AttachmentMapper, Att
 
 
     @Override
-    public int countAttachment(String type) {
+    public Long countAttachment(String type) {
         QueryWrapper<Attachment> qw = new QueryWrapper<>();
         qw.eq(type != null, "type", type);
         return baseMapper.selectCount(qw);
@@ -168,7 +167,7 @@ public class AttachmentServiceImpl extends BaseServiceImpl<AttachmentMapper, Att
             }
         }
         if (deleteFailedFilenameSet.size() > 0) {
-            throw new AlertException("以下文件删除失败: " + deleteFailedFilenameSet.toString()
+            throw new AlertException("以下文件删除失败: " + deleteFailedFilenameSet
                     + ". 以下文件从磁盘成功删除, 但是数据库记录没有删除, 请重新删除: " + deleteSuccessFilenameSet.toString());
         }
     }
@@ -199,10 +198,10 @@ public class AttachmentServiceImpl extends BaseServiceImpl<AttachmentMapper, Att
 
     @Override
     public Stream<Path> loadAll() {
-        try {
-            return Files.walk(this.filePath, 1)
-                    .filter(path -> !path.equals(this.filePath))
-                    .map(this.filePath::relativize);
+        try (Stream<Path> stream = Files.walk(this.filePath, 1)
+                .filter(path -> !path.equals(this.filePath))
+                .map(this.filePath::relativize)) {
+            return stream;
         } catch (IOException e) {
             throw new AlertException("读取文件失败", e);
         }

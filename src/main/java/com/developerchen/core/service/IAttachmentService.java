@@ -23,12 +23,12 @@ public interface IAttachmentService extends IBaseService<Attachment> {
      * @param type 附件类型
      * @return int 附件数量
      */
-    int countAttachment(String type);
+    Long countAttachment(String type);
 
     /**
      * 保存附件到本地磁盘, 并在数据库中记录附件信息
      *
-     * @param file 待保存附件
+     * @param file       待保存附件
      * @param attachment 附件参数
      * @return 保存后的文件数据包括文件路径等
      */

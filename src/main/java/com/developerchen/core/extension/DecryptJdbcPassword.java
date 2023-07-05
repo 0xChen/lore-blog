@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class DecryptJdbcPassword implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
 
-    public static String ENCRYPTED_PASSWORD_KEY = "spring.datasource.druid.password";
+    public static String ENCRYPTED_PASSWORD_KEY = "spring.datasource.password";
     public static String JDBC_SECRET_KEY_PATH_KEY = "my-app.jdbc-secret-key-path";
     public static String DEFAULT_JDBC_SECRET_KEY_PATH = AppConfig.HOME_PATH + File.separator + "jdbcSecretKey";
 
@@ -61,4 +61,7 @@ public class DecryptJdbcPassword implements ApplicationListener<ApplicationEnvir
         }
     }
 
+    public static void main(String[] args) {
+        System.out.println(SecurityUtils.encrypt("root", "qwertyuiopasdfgh"));
+    }
 }

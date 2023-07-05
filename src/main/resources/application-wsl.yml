@@ -9,7 +9,7 @@ my-app:
 ############ server ############
 server:
   forward-headers-strategy: native
-  port: 8080
+  port: ${port:8080}
   http2:
     enabled: true
   compression:
@@ -20,53 +20,45 @@ server:
       remote-ip-header: X-Forwarded-For
       protocol-header: X-Forwarded-Proto
 
-########## datasource ##########
-spring.datasource:
-  # 这个值会被 DatabaseInitializer.java 修改
-  initialization-mode: always
-  schema-username: root
-  schema-password: root
-  sql-script-encoding: UTF-8
-  schema:
-    - classpath:db/schema-mysql.sql
-    # 指定文件创建的位置, DatabaseInitializer.java会创建文件及内容
-    - file:./change-passwd.sql
-  data: classpath:db/data-mysql.sql
-  type: com.zaxxer.hikari.HikariDataSource
-  url: jdbc:mysql://db:3306/sys?serverTimezone=GMT%2B8
-  druid:
-    url: jdbc:mysql://db:3306/lore_blog
-    connection-properties: useSSL=true;useUnicode=true;characterEncoding=UTF-8;zeroDateTimeBehavior=convertToNull;serverTimezone=GMT+8
+########## database init ##########
+spring.sql:
+  init:
+    # 这个值会被 DatabaseInitializer.java 修改
+    mode: always
     username: root
     password: root
-    initial-size: 5
-    min-idle: 5
-    max-active: 20
-    max-wait: 60000
-    pool-prepared-statements: false
-    time-between-eviction-runs-millis: 60000
-    min-evictable-idle-time-millis: 30000
-    validation-query: select now()
-    test-while-idle: true
-    test-on-borrow: false
-    test-on-return: false
-    filters: stat,slf4j,wall
-    filter:
-      stat:
-        log-slow-sql: true
-        slow-sql-millis: 2000
-        merge-sql: true
-      wall:
-        config:
-          multi-statement-allow: true
-          delete-where-none-check: true
-          update-where-none-check: true
-        log-violation: true
-        throw-exception: true
-    async-init: true
-    stat-view-servlet:
-      enabled: true
-      url-pattern: /druid/monitor/*
+    encoding: UTF-8
+    schema-locations:
+      - classpath:db/schema-mysql.sql
+      # 指定文件创建的位置, DatabaseInitializer.java会创建文件及内容
+      - file:./change-passwd.sql
+    data-locations: classpath:db/data-mysql.sql
+
+########## datasource ##########
+spring.datasource:
+  driver-class-name: com.mysql.cj.jdbc.Driver
+  # characterEncoding=UTF-8, 对于8.0.12及更早版本将映射到MySQL字符集名称utf8, 对于8.0.13及更高版本将映射到MySQL字符集名称utf8mb4
+  url: jdbc:mysql://db:3306/${spring.datasource.hikari.schema}
+  username: root
+  password: rUbdTVegr1nueOx4/WIgxw==
+  hikari:
+    schema: lore_blog
+    data-source-properties:
+      # 自定义配置
+      characterEncoding: UTF-8
+      zeroDateTimeBehavior: convertToNull
+      serverTimezone: GMT+8
+      # 优化配置
+      cachePrepStmts: true
+      prepStmtCacheSize: 250
+      prepStmtCacheSqlLimit: 2048
+      useServerPrepStmts: true
+      useLocalSessionState: true
+      rewriteBatchedStatements: true
+      cacheResultSetMetadata: true
+      cacheServerConfiguration: true
+      elideSetAutoCommits: true
+      maintainTimeStats: false
 
 ######### mybatis-plus #########
 mybatis-plus:
@@ -79,11 +71,11 @@ mybatis-plus:
   global-config:
     banner: false
     db-config:
-      id-type: id_worker
+      id-type: ASSIGN_ID
       table-underline: true
       insert-strategy: not_null
       update-strategy: not_null
-      select-strategy: not_null
+      where-strategy: not_null
 
 ########## thymeleaf ##########
 spring.thymeleaf:

@@ -11,15 +11,10 @@ import com.developerchen.core.web.BaseController;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -46,7 +41,7 @@ public class SiteController extends BaseController {
     /**
      * 首页
      */
-    @GetMapping(value = {"", "/index"})
+    @GetMapping(value = {"", "/", "/index"})
     public String index(@RequestParam(defaultValue = "1") Long page,
                         @RequestParam(required = false) Long size, Model model) {
         size = size == null ? Const.PAGE_DEFAULT_SIZE : size;
@@ -104,7 +99,7 @@ public class SiteController extends BaseController {
                 }
             }
             String content = "Lore-Blog安装后自动生成的文件, 用于锁定重复安装. 删除此文件才可以重新执行安装程序. ";
-            Files.write(BlogConst.INSTALLED.toPath(), content.getBytes(StandardCharsets.UTF_8));
+            Files.writeString(BlogConst.INSTALLED.toPath(), content);
         } catch (IOException e) {
             errorMessage = e.getLocalizedMessage();
         }

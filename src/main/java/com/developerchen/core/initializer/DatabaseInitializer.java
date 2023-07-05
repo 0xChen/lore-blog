@@ -8,13 +8,12 @@ import com.developerchen.core.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
-import org.springframework.boot.jdbc.DataSourceInitializationMode;
+import org.springframework.boot.sql.init.DatabaseInitializationMode;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Map;
 
@@ -34,8 +33,8 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationEnvir
 
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
-        String initializationModeKey = "spring.datasource.initialization-mode";
-        String changePasswdSchemaKey = "spring.datasource.schema[1]";
+        String initializationModeKey = "spring.sql.init.mode";
+        String changePasswdSchemaKey = "spring.sql.init.schema-locations[1]";
 
         ConfigurableEnvironment environment = event.getEnvironment();
         if (!environment.containsProperty(initializationModeKey)) {
@@ -47,28 +46,27 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationEnvir
         if (propertyMap != null) {
             if (BlogConst.INSTALLED.exists()) {
                 // 关闭初始化脚本
-                propertyMap.put(initializationModeKey, DataSourceInitializationMode.NEVER);
+                propertyMap.put(initializationModeKey, DatabaseInitializationMode.NEVER);
             } else if (Files.notExists(BlogConst.INSTALLED.toPath())) {
                 // 覆盖配置文件中的修改密码脚本的位置设定
                 String changePasswdSchemaPath = environment.getProperty(changePasswdSchemaKey);
 
                 // 动态生成change-passwd.sql文件
                 String jdbcProdPassword = environment.getProperty(DecryptJdbcPassword.ENCRYPTED_PASSWORD_KEY);
-                String sql = "ALTER USER 'root'@'%' IDENTIFIED BY '"
+                String sql = "SHOW GRANTS FOR 'root'@'%'; ALTER USER 'root'@'%' IDENTIFIED BY '"
                         + jdbcProdPassword + "' ; FLUSH PRIVILEGES ;";
                 try {
                     File file = FileUtils.getFile(changePasswdSchemaPath);
-                    File parent = file.getParentFile();
-                    if (!parent.exists()) {
-                        parent.mkdirs();
+                    if (file == null) {
+                        file = FileUtils.createFile(changePasswdSchemaPath);
                     }
-                    Files.write(file.toPath(), sql.getBytes(StandardCharsets.UTF_8));
+                    Files.writeString(file.toPath(), sql);
                 } catch (IOException e) {
                     e.printStackTrace();
                     throw new AlertException("无法创建" + changePasswdSchemaPath + "文件。");
                 }
             } else {
-                propertyMap.put(initializationModeKey, DataSourceInitializationMode.NEVER);
+                propertyMap.put(initializationModeKey, DatabaseInitializationMode.NEVER);
                 logger.error("程序无法准确的验证 {} 文件是否存在, " +
                         "所以默认关闭了数据库的初始化功能", BlogConst.INSTALLED.getPath());
             }

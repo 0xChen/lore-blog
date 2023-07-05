@@ -29,8 +29,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     public DefaultErrorViewResolver conventionErrorViewResolver(ApplicationContext applicationContext,
-                                                                WebProperties.Resources resources) {
-        return new ErrorViewResolver(applicationContext, resources);
+                                                                WebProperties webProperties) {
+        return new ErrorViewResolver(applicationContext, webProperties.getResources());
     }
 
 }

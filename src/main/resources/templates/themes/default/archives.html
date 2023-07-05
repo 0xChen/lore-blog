@@ -5,12 +5,12 @@
 <!--/*@thymesVar id="post" type="com.developerchen.blog.module.post.domain.entity.Post"*/-->
 <!--/*@thymesVar id="archive" type="com.developerchen.blog.module.post.domain.dto.Archive"*/-->
 <!--/*@thymesVar id="archives" type="java.util.List"*/-->
-<head th:replace="themes/default/partial/header :: head('文章归档')"></head>
+<head th:replace="~{themes/default/partial/header :: head('文章归档')}"></head>
 <body gtools_scp_screen_capture_injected="true">
 <!--[if lt IE 8]>
-<div th:replace="themes/default/partial/header :: browsehappy"></div>
+<div th:replace="~{themes/default/partial/header :: browsehappy}"></div>
 <![endif]-->
-<header th:replace="themes/default/partial/header :: header"></header>
+<header th:replace="~{themes/default/partial/header :: header}"></header>
 <div class="main-content archive-page clearfix">
     <div class="category-item">
         <th:block th:each="archive : ${archives}">
@@ -34,6 +34,6 @@
         </th:block>
     </div>
 </div>
-<footer th:replace="themes/default/partial/footer :: footer"></footer>
+<footer th:replace="~{themes/default/partial/footer :: footer}"></footer>
 </body>
 </html>

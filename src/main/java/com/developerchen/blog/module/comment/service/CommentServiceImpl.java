@@ -139,7 +139,7 @@ public class CommentServiceImpl extends BaseServiceImpl<CommentMapper, Comment> 
     }
 
     @Override
-    public int countComment(String status) {
+    public Long countComment(String status) {
         QueryWrapper<Comment> qw = new QueryWrapper<>();
         qw.eq(status != null, "status", status);
         return baseMapper.selectCount(qw);

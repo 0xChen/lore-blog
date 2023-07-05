@@ -78,7 +78,7 @@ public class MyBatisResultTypeInterceptor implements Interceptor {
         builder.timeout(ms.getTimeout());
         builder.parameterMap(ms.getParameterMap());
         //count查询返回值int
-        List<ResultMap> resultMaps = new ArrayList<ResultMap>();
+        List<ResultMap> resultMaps = new ArrayList<>();
         ResultMap resultMap = new ResultMap.Builder(ms.getConfiguration(), ms.getId(), resultType, EMPTY_RESULT_MAPPING).build();
         resultMaps.add(resultMap);
         builder.resultMaps(resultMaps);

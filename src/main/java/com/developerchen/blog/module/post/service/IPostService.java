@@ -41,14 +41,14 @@ public interface IPostService extends IBaseService<Post> {
      * @param type   post类型
      * @return post数量
      */
-    int countPost(String status, String type);
+    Long countPost(String status, String type);
 
     /**
      * 获取标签总数量, 不统计重复标签(标签名称相同视为同一个标签)
      *
      * @return tag 数量
      */
-    int countTag();
+    Long countTag();
 
     /**
      * 获取所有不重复标签(标签名称相同视为同一个标签)
@@ -95,9 +95,9 @@ public interface IPostService extends IBaseService<Post> {
     /**
      * 分页形式获取指定标签下post
      *
-     * @param tagName    标签名
-     * @param page       当前页码
-     * @param size       每页数量
+     * @param tagName 标签名
+     * @param page    当前页码
+     * @param size    每页数量
      * @return IPage<Post>
      */
     IPage<Post> getPostPageByTag(String tagName, long page, long size);

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.developerchen.core.domain.entity.BaseEntity;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serial;
 import java.util.Date;
 
 /**
@@ -18,6 +19,7 @@ import java.util.Date;
 @TableName("blog_category")
 public class Category extends BaseEntity {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

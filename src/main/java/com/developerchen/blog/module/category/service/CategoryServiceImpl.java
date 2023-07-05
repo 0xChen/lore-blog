@@ -59,7 +59,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      * @return int 分类数量
      */
     @Override
-    public int countCategory() {
+    public Long countCategory() {
         return baseMapper.selectCount(null);
     }
 
@@ -148,7 +148,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
     public Category saveCategory(String name, Long parentId) {
         QueryWrapper<Category> qw = new QueryWrapper<>();
         qw.eq("name", name);
-        int count = baseMapper.selectCount(qw);
+        Long count = baseMapper.selectCount(qw);
         if (count > 0) {
             throw new BlogException("新增失败, 已经存在 \"" + name + "\" 这个分类, 请换个分类名称");
         }
@@ -371,7 +371,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
             QueryWrapper<Category> qw = new QueryWrapper<>();
             qw.ne("id", category.getId());
             qw.eq("name", name);
-            int count = baseMapper.selectCount(qw);
+            Long count = baseMapper.selectCount(qw);
             if (count > 0) {
                 throw new BlogException("更新失败, 已经存在 \"" + name + "\" 这个分类, 请换个分类名称");
             }

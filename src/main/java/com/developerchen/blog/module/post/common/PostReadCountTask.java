@@ -1,7 +1,8 @@
 package com.developerchen.blog.module.post.common;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.developerchen.blog.module.post.service.IPostService;
+import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariPoolMXBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -33,13 +34,12 @@ public class PostReadCountTask {
             return;
         }
 
-        if (dataSource != null && dataSource instanceof DruidDataSource) {
+        if (dataSource != null && dataSource instanceof HikariDataSource) {
             // 获取当前连接池信息
-            Map<String, Object> statData = ((DruidDataSource) dataSource).getStatData();
-            int poolingCount = (int) statData.getOrDefault("PoolingCount", 0);
-            int activeCount = (int) statData.getOrDefault("ActiveCount", 0);
+            HikariPoolMXBean hikariPoolMXBean = ((HikariDataSource) dataSource).getHikariPoolMXBean();
+            int idleConnections = hikariPoolMXBean.getIdleConnections();
 
-            if ((poolingCount - activeCount) <= 1) {
+            if (idleConnections <= 1) {
                 // 如果数据库连接池空闲连接没有超过一个放弃本次更新，尽量闲时做更新动作
                 return;
             }

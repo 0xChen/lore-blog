@@ -3,12 +3,12 @@ package com.developerchen.blog.interceptor;
 import com.developerchen.blog.constant.BlogConst;
 import com.developerchen.core.config.AppConfig;
 import com.developerchen.core.util.RequestUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
 

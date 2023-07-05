@@ -3,6 +3,8 @@ package com.developerchen.core.domain.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.io.Serial;
+
 /**
  * <p>
  * 附件 文件、图片等
@@ -13,6 +15,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("sys_attachment")
 public class Attachment extends DataEntity {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
