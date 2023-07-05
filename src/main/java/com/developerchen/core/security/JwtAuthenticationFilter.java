@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             isAjaxRequest = true;
             try {
                 parameterMap = JsonUtils.getObjectMapper().readValue(request.getInputStream(),
-                        new TypeReference<Map<>>() {
+                        new TypeReference<Map<String, String>>() {
                         });
             } catch (IOException e) {
                 // ignore
