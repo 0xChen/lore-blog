@@ -69,11 +69,12 @@ public class WebSecurityConfig {
                 )
                 .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterAfter(new JwtAuthorizationFilter(userDetailsServiceImpl), UsernamePasswordAuthenticationFilter.class)
-                .apply(new JwtLoginConfigurer<>())
-                .loginPage("/admin/index").permitAll()
-                .loginProcessingUrl("/admin/login")
-                .successHandler(new JwtAuthenticationSuccessHandler("/admin/index"))
-                .failureHandler(new JwtAuthenticationFailureHandler());
+                .with(new JwtLoginConfigurer<>(), (loginConfigurer) -> {
+                    loginConfigurer.loginPage("/admin/index").permitAll()
+                            .loginProcessingUrl("/admin/login")
+                            .successHandler(new JwtAuthenticationSuccessHandler("/admin/index"))
+                            .failureHandler(new JwtAuthenticationFailureHandler());
+                });
 
         http.logout(logout -> logout.logoutUrl("/admin/logout").permitAll()
                         .defaultLogoutSuccessHandlerFor(new HttpStatusReturningLogoutSuccessHandler(),

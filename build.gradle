@@ -1,12 +1,12 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.1.1'
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.springframework.boot' version '3.2.4'
+    id 'io.spring.dependency-management' version '1.1.4'
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'com.developerchen'
-version = '2.1.0'
+version = '2.2.0'
 description = 'A Java Blog platform'
 
 java {
@@ -48,10 +48,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'com.baomidou:mybatis-plus-boot-starter:3.5.3.1'
-    implementation 'org.apache.commons:commons-lang3:3.12.0'
-    implementation 'commons-codec:commons-codec:1.15'
-    implementation 'cn.hutool:hutool-core:5.8.11'
+    implementation 'com.baomidou:mybatis-plus-spring-boot3-starter:3.5.5'
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    implementation 'commons-codec:commons-codec:1.16.1'
+    implementation 'cn.hutool:hutool-core:5.8.27'
     implementation('com.vladsch.flexmark:flexmark-all:0.64.8') {
         exclude group: "com.vladsch.flexmark", module: "flexmark-youtrack-converter"
         exclude group: "com.vladsch.flexmark", module: "flexmark-pdf-converter"
@@ -59,11 +59,11 @@ dependencies {
         exclude group: "com.vladsch.flexmark", module: "flexmark-ext-youtube-embedded"
     }
     implementation 'com.vdurmont:emoji-java:5.1.1'
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
 
     runtimeOnly 'com.mysql:mysql-connector-j'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 //    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'

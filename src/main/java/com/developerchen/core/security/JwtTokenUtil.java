@@ -52,7 +52,7 @@ public final class JwtTokenUtil {
 
         } catch (Exception e) {
             // 随机一个
-            tempSecretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+            tempSecretKey = Jwts.SIG.HS256.key().build();
             logger.error(e.toString());
             logger.info("使用随机密钥");
         }
@@ -152,11 +152,7 @@ public final class JwtTokenUtil {
      * @return Claims
      */
     private static Claims getClaimsFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        return Jwts.parser().decryptWith(SECRET_KEY).build().parseEncryptedClaims(token).getPayload();
     }
 
     /**
@@ -210,8 +206,8 @@ public final class JwtTokenUtil {
         Date expirationDate = calculateExpirationDate(createdDate);
 
         final Claims claims = getClaimsFromToken(token);
-        claims.setIssuedAt(createdDate);
-        claims.setExpiration(expirationDate);
+        claims.put(Claims.ISSUED_AT, createdDate);
+        claims.put(Claims.EXPIRATION, expirationDate);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -253,7 +249,7 @@ public final class JwtTokenUtil {
      */
     public static boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
+            Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(token);
             return true;
         } catch (UnsupportedJwtException
                  | MalformedJwtException
