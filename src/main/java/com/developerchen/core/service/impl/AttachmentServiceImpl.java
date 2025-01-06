@@ -148,9 +148,9 @@ public class AttachmentServiceImpl extends BaseServiceImpl<AttachmentMapper, Att
     @Override
     @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deleteAttachment(Set<Long> attachmentIds) {
-        List<Attachment> attachmentList = baseMapper.selectBatchIds(attachmentIds);
+        List<Attachment> attachmentList = baseMapper.selectByIds(attachmentIds);
         // 删除数据库数据
-        baseMapper.deleteBatchIds(attachmentIds);
+        baseMapper.deleteByIds(attachmentIds);
         // 删除磁盘文件
         Set<String> deleteFailedFilenameSet = new HashSet<>();
         Set<String> deleteSuccessFilenameSet = new HashSet<>();

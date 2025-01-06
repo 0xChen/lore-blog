@@ -85,13 +85,13 @@ public class CommentServiceImpl extends BaseServiceImpl<CommentMapper, Comment> 
     @Override
     @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deleteCommentByIds(Set<Long> commentIds) {
-        List<Comment> commentList = baseMapper.selectBatchIds(commentIds);
+        List<Comment> commentList = baseMapper.selectByIds(commentIds);
         if (commentList.size() != commentIds.size()) {
             throw new BlogException("删除失败, 因某些评论已不存在, 请刷新页面后重试. ");
         }
 
-        if (commentList.size() > 0) {
-            baseMapper.deleteBatchIds(commentIds);
+        if (!commentList.isEmpty()) {
+            baseMapper.deleteByIds(commentIds);
             eventPublisher.publishEvent(new EntityDeleteEvent<>(commentList));
         }
     }
@@ -245,7 +245,7 @@ public class CommentServiceImpl extends BaseServiceImpl<CommentMapper, Comment> 
         });
 
         Map<Long, Comment> parentIdToComment = new HashMap<>((int) (parentCommentIdSet.size() / 0.75) + 1);
-        if (parentCommentIdSet.size() > 0) {
+        if (!parentCommentIdSet.isEmpty()) {
             // 获取当前分页中评论的父评论
             QueryWrapper<Comment> parentCommentQw = new QueryWrapper<>();
             parentCommentQw.in("id", parentCommentIdSet);
@@ -257,7 +257,7 @@ public class CommentServiceImpl extends BaseServiceImpl<CommentMapper, Comment> 
         }
         // 获取当前分页中评论的子评论
         List<Comment> childrenCommentList = new ArrayList<>();
-        if (commentIdSet.size() > 0) {
+        if (!commentIdSet.isEmpty()) {
             QueryWrapper<Comment> childrenCommentQw = new QueryWrapper<>();
             childrenCommentQw.in("parent_id", commentIdSet);
             childrenCommentList = baseMapper.selectList(childrenCommentQw);

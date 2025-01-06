@@ -359,12 +359,12 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
     @Override
     @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deletePostByIds(Set<Long> postIds) {
-        List<Post> postList = baseMapper.selectBatchIds(postIds);
+        List<Post> postList = baseMapper.selectByIds(postIds);
         if (postList.size() != postIds.size()) {
             throw new BlogException("删除失败, 因某些文章或页面已不存在, 请刷新页面后重试. ");
         }
         if (postList.size() > 0) {
-            baseMapper.deleteBatchIds(postIds);
+            baseMapper.deleteByIds(postIds);
             eventPublisher.publishEvent(new EntityDeleteEvent<>(postList));
         }
     }

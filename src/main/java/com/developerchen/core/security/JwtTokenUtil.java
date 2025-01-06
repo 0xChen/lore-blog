@@ -187,10 +187,10 @@ public final class JwtTokenUtil {
         Date expirationDate = calculateExpirationDate(createdDate);
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(createdDate)
-                .setExpiration(expirationDate)
+                .claims(claims)
+                .subject(subject)
+                .issuedAt(createdDate)
+                .expiration(expirationDate)
                 .signWith(SECRET_KEY)
                 .compact();
     }
@@ -210,7 +210,7 @@ public final class JwtTokenUtil {
         claims.put(Claims.EXPIRATION, expirationDate);
 
         return Jwts.builder()
-                .setClaims(claims)
+                .claims(claims)
                 .signWith(SECRET_KEY)
                 .compact();
     }

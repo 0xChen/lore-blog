@@ -3,6 +3,8 @@ package com.developerchen.core.web;
 import cn.hutool.core.io.IoUtil;
 import com.developerchen.core.annotation.LogInfo;
 import com.developerchen.core.util.FileUtils;
+import jakarta.servlet.ServletResponse;
+import org.apache.catalina.connector.Response;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.util.ContentCachingResponseWrapper;
+
 import java.io.IOException;
 
 /**
@@ -27,7 +31,7 @@ public class LoginController extends BaseController {
      */
     @LogInfo(desc = "访问后台管理首页")
     @GetMapping("/index")
-    public void login(HttpServletResponse response) throws IOException {
+    public void login(ServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
         try (ServletOutputStream outputStream = response.getOutputStream()) {

@@ -87,7 +87,7 @@ public class LinkServiceImpl extends BaseServiceImpl<LinkMapper, Link> implement
     @Override
     @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deleteLinkByIds(Set<Long> linkIds) {
-        baseMapper.deleteBatchIds(linkIds);
+        baseMapper.deleteByIds(linkIds);
     }
 
     @Override

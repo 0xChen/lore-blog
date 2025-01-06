@@ -179,7 +179,7 @@ public final class SecurityUtils {
         }
         File secretKeyFile = new File(secretKeyPath);
         if (StringUtils.isEmpty(secretKey)) {
-            secretKey = RandomStringUtils.randomPrint(32);
+            secretKey = RandomStringUtils.secureStrong().nextPrint(32);
         }
         try (FileWriter fileWriter = new FileWriter(secretKeyFile)) {
             fileWriter.write(secretKey);
@@ -192,5 +192,4 @@ public final class SecurityUtils {
             }
         }
     }
-
 }

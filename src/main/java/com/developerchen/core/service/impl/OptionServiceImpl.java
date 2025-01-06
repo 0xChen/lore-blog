@@ -161,7 +161,7 @@ public class OptionServiceImpl extends BaseServiceImpl<OptionMapper, Option> imp
     @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deleteOptionByIds(Collection<? extends Serializable> ids) {
         Validate.notEmpty(ids, "没有指定配置项主键");
-        baseMapper.deleteBatchIds(ids);
+        baseMapper.deleteByIds(ids);
         updateAppConfigOptions();
     }
 

@@ -75,7 +75,7 @@ public class AuthorizationAdvice implements ResponseBodyAdvice<Object> {
         String token = JwtTokenUtil.generateToken(user);
 
         String contextPath = httpRequest.getContextPath();
-        contextPath = contextPath.length() > 0 ? contextPath : "/";
+        contextPath = !contextPath.isEmpty() ? contextPath : "/";
 
         Cookie cookie = new Cookie(Const.COOKIE_ACCESS_TOKEN, token);
         cookie.setMaxAge((int) (JwtTokenUtil.EXPIRE_TIME / 1000));

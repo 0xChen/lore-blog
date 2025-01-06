@@ -76,3 +76,8 @@ spring:
   application:
     admin:
       enabled: false
+
+########## docker ##########
+spring.docker:
+  compose:
+    enabled: false

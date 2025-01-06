@@ -25,7 +25,6 @@ my-app:
 ########## actuator ##########
 management:
   endpoints:
-    enabled-by-default: true
     web:
       exposure:
         include: '*'
