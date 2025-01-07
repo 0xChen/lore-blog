@@ -2,7 +2,7 @@
 
 ######### 应用自定义配置 #########
 my-app:
-  file-location: E:\lore-blog\file\
+  file-location: ./file/
   scheme: http
   hostname: 127.0.0.1
   jwt-expire-time: 864000000
@@ -11,7 +11,7 @@ my-app:
 server:
   tomcat:
     uri-encoding: UTF-8
-    basedir: E:\lore-blog\tomcat\
+    basedir: ./tomcat/
   port: ${port:8080}
 
 ########## datasource ##########
@@ -21,9 +21,9 @@ spring.datasource:
   # characterEncoding=UTF-8, 对于8.0.12及更早版本将映射到MySQL字符集名称utf8, 对于8.0.13及更高版本将映射到MySQL字符集名称utf8mb4
   url: jdbc:mysql://127.0.0.1:3306/${spring.datasource.hikari.schema}
   username: root
-  password: root
+  password: root@localhost
   hikari:
-    schema: lore_blog
+    schema: lore_blog_dev
     data-source-properties:
       # 自定义配置
       characterEncoding: UTF-8
