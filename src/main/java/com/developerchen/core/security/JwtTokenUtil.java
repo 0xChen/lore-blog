@@ -152,7 +152,7 @@ public final class JwtTokenUtil {
      * @return Claims
      */
     private static Claims getClaimsFromToken(String token) {
-        return Jwts.parser().decryptWith(SECRET_KEY).build().parseEncryptedClaims(token).getPayload();
+        return Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(token).getPayload();
     }
 
     /**
