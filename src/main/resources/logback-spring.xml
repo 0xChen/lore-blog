@@ -2,7 +2,7 @@
 
 <configuration>
     <springProfile name="dev">
-        <property name="LOG_PATH" value=".\\log\\"/>
+        <property name="LOG_PATH" value="./log/"/>
         <!-- 测试环境日志保留 8 天 -->
         <property name="LOG_FILE_MAX_HISTORY" value="8"/>
         <property name="LOG_FILE_CLEAN_HISTORY_ON_START" value="true"/>
