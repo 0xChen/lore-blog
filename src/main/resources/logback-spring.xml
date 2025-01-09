@@ -25,21 +25,21 @@
         <logger name="org.apache.tomcat.util.digester.Digester" level="INFO"/>
         <logger name="org.apache.tomcat.util.digester.Digester.sax " level="INFO"/>
         <logger name="org.apache.tomcat.util.IntrospectionUtils" level="INFO"/>
+        <logger name="org.apache.catalina.core.AprLifecycleListener" level="INFO"/>
         <logger name="org.apache.tomcat.util.modeler.modules.MbeansDescriptorsIntrospectionSource" level="INFO"/>
-        <logger name="org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener"
-                level="INFO"/>
-        <logger name="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"
-                level="INFO"/>
-        <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"
-                level="INFO"/>
+        <logger name="org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener" level="INFO"/>
+        <logger name="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" level="INFO"/>
+        <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="INFO"/>
+        <logger name="org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLogger" level="INFO"/>
+        <logger name="org.springframework.context.annotation.ClassPathBeanDefinitionScanner" level="INFO"/>
+        <logger name="org.springframework.beans.factory.support.DefaultListableBeanFactory" level="INFO"/>
+        <logger name="org.springframework.data.convert.CustomConversions" level="INFO"/>
+        <logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="INFO"/>
+        <logger name="org.mybatis.spring.mapper.ClassPathMapperScanner" level="INFO"/>
         <logger name="com.baomidou.mybatisplus.core.MybatisConfiguration" level="INFO"/>
     </springProfile>
 
     <springProfile name="prod">
         <root level="INFO"/>
-    </springProfile>
-
-    <springProfile name="wsl">
-        <root level="DEBUG"/>
     </springProfile>
 </configuration>
