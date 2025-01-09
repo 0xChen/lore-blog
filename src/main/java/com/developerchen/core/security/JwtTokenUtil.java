@@ -53,8 +53,7 @@ public final class JwtTokenUtil {
         } catch (Exception e) {
             // 随机一个
             tempSecretKey = Jwts.SIG.HS256.key().build();
-            logger.error(e.toString());
-            logger.info("使用随机密钥");
+            logger.warn("使用随机密钥, {}", e.toString());
         }
         JwtTokenUtil.SECRET_KEY = tempSecretKey;
     }
@@ -290,4 +289,3 @@ public final class JwtTokenUtil {
     }
 
 }
-
