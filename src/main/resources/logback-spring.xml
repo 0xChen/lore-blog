@@ -37,6 +37,8 @@
         <logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="INFO"/>
         <logger name="org.mybatis.spring.mapper.ClassPathMapperScanner" level="INFO"/>
         <logger name="com.baomidou.mybatisplus.core.MybatisConfiguration" level="INFO"/>
+        <logger name="sun.rmi" level="INFO"/>
+        <logger name="javax.management.remote.rmi" level="INFO"/>
     </springProfile>
 
     <springProfile name="prod">
