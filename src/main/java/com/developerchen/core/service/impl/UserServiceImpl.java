@@ -56,6 +56,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     @Override
     @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deleteAllUser() {
-        baseMapper.deleteBySql("DELETE FROM `sys_user` WHERE `id` <> 1");
+        baseMapper.deleteAllUser();
     }
 }

@@ -179,6 +179,6 @@ public class OptionServiceImpl extends BaseServiceImpl<OptionMapper, Option> imp
     @Override
     @Transactional(rollbackFor = {Exception.class, Error.class})
     public void deleteAllOption() {
-        baseMapper.deleteBySql("truncate table sys_option");
+        baseMapper.deleteAllOption();
     }
 }

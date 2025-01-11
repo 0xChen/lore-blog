@@ -83,17 +83,7 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
                 .collect(Collectors.toMap(p -> p.getId().toString(), p -> p));
 
         // 按年月分组统计post数量并拼接post主键
-        String querySql = new SQL()
-                .SELECT("date_format(pubdate, '%Y年%m月') AS dateString",
-                        "group_concat(id) AS postIds",
-                        "count(*) AS count")
-                .FROM("blog_post")
-                .WHERE("status = '" + BlogConst.POST_STATUS_PUBLISH + "'")
-                .WHERE("type = '" + BlogConst.POST_TYPE_POST + "'")
-                .GROUP_BY("dateString")
-                .ORDER_BY("dateString DESC")
-                .toString();
-        List<Archive> archiveList = baseMapper.selectListBySql(querySql, Archive.class);
+        List<Archive> archiveList = baseMapper.selectArchiveList(BlogConst.POST_STATUS_PUBLISH, BlogConst.POST_TYPE_POST);
 
         // 填充Archive中的postList属性
         archiveList.forEach(archive -> {

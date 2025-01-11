@@ -337,25 +337,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
      */
     @Override
     public List<CategoryDTO> getCategoryDTOList(Category category) {
-        SQL sql = new SQL()
-                .SELECT("n.id AS id",
-                        "n.name AS `name`",
-                        "n.visible AS visible",
-                        "n.left_value AS leftValue",
-                        "n.right_value AS rightValue",
-                        "count(n.id) AS level")
-                .FROM("blog_category n")
-                .INNER_JOIN("blog_category p ON n.left_value " +
-                        "BETWEEN p.left_value AND p.right_value");
-        if (category != null) {
-            sql.WHERE("n.left_value >= " + category.getLeftValue());
-            sql.WHERE("n.right_value <= " + category.getRightValue());
-        } else {
-            sql.WHERE("n.left_value >= 0");
-        }
-        sql.GROUP_BY("n.id").ORDER_BY("level", "leftValue");
-
-        return baseMapper.selectListBySql(sql.toString(), CategoryDTO.class);
+        return baseMapper.selectCategoryList(category);
     }
 
     /**

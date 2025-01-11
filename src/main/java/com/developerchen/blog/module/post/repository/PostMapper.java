@@ -1,7 +1,12 @@
 package com.developerchen.blog.module.post.repository;
 
+import com.developerchen.blog.module.post.domain.dto.Archive;
 import com.developerchen.blog.module.post.domain.entity.Post;
 import com.developerchen.core.repository.CoreMapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -11,5 +16,10 @@ import com.developerchen.core.repository.CoreMapper;
  * @author syc
  */
 public interface PostMapper extends CoreMapper<Post> {
-
+    @Select("SELECT date_format(pubdate, '%Y年%m月') AS dateString, group_concat(id) AS postIds, count(*) AS count " +
+            "FROM blog_post " +
+            "WHERE status = #{status} AND type = #{type} " +
+            "GROUP BY dateString " +
+            "ORDER BY dateString DESC")
+    List<Archive> selectArchiveList(@Param("status") String status, @Param("type") String type);
 }

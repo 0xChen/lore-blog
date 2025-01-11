@@ -1,10 +1,14 @@
 package com.developerchen.blog.module.category.repository;
 
+import com.developerchen.blog.module.category.domain.dto.CategoryDTO;
 import com.developerchen.blog.module.category.domain.entity.Category;
 import com.developerchen.core.repository.CoreMapper;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 /**
  * <p>
@@ -57,4 +61,20 @@ public interface CategoryMapper extends CoreMapper<Category> {
      */
     @Update("update blog_category set right_value = right_value - #{length} where right_value > #{rightValue}")
     void updateRightValueAfterDelete(@Param("rightValue") int rightValue, @Param("length") int length);
+
+    @Select("""
+                SELECT n.id,
+                       n.name,
+                       n.visible,
+                       n.left_value,
+                       n.right_value,
+                       COUNT(n.id) AS level
+                FROM blog_category n
+                INNER JOIN blog_category p ON n.left_value BETWEEN p.left_value AND p.right_value
+                WHERE (#{category.leftValue} IS NULL OR n.left_value >= #{category.leftValue})
+                  AND (#{category.rightValue} IS NULL OR n.right_value <= #{category.rightValue})
+                GROUP BY n.id
+                ORDER BY level, left_value
+            """)
+    List<CategoryDTO> selectCategoryList(@Param("category") Category category);
 }

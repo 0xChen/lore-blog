@@ -1,6 +1,7 @@
 package com.developerchen.core.repository;
 
 import com.developerchen.core.domain.entity.Option;
+import org.apache.ibatis.annotations.Delete;
 
 /**
  * <p>
@@ -11,4 +12,9 @@ import com.developerchen.core.domain.entity.Option;
  */
 public interface OptionMapper extends CoreMapper<Option> {
 
+    /**
+     * 删除所有设置
+     */
+    @Delete("truncate table sys_option")
+    void deleteAllOption();
 }
