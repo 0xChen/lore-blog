@@ -2,7 +2,7 @@ package com.developerchen.blog.module.comment.web;
 
 import com.developerchen.blog.module.comment.domain.entity.Comment;
 import com.developerchen.blog.module.comment.service.ICommentService;
-import com.developerchen.core.domain.RestResponse;
+import com.developerchen.core.domain.R;
 import com.developerchen.core.util.UserUtils;
 import com.developerchen.core.web.BaseController;
 import org.springframework.validation.BindingResult;
@@ -31,10 +31,10 @@ public class CommentController extends BaseController {
      * @param comment 评论内容
      */
     @PostMapping("/comments")
-    public RestResponse<?> reply(@Validated Comment comment,
-                                 BindingResult result) {
+    public R<?> reply(@Validated Comment comment,
+                      BindingResult result) {
         if (result.hasErrors()) {
-            return RestResponse.fail("回复失败！");
+            return R.fail("回复失败！");
         }
         Long userId = getUserId();
         Long authorId = comment.getAuthorId();
@@ -44,7 +44,7 @@ public class CommentController extends BaseController {
         comment.setIp(UserUtils.getRemoteIp(request));
         comment.setAgent(UserUtils.getUserAgent(request));
         commentService.replyComment(comment);
-        return RestResponse.ok();
+        return R.ok();
     }
 }
 

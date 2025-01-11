@@ -1,7 +1,7 @@
 package com.developerchen.core.web;
 
 import com.developerchen.core.config.AppConfig;
-import com.developerchen.core.domain.RestResponse;
+import com.developerchen.core.domain.R;
 import com.developerchen.core.service.IOptionService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -30,9 +30,9 @@ public class OptionAdminController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT}, path = "/options", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<?> saveOrUpdateOptions(@RequestBody Map<String, String> parameterMap) {
+    public R<?> saveOrUpdateOptions(@RequestBody Map<String, String> parameterMap) {
         optionService.saveOrUpdateOptions(parameterMap);
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
@@ -40,8 +40,8 @@ public class OptionAdminController extends BaseController {
      */
     @ResponseBody
     @GetMapping("/options")
-    public RestResponse<Map<String, String>> getOptions() {
-        return RestResponse.ok(AppConfig.OPTIONS);
+    public R<Map<String, String>> getOptions() {
+        return R.ok(AppConfig.OPTIONS);
     }
 
 }

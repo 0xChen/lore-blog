@@ -1,7 +1,7 @@
 package com.developerchen.core.web;
 
 
-import com.developerchen.core.domain.RestResponse;
+import com.developerchen.core.domain.R;
 import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.security.RefreshToken;
 import com.developerchen.core.service.IUserService;
@@ -39,9 +39,9 @@ public class UserAdminController extends BaseController {
      */
     @ResponseBody
     @PostMapping("/users")
-    public RestResponse<User> saveOrUpdate(User user) {
+    public R<User> saveOrUpdate(User user) {
         userService.saveOrUpdateUser(user);
-        return RestResponse.ok(user);
+        return R.ok(user);
     }
 
     /**
@@ -52,13 +52,13 @@ public class UserAdminController extends BaseController {
      */
     @ResponseBody
     @GetMapping("/users/{userId}")
-    public RestResponse<User> getById(@PathVariable("userId") Long userId) {
+    public R<User> getById(@PathVariable("userId") Long userId) {
         User user = userService.getUserById(userId);
         if (user != null) {
             user.setPassword(null);
-            return RestResponse.ok(user);
+            return R.ok(user);
         } else {
-            return RestResponse.fail("没有此用户");
+            return R.fail("没有此用户");
         }
     }
 
@@ -70,13 +70,13 @@ public class UserAdminController extends BaseController {
      */
     @ResponseBody
     @GetMapping("/users")
-    public RestResponse<User> getByUsername(@RequestParam("username") String username) {
+    public R<User> getByUsername(@RequestParam("username") String username) {
         User user = userService.getUserByUsername(username);
         if (user != null) {
             user.setPassword(null);
-            return RestResponse.ok(user);
+            return R.ok(user);
         } else {
-            return RestResponse.fail("没有此用户");
+            return R.fail("没有此用户");
         }
     }
 
@@ -87,9 +87,9 @@ public class UserAdminController extends BaseController {
      */
     @ResponseBody
     @DeleteMapping("/users/{userId}")
-    public RestResponse<String> deleteById(@PathVariable("userId") Long userId) {
+    public R<String> deleteById(@PathVariable("userId") Long userId) {
         userService.deleteUserById(userId);
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
@@ -102,21 +102,21 @@ public class UserAdminController extends BaseController {
     @RefreshToken
     @ResponseBody
     @PutMapping(path = "/user/password", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public RestResponse<String> updatePassword(@RequestParam String oldPassword,
-                                               @RequestParam String newPassword) {
+    public R<String> updatePassword(@RequestParam String oldPassword,
+                                    @RequestParam String newPassword) {
         User user = userService.getUserById(getUserId());
         if (!SecurityUtils.matchesUserPassword(oldPassword, user.getPassword())) {
-            return RestResponse.fail(600, "原密码错误");
+            return R.fail(600, "原密码错误");
         }
         user.setPassword(newPassword);
         userService.saveOrUpdateUser(user);
-        return RestResponse.ok("密码修改成功");
+        return R.ok("密码修改成功");
     }
 
     @RefreshToken
     @ResponseBody
     @PutMapping(path = "/user/password", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<String> updatePassword(@RequestBody Map<String, String> parameterMap) {
+    public R<String> updatePassword(@RequestBody Map<String, String> parameterMap) {
         String oldPassword = parameterMap.get("oldPassword");
         String newPassword = parameterMap.get("newPassword");
 
@@ -130,15 +130,15 @@ public class UserAdminController extends BaseController {
     @RefreshToken
     @ResponseBody
     @PutMapping("/user/profile")
-    public RestResponse<String> updateProfile(@Validated @ModelAttribute User user, BindingResult result) {
+    public R<String> updateProfile(@Validated @ModelAttribute User user, BindingResult result) {
         if (result.hasErrors()) {
-            return RestResponse.fail();
+            return R.fail();
         }
         user.setId(getUserId());
         // 防御前端构造表单修改用户名
         user.setUsername(null);
         userService.saveOrUpdateUser(user);
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
@@ -148,12 +148,12 @@ public class UserAdminController extends BaseController {
     @RefreshToken
     @ResponseBody
     @PutMapping(path = "/user/profile", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<String> updateProfile(@RequestBody User user) {
+    public R<String> updateProfile(@RequestBody User user) {
         user.setId(getUserId());
         // 防御前端构造表单修改用户名
         user.setUsername(null);
         userService.saveOrUpdateUser(user);
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
@@ -172,9 +172,9 @@ public class UserAdminController extends BaseController {
      */
     @ResponseBody
     @GetMapping(value = "/user/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<User> getProfile() {
+    public R<User> getProfile() {
         User user = userService.getUserById(getUserId());
         user.setPassword(null);
-        return RestResponse.ok(user);
+        return R.ok(user);
     }
 }

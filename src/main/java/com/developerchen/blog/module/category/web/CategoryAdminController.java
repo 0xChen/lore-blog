@@ -3,7 +3,7 @@ package com.developerchen.blog.module.category.web;
 import com.developerchen.blog.module.category.domain.dto.CategoryDTO;
 import com.developerchen.blog.module.category.domain.entity.Category;
 import com.developerchen.blog.module.category.service.ICategoryService;
-import com.developerchen.core.domain.RestResponse;
+import com.developerchen.core.domain.R;
 import com.developerchen.core.web.BaseController;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -36,32 +36,32 @@ public class CategoryAdminController extends BaseController {
     }
 
     @PostMapping("/categories")
-    public RestResponse<?> create(@Validated @RequestBody CategoryDTO categoryDTO) {
+    public R<?> create(@Validated @RequestBody CategoryDTO categoryDTO) {
         String name = categoryDTO.getName();
         if (StringUtils.isEmpty(name)) {
-            return RestResponse.fail("分类名称不能为空");
+            return R.fail("分类名称不能为空");
         }
         Long parentId = categoryDTO.getParentId();
         Category category = categoryService.saveCategory(name, parentId);
-        return RestResponse.ok(category);
+        return R.ok(category);
     }
 
     @DeleteMapping("/categories/{categoryId}")
-    public RestResponse<?> delete(@PathVariable Long categoryId) {
+    public R<?> delete(@PathVariable Long categoryId) {
         categoryService.deleteCategoryById(categoryId);
-        return RestResponse.ok();
+        return R.ok();
     }
 
     @PutMapping("/categories/{categoryId}")
-    public RestResponse<?> update(@PathVariable Long categoryId,
-                                  @Validated @RequestBody Category category,
-                                  BindingResult result) {
+    public R<?> update(@PathVariable Long categoryId,
+                       @Validated @RequestBody Category category,
+                       BindingResult result) {
         if (result.hasErrors()) {
-            return RestResponse.fail("数据错误, 更新失败！");
+            return R.fail("数据错误, 更新失败！");
         }
         category.setId(categoryId);
         categoryService.updateCategoryById(category);
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
@@ -70,17 +70,17 @@ public class CategoryAdminController extends BaseController {
      * @param name 分类名称查询条件
      */
     @GetMapping("/categories")
-    public RestResponse<List<Category>> getCategory(@RequestParam(required = false) String name) {
+    public R<List<Category>> getCategory(@RequestParam(required = false) String name) {
         List<Category> categoryList = categoryService.getCategory(name);
-        return RestResponse.ok(categoryList);
+        return R.ok(categoryList);
     }
 
     /**
      * 获取整个分类树
      */
     @GetMapping("/category/tree")
-    public RestResponse<List<CategoryDTO>> getCategoryTree() {
+    public R<List<CategoryDTO>> getCategoryTree() {
         List<CategoryDTO> categoryDTOList = categoryService.getCategoryTree();
-        return RestResponse.ok(categoryDTOList);
+        return R.ok(categoryDTOList);
     }
 }

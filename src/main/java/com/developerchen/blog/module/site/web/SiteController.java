@@ -6,7 +6,7 @@ import com.developerchen.blog.module.site.domain.Sitemap;
 import com.developerchen.blog.module.site.service.ISiteService;
 import com.developerchen.core.config.AppConfig;
 import com.developerchen.core.constant.Const;
-import com.developerchen.core.domain.RestResponse;
+import com.developerchen.core.domain.R;
 import com.developerchen.core.web.BaseController;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -85,7 +85,7 @@ public class SiteController extends BaseController {
      */
     @ResponseBody
     @PostMapping(BlogConst.INSTALL_URI)
-    public RestResponse<String> install(@RequestBody Map<String, String> parameterMap) {
+    public R<String> install(@RequestBody Map<String, String> parameterMap) {
         // 保存初始化数据
         this.siteService.install(parameterMap);
 
@@ -105,11 +105,11 @@ public class SiteController extends BaseController {
         }
         if (errorMessage != null) {
             BlogConst.HAS_INSTALLED = false;
-            return RestResponse.fail("初始化站点失败, 无法创建[" +
+            return R.fail("初始化站点失败, 无法创建[" +
                     BlogConst.INSTALLED.getPath() + "]文件, " + errorMessage + ". ");
         } else {
             BlogConst.HAS_INSTALLED = true;
-            return RestResponse.ok();
+            return R.ok();
         }
     }
 

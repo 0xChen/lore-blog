@@ -1,6 +1,6 @@
 package com.developerchen.core.exception;
 
-import com.developerchen.core.domain.RestResponse;
+import com.developerchen.core.domain.R;
 import com.developerchen.core.util.RequestUtils;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -28,12 +28,12 @@ public class GlobalExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler
-    public RestResponse<?> handleException(HttpServletRequest request,
-                                           ServletException ex) throws Exception {
+    public R<?> handleException(HttpServletRequest request,
+                                ServletException ex) throws Exception {
         if (RequestUtils.isAjaxRequest(request)) {
             HttpStatus status = getStatus(request);
             ex.printStackTrace();
-            return RestResponse.fail(status.value(), ex.getMessage());
+            return R.fail(status.value(), ex.getMessage());
         } else {
             /*
              * Rethrow the given exception for further processing through the HandlerExceptionResolver chain.
@@ -53,9 +53,9 @@ public class GlobalExceptionHandler {
      */
     @ResponseBody
     @ExceptionHandler
-    public RestResponse<?> handleException(HttpServletRequest request,
-                                           Exception ex,
-                                           @Nullable HandlerMethod method) throws Exception {
+    public R<?> handleException(HttpServletRequest request,
+                                Exception ex,
+                                @Nullable HandlerMethod method) throws Exception {
         boolean needPrintStackTrace = true;
         if (RequestUtils.isAjaxRequest(request, method)) {
             HttpStatus status = getStatus(request);
@@ -83,7 +83,7 @@ public class GlobalExceptionHandler {
             if (needPrintStackTrace) {
                 ex.printStackTrace();
             }
-            return RestResponse.fail(code, message);
+            return R.fail(code, message);
         } else {
             /*
              * Rethrow the given exception for further processing through the HandlerExceptionResolver chain.

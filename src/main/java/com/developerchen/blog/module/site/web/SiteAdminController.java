@@ -10,7 +10,7 @@ import com.developerchen.blog.module.site.domain.dto.ThemeDTO;
 import com.developerchen.blog.module.site.service.ISiteService;
 import com.developerchen.blog.theme.Common;
 import com.developerchen.core.config.AppConfig;
-import com.developerchen.core.domain.RestResponse;
+import com.developerchen.core.domain.R;
 import com.developerchen.core.domain.entity.Option;
 import com.developerchen.core.exception.RestException;
 import com.developerchen.core.util.FileUtils;
@@ -64,7 +64,7 @@ public class SiteAdminController extends BaseController {
      * 获取最近评论, 随机文章及后台统计数据
      */
     @GetMapping("/dashboard")
-    public RestResponse<Map<String, Object>> dashboard() {
+    public R<Map<String, Object>> dashboard() {
         List<Comment> commentList = commentService.recentComments(BlogConst.COMMENT_RECENT_SIZE);
         List<Post> postList = postService.getPostList(BlogConst.POST_RECENT, 10);
         Set<String> tagSet = postService.getTags();
@@ -75,14 +75,14 @@ public class SiteAdminController extends BaseController {
         resMap.put("postList", postList);
         resMap.put("tagSet", tagSet);
         resMap.put("statistics", statistics);
-        return RestResponse.ok(resMap);
+        return R.ok(resMap);
     }
 
     /**
      * 获取所有主题
      */
     @GetMapping("/themes")
-    public RestResponse<List<ThemeDTO>> getThemes() {
+    public R<List<ThemeDTO>> getThemes() {
         List<ThemeDTO> themeList = new ArrayList<>(6);
         try {
             // 获取所有主题下的首页页面
@@ -103,14 +103,14 @@ public class SiteAdminController extends BaseController {
         } catch (IOException e) {
             throw new RestException("获取主题文件失败", e);
         }
-        return RestResponse.ok(themeList);
+        return R.ok(themeList);
     }
 
     /**
      * 获取主题的参数设置
      */
     @GetMapping("/themes/{themeName}/setting")
-    public RestResponse<List<Option>> getThemeSetting(@PathVariable("themeName") String themeName)
+    public R<List<Option>> getThemeSetting(@PathVariable("themeName") String themeName)
             throws IOException {
         String settingJsonPath = "classpath:templates/themes/" + themeName + "/setting.json";
         Resource resource = FileUtils.getResource(settingJsonPath);
@@ -132,7 +132,7 @@ public class SiteAdminController extends BaseController {
             });
         }
 
-        return RestResponse.ok(optionList, 200);
+        return R.ok(optionList, 200);
     }
 
 
@@ -142,8 +142,8 @@ public class SiteAdminController extends BaseController {
      * https://developer.github.com/v3/activity/starring/#list-repositories-starred-by-the-authenticated-user
      */
     @GetMapping("/theme/active")
-    public RestResponse<String> getActiveTheme() {
-        RestResponse<String> response = new RestResponse<>(true, HttpStatus.OK.value());
+    public R<String> getActiveTheme() {
+        R<String> response = new R<>(true, HttpStatus.OK.value());
         response.setData(Common.blogTheme());
         return response;
     }
@@ -152,9 +152,9 @@ public class SiteAdminController extends BaseController {
      * 激活指定主题
      */
     @PutMapping("/themes/{themeName}/active")
-    public RestResponse<?> activateTheme(@PathVariable("themeName") String themeName) {
+    public R<?> activateTheme(@PathVariable("themeName") String themeName) {
         siteService.activeTheme(themeName);
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
@@ -162,11 +162,11 @@ public class SiteAdminController extends BaseController {
      * TODO: @Validated加在集合参数上无效的问题
      */
     @PostMapping(path = "/themes/{themeName}/setting", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<?> saveThemeSetting(@PathVariable("themeName") String themeName,
-                                            @Validated @RequestBody List<Option> optionList,
-                                            BindingResult result) {
+    public R<?> saveThemeSetting(@PathVariable("themeName") String themeName,
+                                 @Validated @RequestBody List<Option> optionList,
+                                 BindingResult result) {
         if (result.hasErrors()) {
-            return RestResponse.fail("参数不合法, 保存失败！");
+            return R.fail("参数不合法, 保存失败！");
         }
         optionList.forEach(option -> option.setCreateTime(null).setUpdateTime(null));
         Option option = new Option();
@@ -174,15 +174,15 @@ public class SiteAdminController extends BaseController {
         option.setValue(JsonUtils.toJsonString(optionList));
         option.setDescription("主题名为: '" + themeName + "' 的自定义参数设置");
         siteService.saveThemeSetting(option);
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
      * 站点参数设置
      */
     @PostMapping(path = "/site/setting", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public RestResponse<?> saveSiteSetting(@RequestBody Map<String, String> parameterMap) {
+    public R<?> saveSiteSetting(@RequestBody Map<String, String> parameterMap) {
         siteService.saveSiteSetting(parameterMap);
-        return RestResponse.ok();
+        return R.ok();
     }
 }

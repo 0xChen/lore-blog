@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.developerchen.blog.module.link.domain.entity.Link;
 import com.developerchen.blog.module.link.service.ILinkService;
 import com.developerchen.core.constant.Const;
-import com.developerchen.core.domain.RestResponse;
+import com.developerchen.core.domain.R;
 import com.developerchen.core.web.BaseController;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -43,12 +43,12 @@ public class LinkAdminController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/links", method = {RequestMethod.POST, RequestMethod.PUT})
-    public RestResponse<Link> saveOrUpdate(@Validated @RequestBody Link link, BindingResult result) {
+    public R<Link> saveOrUpdate(@Validated @RequestBody Link link, BindingResult result) {
         if (result.hasErrors()) {
-            return RestResponse.fail("保存失败！");
+            return R.fail("保存失败！");
         }
         linkService.saveOrUpdateLink(link);
-        return RestResponse.ok(link);
+        return R.ok(link);
     }
 
     /**
@@ -58,15 +58,15 @@ public class LinkAdminController extends BaseController {
      */
     @ResponseBody
     @PutMapping("/links/{linkId}")
-    public RestResponse<Link> update(@PathVariable long linkId,
-                                     @Validated @RequestBody Link link,
-                                     BindingResult result) {
+    public R<Link> update(@PathVariable long linkId,
+                          @Validated @RequestBody Link link,
+                          BindingResult result) {
         if (result.hasErrors()) {
-            return RestResponse.fail("数据错误, 更新失败！");
+            return R.fail("数据错误, 更新失败！");
         }
         link.setId(linkId);
         linkService.updateLink(link);
-        return RestResponse.ok(link);
+        return R.ok(link);
     }
 
     /**
@@ -74,9 +74,9 @@ public class LinkAdminController extends BaseController {
      */
     @ResponseBody
     @GetMapping("/links/{linkId}")
-    public RestResponse<Link> link(@PathVariable long linkId) {
+    public R<Link> link(@PathVariable long linkId) {
         Link link = linkService.getLinkById(linkId);
-        return RestResponse.ok(link);
+        return R.ok(link);
     }
 
     /**
@@ -86,9 +86,9 @@ public class LinkAdminController extends BaseController {
      */
     @ResponseBody
     @DeleteMapping("/links/{linkId}")
-    public RestResponse<?> delete(@PathVariable long linkId) {
+    public R<?> delete(@PathVariable long linkId) {
         linkService.deleteLinkById(linkId);
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
@@ -98,9 +98,9 @@ public class LinkAdminController extends BaseController {
      */
     @ResponseBody
     @DeleteMapping("/links/{linkIds}/batch")
-    public RestResponse<?> deleteBatch(@PathVariable Set<Long> linkIds) {
+    public R<?> deleteBatch(@PathVariable Set<Long> linkIds) {
         linkService.deleteLinkByIds(linkIds);
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
@@ -108,9 +108,9 @@ public class LinkAdminController extends BaseController {
      */
     @ResponseBody
     @DeleteMapping("/links")
-    public RestResponse<?> deleteAll() {
+    public R<?> deleteAll() {
         linkService.deleteAll();
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
@@ -126,15 +126,15 @@ public class LinkAdminController extends BaseController {
      */
     @ResponseBody
     @GetMapping("/links")
-    public RestResponse<IPage<Link>> page(@RequestParam(required = false) String name,
-                                          @RequestParam(required = false) String url,
-                                          @RequestParam(required = false) String visible,
-                                          @RequestParam(required = false) String description,
-                                          @RequestParam(defaultValue = "1") Long page,
-                                          @RequestParam(required = false) Long size) {
+    public R<IPage<Link>> page(@RequestParam(required = false) String name,
+                               @RequestParam(required = false) String url,
+                               @RequestParam(required = false) String visible,
+                               @RequestParam(required = false) String description,
+                               @RequestParam(defaultValue = "1") Long page,
+                               @RequestParam(required = false) Long size) {
         size = size == null ? Const.PAGE_DEFAULT_SIZE : size;
         IPage<Link> linkPage = linkService.getLinkPage(name, url, visible, description, page, size);
-        return RestResponse.ok(linkPage);
+        return R.ok(linkPage);
     }
 
 }

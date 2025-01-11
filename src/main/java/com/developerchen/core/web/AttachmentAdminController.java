@@ -2,7 +2,7 @@ package com.developerchen.core.web;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.developerchen.core.constant.Const;
-import com.developerchen.core.domain.RestResponse;
+import com.developerchen.core.domain.R;
 import com.developerchen.core.domain.entity.Attachment;
 import com.developerchen.core.service.IAttachmentService;
 import org.springframework.stereotype.Controller;
@@ -38,9 +38,9 @@ public class AttachmentAdminController extends BaseController {
      */
     @ResponseBody
     @GetMapping("/attachment/count")
-    public RestResponse<Long> count(@RequestParam(value = "type", required = false) String type) {
+    public R<Long> count(@RequestParam(value = "type", required = false) String type) {
         Long total = attachmentService.countAttachment(type);
-        return RestResponse.ok(total);
+        return R.ok(total);
     }
 
     /**
@@ -51,10 +51,10 @@ public class AttachmentAdminController extends BaseController {
      */
     @ResponseBody
     @PostMapping("/attachments")
-    public RestResponse<Attachment> upload(@RequestParam("file") MultipartFile multipartFile,
-                                           Attachment attachment) {
+    public R<Attachment> upload(@RequestParam("file") MultipartFile multipartFile,
+                                Attachment attachment) {
         Attachment returnAttachment = attachmentService.saveAttachment(multipartFile, attachment);
-        return RestResponse.ok(returnAttachment);
+        return R.ok(returnAttachment);
     }
 
     /**
@@ -66,13 +66,13 @@ public class AttachmentAdminController extends BaseController {
      */
     @ResponseBody
     @PostMapping("/attachment/batch")
-    public RestResponse<List<Attachment>> uploadBatch(
+    public R<List<Attachment>> uploadBatch(
             @RequestParam MultiValueMap<String, MultipartFile> multipartFileMap) {
         List<Attachment> attachmentList = multipartFileMap.values().stream()
                 .flatMap(fileList -> fileList.stream()
                         .map(file -> attachmentService.saveAttachment(file, new Attachment())))
                 .collect(Collectors.toList());
-        return RestResponse.ok(attachmentList);
+        return R.ok(attachmentList);
     }
 
     /**
@@ -81,9 +81,9 @@ public class AttachmentAdminController extends BaseController {
      */
     @ResponseBody
     @DeleteMapping("/attachments")
-    public RestResponse<?> deleteAll() {
+    public R<?> deleteAll() {
         attachmentService.deleteAllAttachment();
-        return RestResponse.ok("删除成功！");
+        return R.ok("删除成功！");
     }
 
     /**
@@ -94,12 +94,12 @@ public class AttachmentAdminController extends BaseController {
      */
     @ResponseBody
     @DeleteMapping("/attachments/{attachmentId}")
-    public RestResponse<?> delete(@PathVariable long attachmentId) {
+    public R<?> delete(@PathVariable long attachmentId) {
         Set<Long> attachmentIdSet = new HashSet<>();
         attachmentIdSet.add(attachmentId);
 
         attachmentService.deleteAttachment(attachmentIdSet);
-        return RestResponse.ok("删除成功！");
+        return R.ok("删除成功！");
     }
 
     /**
@@ -110,9 +110,9 @@ public class AttachmentAdminController extends BaseController {
      */
     @ResponseBody
     @DeleteMapping("/attachments/{attachmentIds}/batch")
-    public RestResponse<?> deleteBatch(@PathVariable Set<Long> attachmentIds) {
+    public R<?> deleteBatch(@PathVariable Set<Long> attachmentIds) {
         attachmentService.deleteAttachment(attachmentIds);
-        return RestResponse.ok("删除成功！");
+        return R.ok("删除成功！");
     }
 
     /**
@@ -127,16 +127,16 @@ public class AttachmentAdminController extends BaseController {
      */
     @ResponseBody
     @GetMapping("/attachments")
-    public RestResponse<IPage<Attachment>> page(@RequestParam(required = false) String name,
-                                                @RequestParam(required = false) String originalName,
-                                                @RequestParam(required = false) String key,
-                                                @RequestParam(required = false) String type,
-                                                @RequestParam(required = false) String description,
-                                                @RequestParam(defaultValue = "1") long page,
-                                                @RequestParam(required = false) Long size) {
+    public R<IPage<Attachment>> page(@RequestParam(required = false) String name,
+                                     @RequestParam(required = false) String originalName,
+                                     @RequestParam(required = false) String key,
+                                     @RequestParam(required = false) String type,
+                                     @RequestParam(required = false) String description,
+                                     @RequestParam(defaultValue = "1") long page,
+                                     @RequestParam(required = false) Long size) {
         size = size == null ? Const.PAGE_DEFAULT_SIZE : size;
         IPage<Attachment> attachmentPage = attachmentService.getAttachments(
                 name, originalName, key, type, description, page, size);
-        return RestResponse.ok(attachmentPage);
+        return R.ok(attachmentPage);
     }
 }

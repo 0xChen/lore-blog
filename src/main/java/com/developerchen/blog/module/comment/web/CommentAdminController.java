@@ -6,7 +6,7 @@ import com.developerchen.blog.module.comment.domain.entity.Comment;
 import com.developerchen.blog.module.comment.service.ICommentService;
 import com.developerchen.core.config.AppConfig;
 import com.developerchen.core.constant.Const;
-import com.developerchen.core.domain.RestResponse;
+import com.developerchen.core.domain.R;
 import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.util.UserUtils;
 import com.developerchen.core.web.BaseController;
@@ -37,26 +37,26 @@ public class CommentAdminController extends BaseController {
      */
     @ResponseBody
     @GetMapping("/comments/{commentId}")
-    public RestResponse<Comment> link(@PathVariable long commentId) {
+    public R<Comment> link(@PathVariable long commentId) {
         Comment comment = commentService.getCommentById(commentId);
-        return RestResponse.ok(comment);
+        return R.ok(comment);
     }
 
     /**
      * 分页方式获取所有评论
      */
     @GetMapping("/comments")
-    public RestResponse<IPage<Comment>> page(@RequestParam(required = false) String authorName,
-                                             @RequestParam(required = false) String email,
-                                             @RequestParam(required = false) String url,
-                                             @RequestParam(required = false) String content,
-                                             @RequestParam(required = false) String status,
-                                             @RequestParam(defaultValue = "1") Long page,
-                                             @RequestParam(required = false) Long size) {
+    public R<IPage<Comment>> page(@RequestParam(required = false) String authorName,
+                                  @RequestParam(required = false) String email,
+                                  @RequestParam(required = false) String url,
+                                  @RequestParam(required = false) String content,
+                                  @RequestParam(required = false) String status,
+                                  @RequestParam(defaultValue = "1") Long page,
+                                  @RequestParam(required = false) Long size) {
         size = size == null ? Const.PAGE_DEFAULT_SIZE : size;
         IPage<Comment> commentPage = commentService.getCommentPage(authorName,
                 email, url, content, status, page, size);
-        return RestResponse.ok(commentPage);
+        return R.ok(commentPage);
     }
 
     /**
@@ -65,9 +65,9 @@ public class CommentAdminController extends BaseController {
      * @param commentId 评论ID
      */
     @DeleteMapping("/comments/{commentId}")
-    public RestResponse<?> delete(@PathVariable("commentId") long commentId) {
+    public R<?> delete(@PathVariable("commentId") long commentId) {
         commentService.deleteCommentById(commentId);
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
@@ -77,30 +77,30 @@ public class CommentAdminController extends BaseController {
      */
     @ResponseBody
     @DeleteMapping("/comments/{commentIds}/batch")
-    public RestResponse<?> deleteBatch(@PathVariable Set<Long> commentIds) {
+    public R<?> deleteBatch(@PathVariable Set<Long> commentIds) {
         commentService.deleteCommentByIds(commentIds);
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
      * 更新评论状态
      */
     @PutMapping("/comments/{commentId}/status")
-    public RestResponse<?> status(@PathVariable("commentId") long commentId,
-                                  @RequestBody Map<String, String> parameterMap) {
+    public R<?> status(@PathVariable("commentId") long commentId,
+                       @RequestBody Map<String, String> parameterMap) {
         commentService.updateStatusByCommentId(commentId, parameterMap.get("status"));
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
      * 回复评论
      */
     @PostMapping("/comments/{commentId}/reply")
-    public RestResponse<?> replyComment(@PathVariable("commentId") long commentId,
-                                        @RequestBody Comment comment,
-                                        BindingResult result) {
+    public R<?> replyComment(@PathVariable("commentId") long commentId,
+                             @RequestBody Comment comment,
+                             BindingResult result) {
         if (result.hasErrors()) {
-            return RestResponse.fail("回复失败！");
+            return R.fail("回复失败！");
         }
         User user = UserUtils.getUser();
         if (user != null) {
@@ -115,16 +115,16 @@ public class CommentAdminController extends BaseController {
         comment.setUrl(AppConfig.scheme + "://" + AppConfig.hostname);
 
         commentService.replyComment(comment);
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
      * 更新评论内容
      */
     @PutMapping("/comments/{commentId}/content")
-    public RestResponse<?> updateCommentContent(@PathVariable("commentId") long commentId,
-                                                @RequestBody Comment comment) {
+    public R<?> updateCommentContent(@PathVariable("commentId") long commentId,
+                                     @RequestBody Comment comment) {
         commentService.updateCommentContent(commentId, comment.getContent());
-        return RestResponse.ok();
+        return R.ok();
     }
 }

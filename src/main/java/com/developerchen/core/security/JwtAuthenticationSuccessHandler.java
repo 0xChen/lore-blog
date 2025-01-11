@@ -1,7 +1,7 @@
 package com.developerchen.core.security;
 
 import com.developerchen.core.constant.Const;
-import com.developerchen.core.domain.RestResponse;
+import com.developerchen.core.domain.R;
 import com.developerchen.core.util.JsonUtils;
 import com.developerchen.core.util.RequestUtils;
 import org.slf4j.Logger;
@@ -61,9 +61,9 @@ public class JwtAuthenticationSuccessHandler extends
             response.setCharacterEncoding("UTF-8");
             response.setHeader("Content-Type", "application/json");
             PrintWriter pw = response.getWriter();
-            RestResponse<String> restResponse = new RestResponse<>(true, HttpStatus.OK.value());
-            restResponse.setData(token);
-            JsonUtils.getObjectMapper().writeValue(pw, restResponse);
+            R<String> r = new R<>(true, HttpStatus.OK.value());
+            r.setData(token);
+            JsonUtils.getObjectMapper().writeValue(pw, r);
             pw.print(true);
             pw.flush();
         } else {

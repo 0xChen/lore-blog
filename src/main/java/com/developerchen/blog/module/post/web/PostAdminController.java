@@ -5,7 +5,7 @@ import com.developerchen.blog.module.post.domain.dto.PostDTO;
 import com.developerchen.blog.module.post.domain.entity.Post;
 import com.developerchen.blog.module.post.service.IPostService;
 import com.developerchen.core.constant.Const;
-import com.developerchen.core.domain.RestResponse;
+import com.developerchen.core.domain.R;
 import com.developerchen.core.web.BaseController;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -40,36 +40,36 @@ public class PostAdminController extends BaseController {
      * 新增文章或页面
      */
     @PostMapping({"/posts", "/pages"})
-    public RestResponse<Post> create(@Validated @RequestBody Post post, BindingResult result) {
+    public R<Post> create(@Validated @RequestBody Post post, BindingResult result) {
         if (result.hasErrors()) {
-            return RestResponse.fail("保存失败！");
+            return R.fail("保存失败！");
         }
         // 作者
         post.setAuthorId(getUserId());
         postService.savePost(post);
-        return RestResponse.ok(post);
+        return R.ok(post);
     }
 
     /**
      * 更新文章或页面
      */
     @PutMapping({"/posts", "/pages"})
-    public RestResponse<Post> update(@Validated @RequestBody Post post, BindingResult result) {
+    public R<Post> update(@Validated @RequestBody Post post, BindingResult result) {
         if (result.hasErrors()) {
-            return RestResponse.fail("更新失败！");
+            return R.fail("更新失败！");
         }
         postService.updatePost(post);
-        return RestResponse.ok(post);
+        return R.ok(post);
     }
 
     /**
      * 更新文章或页面状态
      */
     @PutMapping({"/posts/{id}/status", "/pages/{id}/status"})
-    public RestResponse<Post> status(@PathVariable("id") long id,
-                                     @RequestBody Map<String, String> parameterMap) {
+    public R<Post> status(@PathVariable("id") long id,
+                          @RequestBody Map<String, String> parameterMap) {
         postService.updateStatusByPostId(id, parameterMap.get("status"));
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
@@ -84,7 +84,7 @@ public class PostAdminController extends BaseController {
      * @param size       每页数量
      */
     @GetMapping({"/posts", "/pages"})
-    public RestResponse<IPage<PostDTO>> page(
+    public R<IPage<PostDTO>> page(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String type,
@@ -95,19 +95,19 @@ public class PostAdminController extends BaseController {
         size = size == null ? Const.PAGE_DEFAULT_SIZE : size;
         IPage<PostDTO> postDtoPage = postService.getPostPage(title, status, type, tags, categoryId, page, size);
 
-        return RestResponse.ok(postDtoPage);
+        return R.ok(postDtoPage);
     }
 
     @GetMapping({"/posts/{id}", "/pages/{id}"})
-    public RestResponse<Post> post(@PathVariable long id) {
+    public R<Post> post(@PathVariable long id) {
         Post post = postService.getPostById(id);
-        return RestResponse.ok(post);
+        return R.ok(post);
     }
 
     @DeleteMapping({"/posts/{id}", "/pages/{id}"})
-    public RestResponse<?> delete(@PathVariable long id) {
+    public R<?> delete(@PathVariable long id) {
         postService.deletePostById(id);
-        return RestResponse.ok();
+        return R.ok();
     }
 
     /**
@@ -116,8 +116,8 @@ public class PostAdminController extends BaseController {
      * @param ids 链接ID集合
      */
     @DeleteMapping({"/posts/{ids}/batch", "/pages/{ids}/batch"})
-    public RestResponse<?> deleteBatch(@PathVariable Set<Long> ids) {
+    public R<?> deleteBatch(@PathVariable Set<Long> ids) {
         postService.deletePostByIds(ids);
-        return RestResponse.ok();
+        return R.ok();
     }
 }

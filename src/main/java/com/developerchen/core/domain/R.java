@@ -12,7 +12,7 @@ import java.util.Map;
  * @param <T>
  * @author syc
  */
-public class RestResponse<T> {
+public class R<T> {
 
     /**
      * 响应数据
@@ -44,41 +44,41 @@ public class RestResponse<T> {
      */
     private long timestamp;
 
-    public RestResponse() {
+    public R() {
         this.timestamp = System.currentTimeMillis() / 1000;
     }
 
-    public RestResponse(boolean success) {
+    public R(boolean success) {
         this.timestamp = System.currentTimeMillis() / 1000;
         this.success = success;
     }
 
-    public RestResponse(boolean success, int status) {
+    public R(boolean success, int status) {
         this.timestamp = System.currentTimeMillis() / 1000;
         this.success = success;
         this.status = status;
     }
 
-    public RestResponse(boolean success, T data) {
+    public R(boolean success, T data) {
         this.timestamp = System.currentTimeMillis() / 1000;
         this.success = success;
         this.data = data;
     }
 
-    public RestResponse(boolean success, T data, int status) {
+    public R(boolean success, T data, int status) {
         this.timestamp = System.currentTimeMillis() / 1000;
         this.success = success;
         this.data = data;
         this.status = status;
     }
 
-    public RestResponse(boolean success, String message) {
+    public R(boolean success, String message) {
         this.timestamp = System.currentTimeMillis() / 1000;
         this.success = success;
         this.message = message;
     }
 
-    public RestResponse(boolean success, String message, int status) {
+    public R(boolean success, String message, int status) {
         this.timestamp = System.currentTimeMillis() / 1000;
         this.success = success;
         this.message = message;
@@ -142,41 +142,41 @@ public class RestResponse<T> {
     }
 
 
-    public static <T> RestResponse<T> ok() {
-        return new RestResponse<>(true, 200);
+    public static <T> R<T> ok() {
+        return new R<>(true, 200);
     }
 
-    public static <T> RestResponse<T> ok(T payload) {
-        return new RestResponse<>(true, payload, 200);
+    public static <T> R<T> ok(T payload) {
+        return new R<>(true, payload, 200);
     }
 
-    public static <T> RestResponse<T> ok(String message) {
-        return new RestResponse<>(true, message, 200);
+    public static <T> R<T> ok(String message) {
+        return new R<>(true, message, 200);
     }
 
-    public static <T> RestResponse<T> ok(int status) {
-        return new RestResponse<>(true, null, status);
+    public static <T> R<T> ok(int status) {
+        return new R<>(true, null, status);
     }
 
-    public static <T> RestResponse<T> ok(T payload, int status) {
-        return new RestResponse<>(true, payload, status);
+    public static <T> R<T> ok(T payload, int status) {
+        return new R<>(true, payload, status);
     }
 
 
-    public static <T>RestResponse<T> fail() {
-        return new RestResponse<>(false);
+    public static <T> R<T> fail() {
+        return new R<>(false);
     }
 
-    public static <T> RestResponse<T> fail(String message) {
-        return new RestResponse<>(false, message);
+    public static <T> R<T> fail(String message) {
+        return new R<>(false, message);
     }
 
-    public static <T> RestResponse<T> fail(int status) {
-        return new RestResponse<>(false, null, status);
+    public static <T> R<T> fail(int status) {
+        return new R<>(false, null, status);
     }
 
-    public static <T> RestResponse<T> fail(int status, String message) {
-        return new RestResponse<>(false, message, status);
+    public static <T> R<T> fail(int status, String message) {
+        return new R<>(false, message, status);
     }
 
 }
