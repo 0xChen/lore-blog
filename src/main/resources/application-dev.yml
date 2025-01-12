@@ -75,7 +75,7 @@ spring:
     default-domain: ${my-app.hostname}
   application:
     admin:
-      enabled: false
+      enabled: true
 
 ########## docker ##########
 spring.docker:
