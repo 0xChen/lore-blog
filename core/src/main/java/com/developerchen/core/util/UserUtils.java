@@ -2,12 +2,11 @@ package com.developerchen.core.util;
 
 import com.developerchen.core.domain.entity.User;
 import com.developerchen.core.security.JwtAuthenticationToken;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 用户工具类
