@@ -1,87 +1,62 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.4.1'
-    id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.graalvm.buildtools.native' version '0.10.4'
+    id 'org.springframework.boot' version '3.4.1' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+    id 'org.graalvm.buildtools.native' version '0.10.4' apply false
 }
 
-group = 'com.developerchen'
-version = '2.3.0'
-description = 'A Java Blog platform'
+allprojects {
+    group = 'com.developerchen'
+    version = '2.3.0'
+    description = 'A Java Blog platform'
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(23)
+    ext {
+        set('snippetsDir', file("build/generated-snippets"))
+    }
+
+    repositories {
+        mavenCentral()
+        maven {
+            url = 'https://maven.aliyun.com/repository/public'
+        }
     }
 }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(23)
+        }
     }
-}
 
-repositories {
-    mavenCentral()
-
-    maven {
-        url = 'https://maven.aliyun.com/repository/public'
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
     }
-}
 
-ext {
-    set('snippetsDir', file("build/generated-snippets"))
-}
+    dependencies {
+        implementation 'org.apache.commons:commons-lang3:3.17.0'
+        implementation 'commons-codec:commons-codec:1.17.1'
+        implementation 'cn.hutool:hutool-core:5.8.34'
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-    implementation 'com.baomidou:mybatis-plus-spring-boot3-starter:3.5.9'
-    implementation 'com.baomidou:mybatis-plus-jsqlparser:3.5.9'
-    implementation 'org.apache.commons:commons-lang3:3.17.0'
-    implementation 'commons-codec:commons-codec:1.17.1'
-    implementation 'cn.hutool:hutool-core:5.8.34'
-    implementation('com.vladsch.flexmark:flexmark-all:0.64.8') {
-        exclude group: "com.vladsch.flexmark", module: "flexmark-youtrack-converter"
-        exclude group: "com.vladsch.flexmark", module: "flexmark-pdf-converter"
-        exclude group: "com.vladsch.flexmark", module: "flexmark-jira-converter"
-        exclude group: "com.vladsch.flexmark", module: "flexmark-ext-youtube-embedded"
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
-    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
 
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
-    compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.mysql:mysql-connector-j'
-    runtimeOnly 'org.postgresql:postgresql'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
-    testImplementation 'org.springframework.security:spring-security-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
 
-}
-
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += "-Xlint:deprecation"
-    options.compilerArgs += "-Xlint:unchecked"
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs += "-Xlint:deprecation"
+        options.compilerArgs += "-Xlint:unchecked"
+    }
 }

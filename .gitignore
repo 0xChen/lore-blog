@@ -43,3 +43,4 @@ lock/
 jdbcSecretKey
 jwtSecretKey
 change-passwd.sql
+file/

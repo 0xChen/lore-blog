@@ -1,1 +1,3 @@
 rootProject.name = 'lore-blog'
+include 'core'
+include 'blog'
