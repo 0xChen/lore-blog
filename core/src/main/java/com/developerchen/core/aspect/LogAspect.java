@@ -6,6 +6,7 @@ import com.developerchen.core.service.ILogService;
 import com.developerchen.core.util.JsonUtils;
 import com.developerchen.core.util.RequestUtils;
 import com.developerchen.core.util.UserUtils;
+import jakarta.servlet.ServletResponse;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -47,8 +48,15 @@ public class LogAspect {
         long start = System.currentTimeMillis();
         Object retVal = null;
         Throwable exception = null;
-        // 目标方法调用前先获取方法参数，因为方法内可能会对参数修改
-        String arguments = JsonUtils.toJsonString(pjp.getArgs());
+        // 防止 ServletResponse 流被重复读取
+        Object[] args = pjp.getArgs();
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] instanceof ServletResponse) {
+                args[i] = null;
+            }
+        }
+
+        String arguments = JsonUtils.toJsonString(args);
 
         // 运行目标方法
         try {
