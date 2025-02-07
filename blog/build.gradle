@@ -18,8 +18,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-    implementation 'com.baomidou:mybatis-plus-spring-boot3-starter:3.5.9'
-    implementation 'com.baomidou:mybatis-plus-jsqlparser:3.5.9'
+    implementation 'com.baomidou:mybatis-plus-spring-boot3-starter:3.5.10.1'
+    implementation 'com.baomidou:mybatis-plus-jsqlparser:3.5.10.1'
     implementation('com.vladsch.flexmark:flexmark-all:0.64.8') {
         exclude group: "com.vladsch.flexmark", module: "flexmark-youtrack-converter"
         exclude group: "com.vladsch.flexmark", module: "flexmark-pdf-converter"
