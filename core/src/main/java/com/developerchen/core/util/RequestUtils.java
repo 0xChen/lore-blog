@@ -1,7 +1,5 @@
 package com.developerchen.core.util;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -10,10 +8,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.method.HandlerMethod;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Request工具类
@@ -22,18 +18,11 @@ import java.util.Map;
  */
 public class RequestUtils {
 
+    private static final List<MediaType> TARGET_MEDIA_TYPES = Arrays.asList(
+            MediaType.APPLICATION_JSON,
+            new MediaType("application", "*+json")
+    );
 
-    public static Map<String, String> readValue(HttpServletRequest request) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, String> jsonMap = objectMapper.readValue(request.getInputStream(),
-                    new TypeReference<>() {
-                    });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     /**
      * 判断是否 ajax 调用
@@ -46,8 +35,7 @@ public class RequestUtils {
      * @return true or not
      */
     public static boolean isAjaxRequest(HttpServletRequest request, Object method) {
-        if (method instanceof HandlerMethod) {
-            HandlerMethod handlerMethod = (HandlerMethod) method;
+        if (method instanceof HandlerMethod handlerMethod) {
             if (handlerMethod.hasMethodAnnotation(ResponseBody.class)) {
                 return true;
             }
@@ -57,6 +45,7 @@ public class RequestUtils {
         return RequestUtils.isAjaxRequest(request);
     }
 
+
     /**
      * 判断request是否是ajax请求
      *
@@ -65,29 +54,23 @@ public class RequestUtils {
      */
     public static boolean isAjaxRequest(HttpServletRequest request) {
         request = getRequest(request);
+
+        // 检查 X-Requested-With 头
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
             return true;
         }
-        List<MediaType> targetMediaTypes = Arrays.asList(
-                MediaType.APPLICATION_JSON,
-                new MediaType("application", "*+json"));
 
-        List<MediaType> mediaTypes = MediaType.parseMediaTypes(request.getHeader("accept"));
-
-        boolean result = false;
-        for (MediaType targetMediaType : targetMediaTypes) {
-            for (MediaType mediaType : mediaTypes) {
-                if (targetMediaType.includes(mediaType)) {
-                    result = true;
-                    break;
-                }
-            }
-            if (result) {
-                break;
-            }
+        // 获取 Accept 头并解析为 MediaType 列表
+        String acceptHeader = request.getHeader("Accept");
+        if (acceptHeader == null || acceptHeader.isEmpty()) {
+            return false;
         }
 
-        return result;
+        List<MediaType> mediaTypes = MediaType.parseMediaTypes(acceptHeader);
+
+        return mediaTypes.stream().anyMatch(mediaType ->
+                TARGET_MEDIA_TYPES.stream().anyMatch(targetMediaType -> targetMediaType.includes(mediaType))
+        );
     }
 
     /**
