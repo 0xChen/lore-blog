@@ -1,0 +1,56 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: lore-blog
+  mvc:
+    static-path-pattern: ${lore.system.static-path-pattern}
+  web:
+    resources:
+      static-locations:
+        - classpath:/META-INF/resources/
+        - classpath:/templates/themes/**/static/
+        - classpath:/resources/
+        - classpath:/static/
+        - classpath:/admin/
+  main:
+    allow-circular-references: true
+  threads:
+    virtual:
+      enabled: true
+server:
+  max-http-request-header-size: 64KB
+
+######### 应用自定义配置 #########
+lore:
+  system:
+    static-path-pattern: /resources/**
+
+########## actuator ##########
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+    jmx:
+      exposure:
+        include: '*'
+
+########## jackson ##########
+spring.jackson:
+  time-zone: GMT+8
+  locale: zh_CN
+  serialization:
+    write-dates-as-timestamps: true
+
+########## multipart ##########
+spring.servlet.multipart:
+  max-file-size: 500MB
+  max-request-size: 2GB
+
+########## task ##########
+spring.task:
+  scheduling:
+    pool:
+      size: 6
+

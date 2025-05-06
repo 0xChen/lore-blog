@@ -1,0 +1,4 @@
+######### System 自定义配置 #########
+lore:
+  system:
+    static-path-pattern: /resources/**

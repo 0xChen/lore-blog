@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<included>
+    <appender name="EVENT_PUBLISH" class="com.developerchen.core.logging.appender.LogEventPublishAppender">
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${SAVE_TO_DB_LOG_THRESHOLD_LEVEL:-INFO}</level>
+        </filter>
+
+        <!-- Marker规则 -->
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="com.developerchen.core.logging.evaluator.MarkerEvaluator">
+                <markerName>${SAVE_TO_DB_LOG_MARKER_NAME:-}</markerName> <!-- 使用变量，:- 表示如果变量未定义则为空 -->
+            </evaluator>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>NEUTRAL</onMismatch>
+        </filter>
+
+        <!-- 继承关系黑名单规则（严格黑名单） -->
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="com.developerchen.core.logging.evaluator.InheritanceBlacklistEvaluator">
+                <!-- 关键：设置 packages 属性，其值将来自 Logback 变量 -->
+                <deniedClasses>${SAVE_TO_DB_LOG_INHERITANCE_BLACKLIST:-}</deniedClasses> <!-- 使用变量，:- 表示如果变量未定义则为空 -->
+            </evaluator>
+            <onMatch>DENY</onMatch>
+            <onMismatch>NEUTRAL</onMismatch>
+        </filter>
+
+        <!-- 包路径白名单规则 -->
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="com.developerchen.core.logging.evaluator.PackageWhitelistEvaluator">
+                <!-- 关键：设置 packages 属性，其值将来自 Logback 变量 -->
+                <packages>${SAVE_TO_DB_LOG_PACKAGES_WHITELIST:-}</packages> <!-- 使用变量，:- 表示如果变量未定义则为空 -->
+            </evaluator>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+    </appender>
+</included>

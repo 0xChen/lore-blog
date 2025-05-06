@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <!-- lore-core-logging 包中的变量配置 -->
+    <property name="SAVE_TO_DB_LOG_MARKER_NAME" value="SAVE_TO_DB"/>
+    <property name="SAVE_TO_DB_LOG_INHERITANCE_BLACKLIST" value="com.baomidou.mybatisplus.core.mapper.Mapper"/>
+    <property name="SAVE_TO_DB_LOG_PACKAGES_WHITELIST" value="com.developerchen"/>
+    <property name="SAVE_TO_DB_LOG_THRESHOLD_LEVEL" value="INFO"/>
+
+    <springProfile name="dev">
+        <property name="LOG_PATH" value="./log/"/>
+        <!-- 测试环境日志保留 8 天 -->
+        <property name="LOG_FILE_MAX_HISTORY" value="8"/>
+        <property name="LOG_FILE_CLEAN_HISTORY_ON_START" value="true"/>
+    </springProfile>
+
+    <springProfile name="prod">
+        <property name="LOG_PATH" value="./log/"/>
+    </springProfile>
+
+    <include resource="logback-core-logging.xml"/>
+
+    <springProfile name="dev">
+        <root level="DEBUG">
+            <appender-ref ref="EVENT_PUBLISH"/>
+        </root>
+        <logger name="io.netty.util.internal.PlatformDependent0" level="INFO"/>
+        <logger name="org.apache.tomcat.util.digester.Digester" level="INFO"/>
+        <logger name="org.apache.tomcat.util.digester.Digester.sax " level="INFO"/>
+        <logger name="org.apache.tomcat.util.IntrospectionUtils" level="INFO"/>
+        <logger name="org.apache.catalina.core.AprLifecycleListener" level="INFO"/>
+        <logger name="org.apache.tomcat.util.modeler.modules.MbeansDescriptorsIntrospectionSource" level="INFO"/>
+        <logger name="org.springframework.core.env.PropertySourcesPropertyResolver" level="INFO"/>
+        <logger name="org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener" level="INFO"/>
+        <logger name="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" level="INFO"/>
+        <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="INFO"/>
+        <logger name="org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLogger" level="INFO"/>
+        <logger name="org.springframework.context.annotation.ClassPathBeanDefinitionScanner" level="INFO"/>
+        <logger name="org.springframework.beans.factory.support.DefaultListableBeanFactory" level="INFO"/>
+        <logger name="org.springframework.data.convert.CustomConversions" level="INFO"/>
+        <logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="INFO"/>
+        <logger name="org.mybatis.spring.mapper.ClassPathMapperScanner" level="INFO"/>
+        <logger name="com.baomidou.mybatisplus.core.MybatisConfiguration" level="INFO"/>
+        <logger name="sun.rmi" level="INFO"/>
+        <logger name="jdk.event.security" level="INFO"/>
+        <logger name="javax.management.remote.rmi" level="INFO"/>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="INFO"/>
+    </springProfile>
+</configuration>

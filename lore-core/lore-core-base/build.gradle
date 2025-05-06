@@ -1,0 +1,21 @@
+plugins {
+    id 'java-library'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+    }
+}
+
+dependencies {
+    implementation project(':lore-core:lore-core-common')
+
+    api 'org.springframework:spring-tx'
+    api 'com.baomidou:mybatis-plus-spring:3.5.12'
+    api 'com.baomidou:mybatis-plus-core:3.5.12'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-parameters")
+}

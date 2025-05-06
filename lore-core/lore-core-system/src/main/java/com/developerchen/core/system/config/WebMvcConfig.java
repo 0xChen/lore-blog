@@ -1,0 +1,36 @@
+package com.developerchen.core.system.config;
+
+import com.developerchen.core.common.exception.ErrorViewResolver;
+import org.springframework.boot.autoconfigure.web.WebProperties;
+import org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorViewResolver;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+/**
+ * Spring MVC 配置类
+ *
+ * @author syc
+ */
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/robots.txt")
+                .addResourceLocations("classpath:/static/robots.txt");
+
+        registry.addResourceHandler("/favicon.ico")
+                .addResourceLocations("classpath:/static/favicon.ico");
+
+    }
+
+    @Bean
+    public DefaultErrorViewResolver conventionErrorViewResolver(ApplicationContext applicationContext,
+                                                                WebProperties webProperties) {
+        return new ErrorViewResolver(applicationContext, webProperties.getResources());
+    }
+
+}
