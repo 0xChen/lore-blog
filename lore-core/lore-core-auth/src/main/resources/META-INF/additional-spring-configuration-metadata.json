@@ -1,0 +1,51 @@
+{
+  "properties": [
+    {
+      "name": "security.token.access-token-expiration",
+      "type": "java.time.Duration",
+      "description": "访问令牌过期时间",
+      "defaultValue": "PT30M"
+    },
+    {
+      "name": "security.token.refresh-token-expiration", 
+      "type": "java.time.Duration",
+      "description": "刷新令牌过期时间",
+      "defaultValue": "P7D"
+    },
+    {
+      "name": "security.token.jwt-secret",
+      "type": "java.lang.String",
+      "description": "JWT 签名密钥"
+    },
+    {
+      "name": "security.token.jwt-issuer",
+      "type": "java.lang.String", 
+      "description": "JWT 发行者",
+      "defaultValue": "lore-core"
+    },
+    {
+      "name": "security.session.stateful",
+      "type": "java.lang.Boolean",
+      "description": "是否启用有状态会话管理",
+      "defaultValue": true
+    },
+    {
+      "name": "security.session.redis-namespace",
+      "type": "java.lang.String",
+      "description": "Redis 会话命名空间",
+      "defaultValue": "lore:session"
+    },
+    {
+      "name": "security.remember-me.key",
+      "type": "java.lang.String",
+      "description": "记住我功能密钥",
+      "defaultValue": "lore-remember-me"
+    },
+    {
+      "name": "security.remember-me.token-validity-seconds",
+      "type": "java.time.Duration",
+      "description": "记住我令牌有效期",
+      "defaultValue": "P14D"
+    }
+  ]
+}

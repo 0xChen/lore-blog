@@ -12,7 +12,7 @@ import org.springframework.util.Assert;
 import java.util.Collection;
 
 /**
- * 将 jwt 转换成 {@link com.developerchen.core.security.UserAuthenticationToken}
+ * 将 jwt 转换成 {@link com.developerchen.core.auth.UserAuthenticationToken}
  * @author syc
  */
 public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {

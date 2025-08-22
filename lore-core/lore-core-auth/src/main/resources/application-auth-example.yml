@@ -1,0 +1,29 @@
+security:
+  token:
+    access-token-expiration: PT30M
+    refresh-token-expiration: P7D
+    jwt-secret: ${JWT_SECRET:your-secret-key-here}
+    jwt-issuer: lore-core
+  session:
+    stateful: true
+    redis-namespace: "lore:session"
+  remember-me:
+    key: ${REMEMBER_ME_KEY:lore-remember-me-secret-key}
+    token-validity-seconds: P14D
+
+spring:
+  session:
+    store-type: redis
+    redis:
+      namespace: ${security.session.redis-namespace}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.developerchen.core.auth: DEBUG

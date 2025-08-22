@@ -1,0 +1,49 @@
+# Spring Security 会话管理配置示例
+
+security:
+  session:
+    # 启用有状态会话管理
+    stateful: true
+    # 启用混合会话策略（根据请求类型动态选择有状态/无状态）
+    hybrid: true
+    # Redis 会话命名空间
+    redis-namespace: "lore:session"
+  token:
+    access-token-expiration: PT30M
+    refresh-token-expiration: P7D
+    jwt-secret: ${JWT_SECRET:your-secret-key}
+    jwt-issuer: lore-core
+  remember-me:
+    key: ${REMEMBER_ME_KEY:lore-remember-me}
+    token-validity-seconds: P14D
+
+spring:
+  # Spring Session 配置
+  session:
+    store-type: redis
+    redis:
+      namespace: ${security.session.redis-namespace}
+      flush-mode: on_save
+      save-mode: on_set_attribute
+    timeout: PT30M # 会话超时时间30分钟
+    
+  # Redis 配置
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+      timeout: PT10S
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+
+# 日志配置
+logging:
+  level:
+    com.developerchen.core.auth: DEBUG
+    org.springframework.session: DEBUG
+    org.springframework.security: DEBUG
